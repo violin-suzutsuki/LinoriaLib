@@ -597,8 +597,6 @@ do
             end;
 
             function ModeButton:Deselect()
-                KeyPicker.Mode = nil;
-
                 Label.TextColor3 = Library.FontColor;
                 Library.RegistryMap[Label].Properties.TextColor3 = 'FontColor';
             end;
