@@ -668,6 +668,17 @@ do
             KeyPicker:Update();
         end;
 
+        function KeyPicker:OnClick(Callback)
+            KeyPicker.Clicked = Callback
+            Callback()
+        end
+
+        function KeyPicker:DoClick()
+            if KeyPicker.Clicked then
+                KeyPicker.Clicked()
+            end
+        end
+
         local Picking = false;
 
         PickOuter.InputBegan:Connect(function(Input)
@@ -730,10 +741,12 @@ do
                         if Key == 'MB1' and Input.UserInputType == Enum.UserInputType.MouseButton1
                         or Key == 'MB2' and Input.UserInputType == Enum.UserInputType.MouseButton2 then
                             KeyPicker.Toggled = not KeyPicker.Toggled
+                            KeyPicker:DoClick()
                         end;
                     elseif Input.UserInputType == Enum.UserInputType.Keyboard then
                         if Input.KeyCode.Name == Key then
                             KeyPicker.Toggled = not KeyPicker.Toggled;
+                            KeyPicker:DoClick()
                         end;
                     end;
                 end;
