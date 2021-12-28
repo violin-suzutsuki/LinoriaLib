@@ -360,7 +360,7 @@ do
         local HueBoxOuter = Library:Create('Frame', {
             BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.fromOffset(4, 209),
-            Size = UDim2.new(0, HueTextSize, 0, 20);
+            Size = UDim2.new(0.5, -6, 0, 20),
             ZIndex = 18,
             Parent = PickerFrameInner;
         });
@@ -405,12 +405,8 @@ do
         });
 
         local RgbBoxBase = Library:Create(HueBoxOuter:Clone(), {
-            Position = UDim2.fromOffset(
-                6 + HueTextSize,
-                209
-            ),
-
-            Size = UDim2.fromOffset(RgbTextSize, 20),
+            Position = UDim2.new(0.5, 2, 0, 209),
+            Size = UDim2.new(0.5, -6, 0, 20),
             Parent = PickerFrameInner
         })  
 
