@@ -761,7 +761,6 @@ do
 
         function KeyPicker:OnClick(Callback)
             KeyPicker.Clicked = Callback
-            Callback()
         end
 
         function KeyPicker:DoClick()
