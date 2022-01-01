@@ -1393,6 +1393,7 @@ do
         local Dropdown = {
             Values = Info.Values;
             Value = Info.Multi and {};
+            Multi = Info.Multi;
             Type = 'Dropdown';
         };
 
