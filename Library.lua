@@ -1694,8 +1694,8 @@ do
                 local nTable = {};
 
                 for Value, Bool in next, Val do
-                    if table.find(Dropdown.Values, Value) and Bool then
-                        nTable[Value] = true;
+                    if table.find(Dropdown.Values, Value) then
+                        nTable[Value] = True
                     end;
                 end;
 
