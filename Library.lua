@@ -1695,7 +1695,7 @@ do
 
                 for Value, Bool in next, Val do
                     if table.find(Dropdown.Values, Value) then
-                        nTable[Value] = True
+                        nTable[Value] = true
                     end;
                 end;
 
