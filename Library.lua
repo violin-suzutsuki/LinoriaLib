@@ -1694,10 +1694,12 @@ do
                 local nTable = {};
 
                 for Value, Bool in next, Val do
-                    if table.find(Dropdown.Values, Value) then
+                    if table.find(Dropdown.Values, Value) and Bool then
                         nTable[Value] = true;
                     end;
                 end;
+
+                Dropdown.Value = nTable;
             else
                 if (not Val) then
                     Dropdown.Value = nil;
