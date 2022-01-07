@@ -1738,6 +1738,10 @@ do
         Dropdown:SetValues();
         Dropdown:Display();
 
+        if type(Info.Default) == 'string' then
+            Info.Default = table.find(Dropdown.Values, Info.Default)
+        end
+
         if Info.Default then
             if Info.Multi then
                 Dropdown.Value[Dropdown.Values[Info.Default]] = true;
