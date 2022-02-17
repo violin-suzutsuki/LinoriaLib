@@ -35,10 +35,12 @@ local Library = {
     Black = Color3.new(0, 0, 0);
 
     OpenedFrames = {};
+
+    Signals = {};
     ScreenGui = ScreenGui;
 };
 
-task.spawn(function()
+Library.RainbowStep = coroutine.create(function()
     local Tick = tick();
     local Hue = 0;
 
@@ -56,7 +58,9 @@ task.spawn(function()
             Tick = tick();
         end;
     end;
-end);
+end)
+
+task.spawn(Library.RainbowStep);
 
 function Library:AttemptSave()
     if Library.SaveManager then
@@ -97,7 +101,7 @@ end;
 function Library:MakeDraggable(Instance, Cutoff)
     Instance.Active = true;
 
-    Instance.InputBegan:Connect(function(Input)
+   Instance.InputBegan:Connect(function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton1 then
             local ObjPos = Vector2.new(
                 Mouse.X - Instance.AbsolutePosition.X,
@@ -119,7 +123,7 @@ function Library:MakeDraggable(Instance, Cutoff)
                 RenderStepped:Wait();
             end;
         end;
-    end);
+    end)
 end;
 
 function Library:OnHighlight(HighlightInstance, Instance, Properties, PropertiesDefault)
@@ -133,7 +137,7 @@ function Library:OnHighlight(HighlightInstance, Instance, Properties, Properties
                 Reg.Properties[Property] = ColorIdx;
             end;
         end;
-    end);
+    end)
 
     HighlightInstance.MouseLeave:Connect(function()
         local Reg = Library.RegistryMap[Instance];
@@ -145,7 +149,7 @@ function Library:OnHighlight(HighlightInstance, Instance, Properties, Properties
                 Reg.Properties[Property] = ColorIdx;
             end;
         end;
-    end);
+    end)
 end;
 
 function Library:MouseIsOverOpenedFrame()
@@ -209,12 +213,6 @@ function Library:RemoveFromRegistry(Instance)
     end;
 end;
 
-ScreenGui.DescendantRemoving:Connect(function(Instance)
-    if Library.RegistryMap[Instance] then
-        Library:RemoveFromRegistry(Instance);
-    end;
-end);
-
 function Library:UpdateColorsUsingRegistry()
     -- TODO: Could have an 'active' list of objects
     -- where the active list only contains Visible objects.
@@ -232,6 +230,39 @@ function Library:UpdateColorsUsingRegistry()
         end;
     end;
 end;
+
+function Library:GiveSignal(Signal)
+    -- Only used for signals not attached to library instances, as those should be cleaned up on object destruction by Roblox
+    table.insert(Library.Signals, Signal)
+end
+
+function Library:Unload() -- Unload the library
+    -- Stop the RainbowStep thread
+    coroutine.close(Library.RainbowStep)
+
+    -- Unload all of the signals
+    for Idx = #Library.Signals, 1, -1 do
+        local Connection = table.remove(Library.Signals, Idx)
+        Connection:Disconnect()
+    end
+
+     -- Call our unload callback, maybe to undo some hooks etc
+    if Library.OnUnload then
+        Library.OnUnload()
+    end
+
+    ScreenGui:Destroy()
+end
+
+function Library:OnUnload(Callback)
+    Library.OnUnload = Callback
+end
+
+Library:GiveSignal(ScreenGui.DescendantRemoving:Connect(function(Instance)
+    if Library.RegistryMap[Instance] then
+        Library:RemoveFromRegistry(Instance);
+    end;
+end))
 
 local BaseAddons = {};
 
@@ -557,7 +588,7 @@ do
             end;
         end);
 
-        InputService.InputBegan:Connect(function(Input)
+        Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                 local AbsPos, AbsSize = PickerFrameOuter.AbsolutePosition, PickerFrameOuter.AbsoluteSize;
 
@@ -567,7 +598,7 @@ do
                     ColorPicker:Hide();
                 end;
             end;
-        end);
+        end))
 
         ColorPicker:Display();
 
@@ -825,7 +856,7 @@ do
             end;
         end);
 
-        InputService.InputBegan:Connect(function(Input)
+        Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
             if (not Picking) then
                 if KeyPicker.Mode == 'Toggle' then
                     local Key = KeyPicker.Value;
@@ -856,13 +887,13 @@ do
                     ModeSelectOuter.Visible = false;
                 end;
             end;
-        end);
+        end))
 
-        InputService.InputEnded:Connect(function(Input)
+        Library:GiveSignal(InputService.InputEnded:Connect(function(Input)
             if (not Picking) then
                 KeyPicker:Update();
             end;
-        end);
+        end))
 
         KeyPicker:Update();
 
@@ -991,6 +1022,43 @@ do
 
         return Button;
     end;
+
+    function Funcs:AddDivider()
+        local Groupbox = self;
+        local Container = self.Container
+
+        local Divider = {
+            Type = 'Divider',
+        }
+
+        local DividerOuter = Library:Create('Frame', {
+            BorderColor3 = Color3.new(0, 0, 0);
+            Size = UDim2.new(1, -4, 0, 8);
+            ZIndex = 5;
+            Parent = Container;
+        });
+
+        local DividerInner = Library:Create('Frame', {
+            BackgroundColor3 = Library.MainColor;
+            BorderColor3 = Library.OutlineColor;
+            BorderMode = Enum.BorderMode.Inset;
+            Size = UDim2.new(1, 0, 1, 0);
+            ZIndex = 6;
+            Parent = DividerOuter;
+        });
+
+        Library:AddToRegistry(DividerOuter, {
+            BorderColor3 = 'Black';
+        });
+
+        Library:AddToRegistry(DividerInner, {
+            BackgroundColor3 = 'MainColor';
+            BorderColor3 = 'OutlineColor';
+        });
+
+        Groupbox:AddBlank(8);
+        Groupbox:Resize();
+    end
 
     function Funcs:AddInput(Idx, Info)
         local Textbox = {
@@ -2510,7 +2578,7 @@ function Library:CreateWindow(WindowTitle)
         Parent = ScreenGui;
     });
 
-    InputService.InputBegan:Connect(function(Input, Processed)
+    Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
         if Input.KeyCode == Enum.KeyCode.RightControl or (Input.KeyCode == Enum.KeyCode.RightShift and (not Processed)) then
             Outer.Visible = not Outer.Visible;
             ModalElement.Modal = Outer.Visible;
@@ -2537,7 +2605,7 @@ function Library:CreateWindow(WindowTitle)
 
             Cursor:Remove();
         end;
-    end);
+    end))
 
     Window.Holder = Outer;
 
