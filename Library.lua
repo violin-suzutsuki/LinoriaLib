@@ -40,27 +40,23 @@ local Library = {
     ScreenGui = ScreenGui;
 };
 
-Library.RainbowStep = coroutine.create(function()
-    local Tick = tick();
-    local Hue = 0;
+local RainbowStep = 0
+table.insert(Library.Signals, RenderStepped:Connect(function(Delta)
+    RainbowStep = RainbowStep + Delta
 
-    while RenderStepped:Wait() do
-        if tick() - Tick >= (1 / 60) then
-            Hue = Hue + (1 / 400);
+    if RainbowStep >= (1 / 60) then
+        RainbowStep = 0
 
-            if Hue > 1 then
-                Hue = 0;
-            end;
+        Hue = Hue + (1 / 400);
 
-            Library.CurrentRainbowHue = Hue;
-            Library.CurrentRainbowColor = Color3.fromHSV(Hue, 0.8, 1);
-
-            Tick = tick();
+        if Hue > 1 then
+            Hue = 0;
         end;
-    end;
-end)
 
-task.spawn(Library.RainbowStep);
+        Library.CurrentRainbowHue = Hue;
+        Library.CurrentRainbowColor = Color3.fromHSV(Hue, 0.8, 1);
+    end
+end))
 
 function Library:AttemptSave()
     if Library.SaveManager then
@@ -236,10 +232,7 @@ function Library:GiveSignal(Signal)
     table.insert(Library.Signals, Signal)
 end
 
-function Library:Unload() -- Unload the library
-    -- Stop the RainbowStep thread
-    coroutine.close(Library.RainbowStep)
-
+function Library:Unload()
     -- Unload all of the signals
     for Idx = #Library.Signals, 1, -1 do
         local Connection = table.remove(Library.Signals, Idx)
