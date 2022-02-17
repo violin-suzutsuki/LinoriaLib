@@ -1063,12 +1063,12 @@ do
                 Text = Text:sub(1, Info.MaxLength);
             end;
 
+            Textbox.Value = Text;
+            Box.Text = Text;
+            
             if Textbox.Changed then
                 Textbox.Changed();
             end;
-
-            Textbox.Value = Text;
-            Box.Text = Text;
         end;
 
         Box:GetPropertyChangedSignal('Text'):Connect(function()
