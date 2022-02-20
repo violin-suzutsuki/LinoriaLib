@@ -1657,7 +1657,17 @@ do
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 21;
             Parent = ListInner;
+
+            TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png',
+            BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png',
+
+            ScrollBarThickness = 3,
+            ScrollBarImageColor3 = Library.AccentColor, 
         });
+
+        Library:AddToRegistry(Scrolling, {
+            ScrollBarImageColor3 = 'AccentColor'
+        })
 
         Library:Create('UIListLayout', {
             Padding = UDim.new(0, 0);
@@ -1813,7 +1823,7 @@ do
 
             local Y = math.clamp(Count * 20, 0, MAX_DROPDOWN_ITEMS * 20) + 1;
             ListOuter.Size = UDim2.new(1, -8, 0, Y);
-            Scrolling.CanvasSize = UDim2.new(0, 0, 0, Count * 20);
+            Scrolling.CanvasSize = UDim2.new(0, 0, 0, (Count * 20) + 1);
 
             -- ListOuter.Size = UDim2.new(1, -8, 0, (#Values * 20) + 2);
         end;
