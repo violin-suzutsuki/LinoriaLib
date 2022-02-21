@@ -1866,6 +1866,8 @@ do
 
             Dropdown:SetValues();
             Dropdown:Display();
+            
+            if Dropdown.Changed then Dropdown.Changed() end
         end;
 
         DropdownOuter.InputBegan:Connect(function(Input)
