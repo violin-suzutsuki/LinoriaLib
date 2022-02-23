@@ -655,6 +655,7 @@ do
     end;
 
     function Funcs:AddKeyPicker(Idx, Info)
+        local ParentObj = self;
         local ToggleLabel = self.TextLabel;
         local Container = self.Container;
 
@@ -663,6 +664,8 @@ do
             Toggled = false;
             Mode = Info.Mode or 'Toggle'; -- Always, Toggle, Hold
             Type = 'KeyPicker';
+
+            SyncToggleState = Info.SyncToggleState or false;
         };
 
         local RelativeOffset = 0;
@@ -844,7 +847,18 @@ do
             KeyPicker.Clicked = Callback
         end
 
+        if self.Type == 'Toggle' and KeyPicker.SyncToggleState then
+            self:OnChangedInternal(function()
+                KeyPicker.Toggled = self.Value
+                KeyPicker:Update()
+            end)
+        end
+
         function KeyPicker:DoClick()
+            if ParentObj.Type == 'Toggle' and KeyPicker.SyncToggleState then
+                ParentObj:SetValue(not ParentObj.Value)
+            end
+
             if KeyPicker.Clicked then
                 KeyPicker.Clicked()
             end
@@ -1116,6 +1130,7 @@ do
     function Funcs:AddInput(Idx, Info)
         local Textbox = {
             Value = Info.Default or '';
+            Numeric = Info.Numeric or false;
             Type = 'Input';
         };
 
@@ -1193,9 +1208,15 @@ do
                 Text = Text:sub(1, Info.MaxLength);
             end;
 
+            if Textbox.Numeric then
+                if (not tonumber(Text)) and Text:len() > 0 then
+                    Text = Textbox.Value 
+                end
+            end
+
             Textbox.Value = Text;
             Box.Text = Text;
-            
+                
             if Textbox.Changed then
                 Textbox.Changed();
             end;
@@ -1308,12 +1329,19 @@ do
             Func();
         end;
 
+        function Toggle:OnChangedInternal(Func)
+            Toggle.ChangedInternal = Func;
+        end
+
         function Toggle:SetValue(Bool)
             Toggle.Value = Bool;
             Toggle:Display();
 
             if Toggle.Changed then
                 Toggle.Changed();
+            end;
+            if Toggle.ChangedInternal then
+                Toggle.ChangedInternal();
             end;
         end;
 
@@ -1324,6 +1352,9 @@ do
 
                 if Toggle.Changed then
                     Toggle.Changed();
+                end;
+                if Toggle.ChangedInternal then
+                    Toggle.ChangedInternal();
                 end;
 
                 Library:AttemptSave();
