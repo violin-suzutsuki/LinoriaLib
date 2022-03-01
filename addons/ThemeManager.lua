@@ -19,7 +19,6 @@ local ThemeManager = {} do
 		if not data then return end
 
 		local scheme = data[2]
-
 		for idx, col in next, scheme do
 			self.Library[idx] = Color3.fromHex(col)
 			
