@@ -39,8 +39,6 @@ local ThemeManager = {} do
 		groupbox:AddLabel('Outline color'):AddColorPicker('OutlineColor', { Default = self.Library.OutlineColor });
 		groupbox:AddLabel('Font color')	:AddColorPicker('FontColor', { Default = self.Library.FontColor });
 
-		groupbox:AddButton('Apply default theme', function() self:ApplyTheme('Default') end)
-
 		local ThemesArray = {}
 		for Name, Theme in next, self.BuiltInThemes do
 			table.insert(ThemesArray, Theme[1], Name)
@@ -53,7 +51,6 @@ local ThemeManager = {} do
 		end)
 
 		Options.ThemeManager_ThemeList:SetValue(ThemeManager.BuiltInThemes[ThemeManager.DefaultTheme] and ThemeManager.DefaultTheme or 'Default')
-	-- 	self:ApplyTheme(ThemeManager.DefaultTheme or 'Default')
 	end
 
 	function ThemeManager:SetLibrary(lib)
