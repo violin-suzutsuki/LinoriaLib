@@ -43,6 +43,7 @@ local ThemeManager = {} do
 			table.insert(ThemesArray, Theme[1], Name)
 		end
 
+		groupbox:AddDivider()
 		groupbox:AddDropdown('ThemeManager_ThemeList', { Text = 'Theme list', Values = ThemesArray })
 			
 		Options.ThemeManager_ThemeList:OnChanged(function()
