@@ -93,6 +93,7 @@ local SaveManager = {} do
 		end
 
 		writefile(fullPath, encoded)
+		return true
 	end
 
 	function SaveManager:Load(name)
