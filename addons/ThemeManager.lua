@@ -18,7 +18,6 @@ local ThemeManager = {} do
 	}
 
 	function ThemeManager:ApplyTheme(theme)
-		print('Applying theme', theme)
 		local data = self.BuiltInThemes[theme] or self.BuiltInThemes.Default
 		if not data then return end
 
@@ -39,16 +38,11 @@ local ThemeManager = {} do
 		local theme = 'Default'
 		local content = isfile(self.Folder .. '/themes/default.txt') and readfile(self.Folder .. '/themes/default.txt')
 
-		print('passed', theme)
-		print('content', content)
 		if content and self.BuiltInThemes[content] then
 			theme = content
 		elseif self.BuiltInThemes[self.DefaultTheme] then
 			theme = self.DefaultTheme
 		end
-
-		print('selected', theme)
-		warn('value', Options.ThemeManager_ThemeList.Value)
 
 		Options.ThemeManager_ThemeList:SetValue(theme)
 	end
@@ -80,7 +74,6 @@ local ThemeManager = {} do
 		end)
 
 		Options.ThemeManager_ThemeList:OnChanged(function()
-			print('Hello!', Options.ThemeManager_ThemeList.Value)
 			self:ApplyTheme(Options.ThemeManager_ThemeList.Value)
 		end)
 
