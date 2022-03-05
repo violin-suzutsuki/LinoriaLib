@@ -1223,7 +1223,7 @@ do
             end;
         end;
 
-        if Input.Finished then
+        if Textbox.Finished then
             Box.FocusLost:Connect(function(enter)
                 if not enter then return end
                 
