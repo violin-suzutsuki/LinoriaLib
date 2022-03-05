@@ -1131,6 +1131,7 @@ do
         local Textbox = {
             Value = Info.Default or '';
             Numeric = Info.Numeric or false;
+            Finished = Info.Finished or false;
             Type = 'Input';
         };
 
@@ -1222,10 +1223,19 @@ do
             end;
         end;
 
-        Box:GetPropertyChangedSignal('Text'):Connect(function()
-            Textbox:SetValue(Box.Text);
-            Library:AttemptSave();
-        end);
+        if Input.Finished then
+            Box.FocusLost:Connect(function(enter)
+                if not enter then return end
+                
+                Textbox:SetValue(Box.Text);
+                Library:AttemptSave();
+            end)
+        else 
+            Box:GetPropertyChangedSignal('Text'):Connect(function()
+                Textbox:SetValue(Box.Text);
+                Library:AttemptSave();
+            end);
+        end
 
         Library:AddToRegistry(Box, {
             TextColor3 = 'FontColor';
