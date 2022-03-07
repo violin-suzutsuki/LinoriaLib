@@ -162,6 +162,8 @@ function Library:AddToolTip(InfoStr, HoverInstance)
     local IsHovering = false
     HoverInstance.MouseEnter:Connect(function()
         IsHovering = true
+        
+        Tooltip.Position = UDim2.fromOffset(Mouse.X + 15, Mouse.Y + 12)
         Tooltip.Visible = true
 
         while IsHovering do
@@ -218,8 +220,8 @@ function Library:MapValue(Value, MinA, MaxA, MinB, MaxB)
     return (1 - ((Value - MinA) / (MaxA - MinA))) * MinB + ((Value - MinA) / (MaxA - MinA)) * MaxB;
 end;
 
-function Library:GetTextBounds(Text, Font, Size)
-    local Bounds = TextService:GetTextSize(Text, Size, Font, Vector2.new(1920, 1080))
+function Library:GetTextBounds(Text, Font, Size, Resolution)
+    local Bounds = TextService:GetTextSize(Text, Size, Font, Resolution or Vector2.new(1920, 1080))
     return Bounds.X, Bounds.Y
 end;
 
@@ -668,6 +670,11 @@ do
             SyncToggleState = Info.SyncToggleState or false;
         };
 
+        if KeyPicker.SyncToggleState then
+            Info.Modes = { 'Toggle' }
+            Info.Mode = 'Toggle'
+        end
+
         local RelativeOffset = 0;
 
         for _, Element in next, Container:GetChildren() do
@@ -847,11 +854,9 @@ do
             KeyPicker.Clicked = Callback
         end
 
-        if self.Type == 'Toggle' and KeyPicker.SyncToggleState then
-            self:OnChangedInternal(function()
-                KeyPicker.Toggled = self.Value
-                KeyPicker:Update()
-            end)
+
+        if ParentObj.Addons then
+            table.insert(ParentObj.Addons, KeyPicker)
         end
 
         function KeyPicker:DoClick()
@@ -986,7 +991,7 @@ do
         });
     end;
 
-    function Funcs:AddLabel(Text)
+    function Funcs:AddLabel(Text, DoesWrap)
         local Label = {};
 
         local Groupbox = self;
@@ -996,22 +1001,41 @@ do
             Size = UDim2.new(1, -4, 0, 15);
             TextSize = 14;
             Text = Text;
+            TextWrapped = DoesWrap or false,
+            RichText = true,
             TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 5;
             Parent = Container;
         });
 
-        Library:Create('UIListLayout', {
-            Padding = UDim.new(0, 4);
-            FillDirection = Enum.FillDirection.Horizontal;
-            HorizontalAlignment = Enum.HorizontalAlignment.Right;
-            SortOrder = Enum.SortOrder.LayoutOrder;
-            Parent = TextLabel;
-        });
+        if DoesWrap then
+            local Y = select(2, Library:GetTextBounds(Text, Enum.Font.Code, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
+            TextLabel.Size = UDim2.new(1, -4, 0, Y)
+        else
+            Library:Create('UIListLayout', {
+                Padding = UDim.new(0, 4);
+                FillDirection = Enum.FillDirection.Horizontal;
+                HorizontalAlignment = Enum.HorizontalAlignment.Right;
+                SortOrder = Enum.SortOrder.LayoutOrder;
+                Parent = TextLabel;
+            });
+        end
 
         Label.TextLabel = TextLabel;
         Label.Container = Container;
-        setmetatable(Label, BaseAddons);
+
+        function Label:SetText(Text)
+            TextLabel.Text = Text
+
+            if DoesWrap then
+                local Y = select(2, Library:GetTextBounds(Text, Enum.Font.Code, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
+                TextLabel.Size = UDim2.new(1, -4, 0, Y)
+            end
+        end
+
+        if (not DoesWrap) then
+            setmetatable(Label, BaseAddons);
+        end
 
         Groupbox:AddBlank(5);
         Groupbox:Resize();
@@ -1258,6 +1282,8 @@ do
         local Toggle = {
             Value = Info.Default or false;
             Type = 'Toggle';
+
+            Addons = {},
         };
 
         local Groupbox = self;
@@ -1339,34 +1365,27 @@ do
             Func();
         end;
 
-        function Toggle:OnChangedInternal(Func)
-            Toggle.ChangedInternal = Func;
-        end
-
         function Toggle:SetValue(Bool)
+            Bool = (not not Bool);
+
             Toggle.Value = Bool;
             Toggle:Display();
 
+            for _, Addon in next, Toggle.Addons do
+                if Addon.Type == 'KeyPicker' and Addon.SyncToggleState then
+                    Addon.Toggled = Bool
+                    Addon:Update()
+                end
+            end
+
             if Toggle.Changed then
                 Toggle.Changed();
-            end;
-            if Toggle.ChangedInternal then
-                Toggle.ChangedInternal();
             end;
         end;
 
         ToggleRegion.InputBegan:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
-                Toggle.Value = not Toggle.Value;
-                Toggle:Display();
-
-                if Toggle.Changed then
-                    Toggle.Changed();
-                end;
-                if Toggle.ChangedInternal then
-                    Toggle.ChangedInternal();
-                end;
-
+                Toggle:SetValue(not Toggle.Value) -- Why was it not like this from the start?
                 Library:AttemptSave();
             end;
         end);

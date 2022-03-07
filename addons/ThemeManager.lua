@@ -52,12 +52,6 @@ local ThemeManager = {} do
 		local theme = 'Default'
 		local content = isfile(self.Folder .. '/themes/default.txt') and readfile(self.Folder .. '/themes/default.txt')
 
-		-- if content and (self.BuiltInThemes[content] or self:GetCustomTheme(content)) then
-		-- 	theme = content
-		-- elseif self.BuiltInThemes[self.DefaultTheme] then
-		-- 	theme = self.DefaultTheme
-		-- end
-
 		local isDefault = true
 		if content then
 			if self.BuiltInThemes[content] then
