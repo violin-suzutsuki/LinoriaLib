@@ -132,7 +132,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         BorderColor3 = Library.OutlineColor,
 
         Size = UDim2.fromOffset(X + 4, Y + 4),
-        ZIndex = 6,
+        ZIndex = 11;
         Parent = Library.ScreenGui,
 
         Visible = false,
@@ -145,7 +145,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         Text = InfoStr,
         TextColor3 = Library.FontColor,
         TextXAlignment = Enum.TextXAlignment.Left;
-        ZIndex = 7;
+        ZIndex = 12;
 
         Parent = Tooltip;
     });
@@ -1122,9 +1122,10 @@ do
             Type = 'Divider',
         }
 
+        Groupbox:AddBlank(2);
         local DividerOuter = Library:Create('Frame', {
             BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, -4, 0, 8);
+            Size = UDim2.new(1, -4, 0, 5);
             ZIndex = 5;
             Parent = Container;
         });
@@ -1147,7 +1148,7 @@ do
             BorderColor3 = 'OutlineColor';
         });
 
-        Groupbox:AddBlank(8);
+        Groupbox:AddBlank(9);
         Groupbox:Resize();
     end
 

@@ -113,7 +113,10 @@ local SaveManager = {} do
 	end
 
 	function SaveManager:IgnoreThemeSettings()
-		self:SetIgnoreIndexes({ "BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", "ThemeManager_ThemeList", 'ThemeManager_CustomThemeList', 'ThemeManager_CustomThemeName' })
+		self:SetIgnoreIndexes({ 
+			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", -- themes
+			"ThemeManager_ThemeList", 'ThemeManager_CustomThemeList', 'ThemeManager_CustomThemeName', -- themes
+		})
 	end
 
 	function SaveManager:BuildFolderTree()
@@ -129,6 +132,79 @@ local SaveManager = {} do
 				makefolder(str)
 			end
 		end
+	end
+
+	function SaveManager:RefreshConfigList()
+		local list = listfiles(self.Folder .. '/settings')
+
+		local out = {}
+		for i = 1, #list do
+			local file = list[i]
+			if file:sub(-5) == '.json' then
+				-- i hate this but it has to be done ...
+
+				local pos = file:find('.json', 1, true)
+				local start = pos
+
+				local char = file:sub(pos, pos)
+				while char ~= '/' and char ~= '\\' and char ~= '' do
+					pos = pos - 1
+					char = file:sub(pos, pos)
+				end
+
+				if char == '/' or char == '\\' then
+					table.insert(out, file:sub(pos + 1, start - 1))
+				end
+			end
+		end
+		
+		return out
+	end
+
+	function SaveManager:SetLibrary(library)
+		self.Library = library
+	end
+
+	function SaveManager:BuildConfigSection(tab)
+		assert(self.Library, 'Must set SaveManager.Library')
+
+		local section = tab:AddRightGroupbox('Configuration')
+
+		section:AddDropdown('SaveManager_ConfigList', { Text = 'Config list', Values = self:RefreshConfigList(), AllowNull = true })
+		section:AddInput('SaveManager_ConfigName',    { Text = 'Config name' })
+
+		section:AddDivider()
+
+		section:AddButton('Save config', function()
+			local name = Options.SaveManager_ConfigName.Value
+
+			if name:gsub(' ', '') == '' then 
+				return self.Library:Notify('Invalid config name (empty)', 2)
+			end
+
+			local success, err = self:Save(name)
+			if not success then
+				return self.Library:Notify('Failed to save config: ' .. err)
+			end
+
+			self.Library:Notify(string.format('Saved config %q', name))
+		end)
+
+		section:AddButton('Load config', function()
+			local name = Options.SaveManager_ConfigList.Value
+
+			local success, err = self:Load(name)
+			if not success then
+				return self.Library:Notify('Failed to load config: ' .. err)
+			end
+		end)
+
+		section:AddButton('Refresh config list', function()
+			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+			Options.SaveManager_ConfigList:SetValue(nil)
+		end)
+
+		SaveManager:SetIgnoreIndexes({ 'SaveManager_ConfigList', 'SaveManager_ConfigName' })
 	end
 
 	SaveManager:BuildFolderTree()
