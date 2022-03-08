@@ -175,7 +175,7 @@ local SaveManager = {} do
 
 		section:AddDivider()
 
-		section:AddButton('Save config', function()
+		section:AddButton('Create config', function()
 			local name = Options.SaveManager_ConfigName.Value
 
 			if name:gsub(' ', '') == '' then 
@@ -187,7 +187,7 @@ local SaveManager = {} do
 				return self.Library:Notify('Failed to save config: ' .. err)
 			end
 
-			self.Library:Notify(string.format('Saved config %q', name))
+			self.Library:Notify(string.format('Created config %q', name))
 		end)
 
 		section:AddButton('Load config', function()
@@ -197,6 +197,17 @@ local SaveManager = {} do
 			if not success then
 				return self.Library:Notify('Failed to load config: ' .. err)
 			end
+		end)
+
+		section:AddButton('Overwrite selected config', function()
+			local name = Options.SaveManager_ConfigList.Value
+
+			local success, err = self:Save(name)
+			if not success then
+				return self.Library:Notify('Failed to overwrite config: ' .. err)
+			end
+
+			self.Library:Notify(string.format('Overwrote config %q', name))
 		end)
 
 		section:AddButton('Refresh config list', function()
