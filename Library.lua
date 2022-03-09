@@ -1794,6 +1794,7 @@ do
                     BorderMode = Enum.BorderMode.Middle;
                     Size = UDim2.new(1, -1, 0, 20);
                     ZIndex = 23;
+                    Active = true,
                     Parent = Scrolling;
                 });
 
