@@ -279,7 +279,11 @@ function Library:UpdateColorsUsingRegistry()
 
     for Idx, Object in next, Library.Registry do
         for Property, ColorIdx in next, Object.Properties do
-            Object.Instance[Property] = Library[ColorIdx];
+            if type(ColorIdx) == 'string' then
+                Object.Instance[Property] = Library[ColorIdx];
+            elseif type(ColorIdx) == 'function' then
+                Object.Instance[Property] = ColorIdx()
+            end
         end;
     end;
 end;
@@ -2003,8 +2007,6 @@ do
         Parent = Library.NotificationArea;
     });
 
-
-
     local WatermarkOuter = Library:Create('Frame', {
         BorderColor3 = Color3.new(0, 0, 0);
         Position = UDim2.new(0, 100, 0, -25);
@@ -2036,13 +2038,22 @@ do
         Parent = WatermarkInner;
     });
 
-    Library:Create('UIGradient', {
+    local Gradient = Library:Create('UIGradient', {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(27, 27, 27)),
             ColorSequenceKeypoint.new(1, Color3.fromRGB(52, 52, 52))
         });
         Rotation = -90;
         Parent = InnerFrame;
+    });
+
+    Library:AddToRegistry(Gradient, {
+        Color = function()
+            return ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Library:GetDarkerColor(Library.MainColor)),
+                ColorSequenceKeypoint.new(1, Library.MainColor),
+            });
+        end
     });
 
     local WatermarkLabel = Library:CreateLabel({
@@ -2127,8 +2138,8 @@ function Library:SetWatermarkVisibility(Bool)
 end;
 
 function Library:SetWatermark(Text)
-    local Size = Library:GetTextBounds(Text, Enum.Font.Code, 14);
-    Library.Watermark.Size = UDim2.new(0, Size + 8 + 2, 0, 20);
+    local X, Y = Library:GetTextBounds(Text, Enum.Font.Code, 14);
+    Library.Watermark.Size = UDim2.new(0, X + 8 + 2, 0, (Y * 1.5) + 2);
     Library:SetWatermarkVisibility(true)
 
     Library.WatermarkText.Text = Text;
@@ -2216,7 +2227,7 @@ function Library:Notify(Text, Time)
     end);
 end;
 
-function Library:CreateWindow(WindowTitle)
+function Library:CreateWindow(WindowTitle, AutoShow)
     local Window = {
         Tabs = {};
     };
@@ -2728,34 +2739,40 @@ function Library:CreateWindow(WindowTitle)
         Parent = ScreenGui;
     });
 
+    function Library.Toggle()
+        Outer.Visible = not Outer.Visible;
+        ModalElement.Modal = Outer.Visible;
+
+        local oIcon = Mouse.Icon;
+        local State = InputService.MouseIconEnabled;
+
+        local Cursor = Drawing.new('Triangle');
+        Cursor.Thickness = 1;
+        Cursor.Filled = true;
+
+        while Outer.Visible do
+            local mPos = workspace.CurrentCamera:WorldToViewportPoint(Mouse.Hit.p);
+
+            Cursor.Color = Library.AccentColor;
+            Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
+            Cursor.PointB = Vector2.new(mPos.X, mPos.Y) + Vector2.new(6, 14);
+            Cursor.PointC = Vector2.new(mPos.X, mPos.Y) + Vector2.new(-6, 14);
+
+            Cursor.Visible = not InputService.MouseIconEnabled;
+
+            RenderStepped:Wait();
+        end;
+
+        Cursor:Remove();
+    end
+
     Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
         if Input.KeyCode == Enum.KeyCode.RightControl or (Input.KeyCode == Enum.KeyCode.RightShift and (not Processed)) then
-            Outer.Visible = not Outer.Visible;
-            ModalElement.Modal = Outer.Visible;
-
-            local oIcon = Mouse.Icon;
-            local State = InputService.MouseIconEnabled;
-
-            local Cursor = Drawing.new('Triangle');
-            Cursor.Thickness = 1;
-            Cursor.Filled = true;
-
-            while Outer.Visible do
-                local mPos = workspace.CurrentCamera:WorldToViewportPoint(Mouse.Hit.p);
-
-                Cursor.Color = Library.AccentColor;
-                Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
-                Cursor.PointB = Vector2.new(mPos.X, mPos.Y) + Vector2.new(6, 14);
-                Cursor.PointC = Vector2.new(mPos.X, mPos.Y) + Vector2.new(-6, 14);
-
-                Cursor.Visible = not InputService.MouseIconEnabled;
-
-                RenderStepped:Wait();
-            end;
-
-            Cursor:Remove();
+            task.spawn(Library.Toggle)
         end;
     end))
+
+    if AutoShow then task.spawn(Library.Toggle) end
 
     Window.Holder = Outer;
 
