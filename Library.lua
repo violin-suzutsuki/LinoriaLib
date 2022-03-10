@@ -228,7 +228,8 @@ end;
 function Library:GetDarkerColor(Color)
     local H, S, V = Color3.toHSV(Color);
     return Color3.fromHSV(H, S, V / 1.5);
-end; Library.AccentColorDark = Library:GetDarkerColor(Library.AccentColor);
+end; 
+Library.AccentColorDark = Library:GetDarkerColor(Library.AccentColor);
 
 function Library:AddToRegistry(Instance, Properties, IsHud)
     local Idx = #Library.Registry + 1;
@@ -1035,6 +1036,8 @@ do
                 local Y = select(2, Library:GetTextBounds(Text, Enum.Font.Code, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
                 TextLabel.Size = UDim2.new(1, -4, 0, Y)
             end
+
+            Groupbox:Resize();
         end
 
         if (not DoesWrap) then
@@ -2040,8 +2043,8 @@ do
 
     local Gradient = Library:Create('UIGradient', {
         Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(27, 27, 27)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(52, 52, 52))
+            ColorSequenceKeypoint.new(0, Library:GetDarkerColor(Library.MainColor)),
+            ColorSequenceKeypoint.new(1, Library.MainColor),
         });
         Rotation = -90;
         Parent = InnerFrame;
@@ -2182,13 +2185,22 @@ function Library:Notify(Text, Time)
         Parent = NotifyInner;
     });
 
-    Library:Create('UIGradient', {
+    local Gradient = Library:Create('UIGradient', {
         Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(27, 27, 27)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(52, 52, 52))
+            ColorSequenceKeypoint.new(0, Library:GetDarkerColor(Library.MainColor)),
+            ColorSequenceKeypoint.new(1, Library.MainColor),
         });
         Rotation = -90;
         Parent = InnerFrame;
+    });
+
+    Library:AddToRegistry(Gradient, {
+        Color = function()
+            return ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Library:GetDarkerColor(Library.MainColor)),
+                ColorSequenceKeypoint.new(1, Library.MainColor),
+            });
+        end
     });
 
     local NotifyLabel = Library:CreateLabel({
