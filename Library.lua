@@ -2778,13 +2778,6 @@ function Library:CreateWindow(WindowTitle, AutoShow)
         Cursor:Remove();
     end
 
-    local KeyCodes = {}
-    for _, code in next, Enum.KeyCode:GetEnumItems() do
-        if code.Name ~= 'Unknown' then
-            KeyCodes[code.Name] = true
-        end
-    end
-
     Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
         if type(Library.ToggleKeybind) == 'table' and Library.ToggleKeybind.Type == 'KeyPicker' then
             if Input.UserInputType == Enum.UserInputType.Keyboard and Input.Name == Library.ToggleKeybind.Value then
