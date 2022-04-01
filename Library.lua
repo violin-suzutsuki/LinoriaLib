@@ -2786,9 +2786,8 @@ function Library:CreateWindow(WindowTitle, AutoShow)
     end
 
     Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
-        pcall(function() print(Library.ToggleKeybind); warn(Library.ToggleKeybind.Type) end)
         if type(Library.ToggleKeybind) == 'table' and Library.ToggleKeybind.Type == 'KeyPicker' then
-            if Input.UserInputType == Enum.UserInputType.Keyboard and KeyCodes[Library.ToggleKeybind.Value] then
+            if Input.UserInputType == Enum.UserInputType.Keyboard and Input.Name == Library.ToggleKeybind.Value then
                 task.spawn(Library.Toggle)
             end
         elseif Input.KeyCode == Enum.KeyCode.RightControl or (Input.KeyCode == Enum.KeyCode.RightShift and (not Processed)) then
