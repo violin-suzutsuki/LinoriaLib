@@ -2239,16 +2239,37 @@ function Library:Notify(Text, Time)
     end);
 end;
 
-function Library:CreateWindow(WindowTitle, AutoShow)
+function Library:CreateWindow(...)
+    local Arguments = { ... }
+    local Config = { AnchorPoint = Vector2.zero }
+
+    if type(...) == 'table' then
+        Config = ...;
+    else
+        Config.Title = Arguments[1]
+        Config.AutoShow = Arguments[2] or false;
+    end
+    
+    if type(Config.Title) ~= 'string' then Config.Title = 'No title' end
+    
+    if typeof(Config.Position) ~= 'UDim2' then Config.Position = UDim2.fromOffset(175, 50) end
+    if typeof(Config.Size) ~= 'UDim2' then Config.Size = UDim2.fromOffset(550, 600) end
+
+    if Config.Center then
+        Config.AnchorPoint = Vector2.new(0.5, 0.5)
+        Config.Position = UDim2.fromScale(0.5, 0.5)
+    end
+
     local Window = {
         Tabs = {};
     };
 
     local Outer = Library:Create('Frame', {
+        AnchorPoint = Config.AnchorPoint,
         BackgroundColor3 = Color3.new(0, 0, 0);
         BorderSizePixel = 0;
-        Position = UDim2.new(0, 175, 0, 50);
-        Size = UDim2.new(0, 550, 0, 600);
+        Position = Config.Position,
+        Size = Config.Size,
         Visible = false;
         ZIndex = 1;
         Parent = ScreenGui;
@@ -2274,7 +2295,7 @@ function Library:CreateWindow(WindowTitle, AutoShow)
     local WindowLabel = Library:CreateLabel({
         Position = UDim2.new(0, 7, 0, 0);
         Size = UDim2.new(0, 0, 0, 25);
-        Text = WindowTitle or '';
+        Text = Config.Title or '';
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 1;
         Parent = Inner;
@@ -2788,7 +2809,7 @@ function Library:CreateWindow(WindowTitle, AutoShow)
         end
     end))
 
-    if AutoShow then task.spawn(Library.Toggle) end
+    if Config.AutoShow then task.spawn(Library.Toggle) end
 
     Window.Holder = Outer;
 
