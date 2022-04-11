@@ -821,11 +821,9 @@ do
             local XSize = 0
             
             for _, Label in next, Library.KeybindContainer:GetChildren() do
-                if not Label:IsA('UIListLayout') then
-                    if Label.Visible then
-                        YSize = YSize + 18;
-                        XSize = math.max(210, Label.TextBounds.X, XSize)
-                    end;
+                if Label:IsA('TextLabel') and Label.Visible then
+                    YSize = YSize + 18;
+                    XSize = math.max(210, Label.TextBounds.X, XSize)
                 end;
             end;
 
