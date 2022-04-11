@@ -29,6 +29,17 @@ local Tabs = {
 -- except Tabboxes you have to call the functions on a tab (Tabbox:AddTab(name))
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Groupbox')
 
+-- Tabboxes are a tiny bit different, but here's a basic example:
+--[[
+
+local TabBox = Tabs.Main:AddLeftTabbox() -- Add Tabbox on left side
+
+local Tab1 = TabBox:AddTab('Tab 1')
+local Tab2 = TabBox:AddTab('Tab 2')
+
+-- You can now call AddToggle, etc on the tabs you added to the Tabbox
+]]
+
 -- Groupbox:AddToggle
 -- Arguments: Index, Options
 LeftGroupBox:AddToggle('MyToggle', {
@@ -36,6 +47,7 @@ LeftGroupBox:AddToggle('MyToggle', {
     Default = true, -- Default value (true / false)
     Tooltip = 'This is a tooltip', -- Information shown when you hover over the toggle
 })
+
 
 -- Fetching a toggle object for later use:
 -- Toggles.MyToggle.Value
@@ -234,45 +246,39 @@ Library.KeybindFrame.Visible = true; -- todo: add a function for this
 
 Library:OnUnload(function()
     print('Unloaded!')
-
     Library.Unloaded = true
 end)
 
 -- UI Settings
-
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 
 -- I set NoUI so it does not show up in the keybinds menu
-
 MenuGroup:AddButton('Unload', function() Library:Unload() end)
 MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' }) 
 
 Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybind for the menu
 
--- Addons
--- These addons were written exclusively by me.
--- 1. SaveManager
-    -- Allows you to have a configuration system
--- 2. ThemeManager
-    -- Allows you to have a menu theme system
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- ThemeManager (Allows you to have a menu theme system)
 
 -- Hand the library over to our managers
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 
--- Ignore keys that are used by ThemeManager. (we dont want configs to save themes...)
+-- Ignore keys that are used by ThemeManager. 
+-- (we dont want configs to save themes, do we?)
 SaveManager:IgnoreThemeSettings() 
 
 -- Adds our MenuKeybind to the ignore list 
 -- (do you want each config to have a different menu key? probably not.)
 SaveManager:SetIgnoreIndexes({ 'MenuKeybind' }) 
 
--- use case: a script hub could have themes in a global folder
+-- use case for doing it this way: 
+-- a script hub could have themes in a global folder
 -- and game configs in a separate folder per game
-ThemeManager:SetFolder('ExampleMenu')
-SaveManager:SetFolder('ExampleMenu/specific-game')
-
--- Here's the juicy part
+ThemeManager:SetFolder('MyScriptHub')
+SaveManager:SetFolder('MyScriptHub/specific-game')
 
 -- Builds our config menu on the right side of our tab
 SaveManager:BuildConfigSection(Tabs['UI Settings']) 
@@ -281,5 +287,5 @@ SaveManager:BuildConfigSection(Tabs['UI Settings'])
 -- NOTE: you can also call ThemeManager:ApplyToGroupbox to add it to a specific groupbox
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
 
--- You can use the SaveManager:LoadAutoloadConfig() to load a config which has been marked
--- to be one that auto loads!
+-- You can use the SaveManager:LoadAutoloadConfig() to load a config 
+-- which has been marked to be one that auto loads!
