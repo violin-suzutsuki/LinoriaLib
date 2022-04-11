@@ -823,7 +823,7 @@ do
             for _, Label in next, Library.KeybindContainer:GetChildren() do
                 if Label:IsA('TextLabel') and Label.Visible then
                     YSize = YSize + 18;
-                    XSize = math.max(210, Label.TextBounds.X, XSize)
+                    XSize = math.max(210, Label.TextBounds.X + 5, XSize)
                 end;
             end;
 
