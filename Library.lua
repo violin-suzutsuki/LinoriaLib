@@ -817,17 +817,19 @@ do
 
             Library.RegistryMap[ContainerLabel].Properties.TextColor3 = State and 'AccentColor' or 'FontColor';
 
-            local YSize = 0;
+            local YSize = Library.KeybindContainer.UIListLayout.AbsoluteContentSize.Y;
+            local XSize = math.max(210, Library.KeybindContainer.UIListLayout.AbsoluteContentSize.X)
+            
+            -- for _, Label in next, Library.KeybindContainer:GetChildren() do
+            --     if not Label:IsA('UIListLayout') then
+            --         if Label.Visible then
+            --             YSize = YSize + 18;
+            --             XSize = 
+            --         end;
+            --     end;
+            -- end;
 
-            for _, Label in next, Library.KeybindContainer:GetChildren() do
-                if not Label:IsA('UIListLayout') then
-                    if Label.Visible then
-                        YSize = YSize + 18;
-                    end;
-                end;
-            end;
-
-            Library.KeybindFrame.Size = UDim2.new(0, 210, 0, 20 + YSize);
+            Library.KeybindFrame.Size = UDim2.new(0, XSize, 0, YSize + 5)
         end;
 
         function KeyPicker:GetState()
@@ -2130,6 +2132,11 @@ do
         SortOrder = Enum.SortOrder.LayoutOrder;
         Parent = KeybindContainer;
     });
+
+    library:Create('UIPadding', {
+        PaddingLeft = UDim.new(0, 5),
+        Parent = KeybindContainer,
+    })
 
     Library.KeybindFrame = KeybindOuter;
     Library.KeybindContainer = KeybindContainer;
