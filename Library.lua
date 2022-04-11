@@ -2133,7 +2133,7 @@ do
         Parent = KeybindContainer;
     });
 
-    library:Create('UIPadding', {
+    Library:Create('UIPadding', {
         PaddingLeft = UDim.new(0, 5),
         Parent = KeybindContainer,
     })
