@@ -68,9 +68,31 @@ Toggles.MyToggle:SetValue(false)
 -- Groupbox:AddButton
 -- Arguments: Text, Callback
 
-LeftGroupBox:AddButton('This is a button', function()
+local MyButton = LeftGroupBox:AddButton('Button', function()
     print('You clicked a button!')
 end)
+
+-- Button:AddButton
+-- Arguments: Text, Callback
+-- Adds a sub button to the side of the main button
+
+local MyButton2 = MyButton:AddButton('Sub button', function()
+    print('You clicked a sub button!')
+end)
+
+-- Button:AddTooltip
+-- Arguments: ToolTip
+
+MyButton:AddTooltip('This is a button')
+MyButton2:AddToolTip('This is a sub button')
+
+-- NOTE: You can chain the button methods!
+--[[
+    EXAMPLE: 
+
+    LeftGroupBox:AddButton('Kill all', Functions.KillAll):AddTooltip('This will kill everyone in the game!')
+        :AddButton('Kick all', Functions.KickAll):AddTooltip('This will kick everyone in the game!')
+]]
 
 -- Groupbox:AddLabel
 -- Arguments: Text, DoesWrap
