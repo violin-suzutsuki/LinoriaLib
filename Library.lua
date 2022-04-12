@@ -131,7 +131,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         BackgroundColor3 = Library.MainColor,        
         BorderColor3 = Library.OutlineColor,
 
-        Size = UDim2.fromOffset(X + 4, Y + 4),
+        Size = UDim2.fromOffset(X + 5, Y + 4),
         ZIndex = 11;
         Parent = Library.ScreenGui,
 
@@ -1116,7 +1116,59 @@ do
             if type(tip) == 'string' then
                 Library:AddToolTip(tip, ButtonOuter)
             end
+            return Button
         end
+
+        function Button:AddButton(Text, Func)
+            local SubButton = {}
+
+            ButtonOuter.Size = UDim2.new(0.5, -2, 0, 20)
+            
+            local Outer = ButtonOuter:Clone()
+            local Inner = Outer.Frame;
+            local Label = Inner:FindFirstChildWhichIsA('TextLabel')
+
+            Outer.Position = UDim2.new(1, 2, 0, 0)
+            Outer.Size = UDim2.fromOffset(ButtonOuter.AbsoluteSize.X - 2, ButtonOuter.AbsoluteSize.Y)
+            Outer.Parent = ButtonOuter
+
+            Label.Text = Text;
+
+            Library:AddToRegistry(Inner, {
+                BackgroundColor3 = 'MainColor';
+                BorderColor3 = 'OutlineColor';
+            });
+    
+            Library:OnHighlight(Outer, Outer,
+                { BorderColor3 = 'AccentColor' },
+                { BorderColor3 = 'Black' }
+            )
+
+            Library:Create('UIGradient', {
+                Color = ColorSequence.new({
+                    ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+                    ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 212, 212))
+                });
+
+                Rotation = 90;
+                Parent = Inner;
+            });
+
+            Outer.InputBegan:Connect(function(Input)
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
+                    Func();
+                end;
+            end);
+
+            function SubButton:AddTooltip(tip)
+                if type(tip) == 'string' then
+                    Library:AddToolTip(tip, Outer)
+                end
+                return SubButton
+            end
+
+            return SubButton
+        end 
 
         Groupbox:AddBlank(5);
         Groupbox:Resize();
