@@ -206,9 +206,7 @@ local SaveManager = {} do
 			Options.SaveManager_ConfigList.Values = self:RefreshConfigList()
 			Options.SaveManager_ConfigList:SetValues()
 			Options.SaveManager_ConfigList:SetValue(nil)
-		end)
-
-		section:AddButton('Load config', function()
+		end):AddButton('Load config', function()
 			local name = Options.SaveManager_ConfigList.Value
 
 			local success, err = self:Load(name)
