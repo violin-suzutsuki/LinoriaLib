@@ -84,7 +84,7 @@ end)
 -- Arguments: ToolTip
 
 MyButton:AddTooltip('This is a button')
-MyButton2:AddToolTip('This is a sub button')
+MyButton2:AddTooltip('This is a sub button')
 
 -- NOTE: You can chain the button methods!
 --[[
