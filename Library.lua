@@ -555,7 +555,7 @@ do
             RgbBox.Text = table.concat({ math.floor(ColorPicker.Value.R * 255), math.floor(ColorPicker.Value.G * 255), math.floor(ColorPicker.Value.B * 255) }, ', ')
 
             if ColorPicker.Changed then
-                ColorPicker.Changed();
+                ColorPicker.Changed(ColorPicker.Value)
             end;
         end;
 
@@ -1321,7 +1321,7 @@ do
             Box.Text = Text;
                 
             if Textbox.Changed then
-                Textbox.Changed();
+                Textbox.Changed(Textbox.Value)
             end;
         end;
 
@@ -1495,7 +1495,7 @@ do
             end
 
             if Toggle.Changed then
-                Toggle.Changed();
+                Toggle.Changed(Toggle.Value)
             end;
         end;
 
@@ -1671,7 +1671,7 @@ do
             Slider:Display();
 
             if Slider.Changed then
-                Slider.Changed();
+                Slider.Changed(Slider.Value)
             end;
         end;
 
@@ -1692,7 +1692,7 @@ do
                     Slider:Display();
 
                     if nValue ~= OldValue and Slider.Changed then
-                        Slider.Changed();
+                        Slider.Changed(Slider.Value)
                     end;
 
                     RenderStepped:Wait();
@@ -1991,7 +1991,7 @@ do
                             Dropdown:Display();
 
                             if Dropdown.Changed then
-                                Dropdown.Changed();
+                                Dropdown.Changed(Dropdown.Value)
                             end;
 
                             Library:AttemptSave();
@@ -2051,7 +2051,7 @@ do
             Dropdown:SetValues();
             Dropdown:Display();
             
-            if Dropdown.Changed then Dropdown.Changed() end
+            if Dropdown.Changed then Dropdown.Changed(Dropdown.Value) end
         end;
 
         DropdownOuter.InputBegan:Connect(function(Input)
