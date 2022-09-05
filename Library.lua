@@ -1738,7 +1738,7 @@ do
 
         local RelativeOffset = 0;
 
-        if Info.Compact then
+        if not Info.Compact then
             local DropdownLabel = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 10);
                 TextSize = 14;
