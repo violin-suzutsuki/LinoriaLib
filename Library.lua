@@ -3,6 +3,7 @@ local TextService = game:GetService('TextService');
 local TweenService = game:GetService('TweenService');
 local CoreGui = game:GetService('CoreGui');
 local RunService = game:GetService('RunService')
+local GuiService = game:GetService('GuiService')
 local RenderStepped = RunService.RenderStepped;
 local LocalPlayer = game:GetService('Players').LocalPlayer;
 local Mouse = LocalPlayer:GetMouse();
@@ -218,6 +219,7 @@ end;
 
 function Library:IsMouseOverFrame(Frame)
     local AbsPos, AbsSize = Frame.AbsolutePosition, Frame.AbsoluteSize;
+
     if Mouse.X >= AbsPos.X and Mouse.X <= AbsPos.X + AbsSize.X
         and Mouse.Y >= AbsPos.Y and Mouse.Y <= AbsPos.Y + AbsSize.Y then
 
@@ -1736,17 +1738,19 @@ do
 
         local RelativeOffset = 0;
 
-        local DropdownLabel = Library:CreateLabel({
-            Size = UDim2.new(1, 0, 0, 10);
-            TextSize = 14;
-            Text = Info.Text;
-            TextXAlignment = Enum.TextXAlignment.Left;
-            TextYAlignment = Enum.TextYAlignment.Bottom;
-            ZIndex = 5;
-            Parent = Container;
-        });
+        if Info.Compact then
+            local DropdownLabel = Library:CreateLabel({
+                Size = UDim2.new(1, 0, 0, 10);
+                TextSize = 14;
+                Text = Info.Text;
+                TextXAlignment = Enum.TextXAlignment.Left;
+                TextYAlignment = Enum.TextYAlignment.Bottom;
+                ZIndex = 5;
+                Parent = Container;
+            });
 
-        Groupbox:AddBlank(3);
+            Groupbox:AddBlank(3);
+        end
 
         for _, Element in next, Container:GetChildren() do
             if not Element:IsA('UIListLayout') then
@@ -2539,6 +2543,7 @@ function Library:CreateWindow(...)
         });
 
         local TabFrame = Library:Create('Frame', {
+            Name = 'TabFrame',
             BackgroundTransparency = 1;
             Position = UDim2.new(0, 0, 0, 0);
             Size = UDim2.new(1, 0, 1, 0);
@@ -2917,7 +2922,7 @@ function Library:CreateWindow(...)
         Cursor.Filled = true;
 
         while Outer.Visible and ScreenGui.Parent do
-            local mPos = workspace.CurrentCamera:WorldToViewportPoint(Mouse.Hit.p);
+            local mPos = InputService:GetMouseLocation()
 
             Cursor.Color = Library.AccentColor;
             Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
@@ -2945,9 +2950,14 @@ function Library:CreateWindow(...)
             local HoveringColorPicker = nil
 
             for i, colorPicker in next, Options do
-                if colorPicker.Type == 'ColorPicker' and Library:IsMouseOverFrame(colorPicker.DisplayFrame) then
-                    HoveringColorPicker = colorPicker
-                    break
+                if colorPicker.Type == 'ColorPicker' then
+                    local displayFrame = colorPicker.DisplayFrame
+                    local tabFrame = displayFrame and displayFrame:findFirstAncestor('TabFrame')
+
+                    if tabFrame.Visible and Library:IsMouseOverFrame(colorPicker.DisplayFrame) then
+                        HoveringColorPicker = colorPicker
+                        break
+                    end
                 end
             end
 
