@@ -159,24 +159,18 @@ function Library:AddToolTip(InfoStr, HoverInstance)
     Library:AddToRegistry(Label, {
         TextColor3 = 'FontColor',
     });
-
-    local function setMouseIconBehavior(behvaior)
-        InputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior[behvaior]
-    end
-
+    
     local IsHovering = false
     HoverInstance.MouseEnter:Connect(function()
         IsHovering = true
         
-        Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
+        Tooltip.Position = UDim2.fromOffset(Mouse.X + 15, Mouse.Y + 12)
         Tooltip.Visible = true
 
-        pcall(setMouseIconBehavior, 'ForceHide')
         while IsHovering do
             RunService.Heartbeat:Wait()
-            Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
+            Tooltip.Position = UDim2.fromOffset(Mouse.X + 15, Mouse.Y + 12)
         end
-        pcall(setMouseIconBehavior, 'None')
     end)
 
     HoverInstance.MouseLeave:Connect(function()
