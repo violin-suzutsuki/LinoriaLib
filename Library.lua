@@ -133,7 +133,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         BorderColor3 = Library.OutlineColor,
 
         Size = UDim2.fromOffset(X + 5, Y + 4),
-        ZIndex = 11;
+        ZIndex = 100,
         Parent = Library.ScreenGui,
 
         Visible = false,
@@ -146,7 +146,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         Text = InfoStr,
         TextColor3 = Library.FontColor,
         TextXAlignment = Enum.TextXAlignment.Left;
-        ZIndex = 12;
+        ZIndex = Tooltip.ZIndex + 1,
 
         Parent = Tooltip;
     });
@@ -160,17 +160,23 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         TextColor3 = 'FontColor',
     });
 
+    local function setMouseIconBehavior(behvaior)
+        InputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior[behvaior]
+    end
+
     local IsHovering = false
     HoverInstance.MouseEnter:Connect(function()
         IsHovering = true
         
-        Tooltip.Position = UDim2.fromOffset(Mouse.X + 15, Mouse.Y + 12)
+        Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y + 12)
         Tooltip.Visible = true
 
+        pcall(setMouseIconBehavior, 'ForceHide')
         while IsHovering do
             RunService.Heartbeat:Wait()
-            Tooltip.Position = UDim2.fromOffset(Mouse.X + 15, Mouse.Y + 12)
+            Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y + 12)
         end
+        pcall(setMouseIconBehavior, 'None')
     end)
 
     HoverInstance.MouseLeave:Connect(function()
