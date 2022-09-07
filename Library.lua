@@ -168,13 +168,13 @@ function Library:AddToolTip(InfoStr, HoverInstance)
     HoverInstance.MouseEnter:Connect(function()
         IsHovering = true
         
-        Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y + 12)
+        Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
         Tooltip.Visible = true
 
         pcall(setMouseIconBehavior, 'ForceHide')
         while IsHovering do
             RunService.Heartbeat:Wait()
-            Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y + 12)
+            Tooltip.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
         end
         pcall(setMouseIconBehavior, 'None')
     end)
