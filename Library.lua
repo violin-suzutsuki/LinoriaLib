@@ -1660,10 +1660,8 @@ do
                 return math.floor(Value);
             end;
 
-            local Str = Value .. '';
-            local Dot = Str:find('%.');
-
-            return Dot and tonumber(Str:sub(1, Dot + Slider.Rounding)) or Value;
+    
+            return tonumber(string.format('%.' .. Slider.Rounding .. 'f', Value))
         end;
 
         function Slider:GetValueFromXOffset(X)
@@ -2093,20 +2091,39 @@ do
         Dropdown:SetValues();
         Dropdown:Display();
 
+        local Defaults = {}
+
         if type(Info.Default) == 'string' then
-            Info.Default = table.find(Dropdown.Values, Info.Default)
+            local Idx = table.find(Dropdown.Values, Info.Default)
+            if Idx then
+                table.insert(Defaults, Idx)
+            end
+        elseif type(Info.Default) == 'table' then
+            for _, Value in next, Info.Default do
+                local Idx = table.find(Dropdown.Values, Value)
+                if Idx then
+                    table.insert(Defaults, Idx)
+                end
+            end
+        elseif type(Info.Default) == 'number' and Dropdown.Values[Info.Default] ~= nil then
+            table.insert(Defaults, Info.Default)
         end
 
-        if Info.Default then
-            if Info.Multi then
-                Dropdown.Value[Dropdown.Values[Info.Default]] = true;
-            else
-                Dropdown.Value = Dropdown.Values[Info.Default];
-            end;
+        if next(Defaults) then
+            for i = 1, #Defaults do
+                local Index = Defaults[i]
+                if Info.Multi then
+                    Dropdown.Value[Dropdown.Values[Index]] = true
+                else
+                    Dropdown.Value = Dropdown.Values[Index];
+                end
+
+                if (not Info.Multi) then break end
+            end
 
             Dropdown:SetValues();
             Dropdown:Display();
-        end;
+        end
 
         Groupbox:AddBlank(Info.BlankSize or 5);
         Groupbox:Resize();
