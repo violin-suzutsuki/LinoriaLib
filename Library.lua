@@ -1355,7 +1355,7 @@ do
         -- thank you nicemike40 :)
 
         local function Update()
-            local PADDING = 5
+            local PADDING = 2
             local reveal = Container.AbsoluteSize.X
 
             if not Box:IsFocused() or Box.TextBounds.X <= reveal - 2 * PADDING then
