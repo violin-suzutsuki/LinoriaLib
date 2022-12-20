@@ -2928,7 +2928,7 @@ function Library:CreateWindow(...)
     });
 
     function Library.Toggle()
-        Outer.Visible = not Outer.Visible;
+        --[[Outer.Visible = not Outer.Visible;
         ModalElement.Modal = Outer.Visible;
 
         local oIcon = Mouse.Icon;
@@ -2951,7 +2951,7 @@ function Library:CreateWindow(...)
             RenderStepped:Wait();
         end;
 
-        Cursor:Remove();
+        Cursor:Remove();]]
     end
 
     Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
