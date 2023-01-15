@@ -1882,10 +1882,10 @@ do
         });
 
         local Keypoints = {}
-        for i = 0, 0.8 do
+        for i = 0, 0.9 do
             table.insert(Keypoints, NumberSequenceKeypoint.new(i, 0))
         end
-        table.insert(Keypoints, NumberSequenceKeypoint.new(0.9, 0.75))
+        table.insert(Keypoints, NumberSequenceKeypoint.new(0.95, 0.75))
         table.insert(Keypoints, NumberSequenceKeypoint.new(1, 1))
 
         Library:Create('UIGradient', {
