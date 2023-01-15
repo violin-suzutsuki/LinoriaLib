@@ -1222,7 +1222,7 @@ do
             SubButton.Tooltip = Props.Tooltip
 
             if type(SubButton.Func) ~= 'function' then
-                return error('Button must have a callback!')
+                return error('SubButton must have a callback!')
             end
 
             self.Outer.Size = UDim2.new(0.5, -2, 0, 20)
