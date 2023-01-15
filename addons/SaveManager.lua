@@ -200,35 +200,41 @@ local SaveManager = {} do
 
 		section:AddDivider()
 
-		section:AddButton('Create config', function()
-			local name = Options.SaveManager_ConfigName.Value
+		section:AddButton({
+			Text = 'Create config', 
+			Func = function()
+				local name = Options.SaveManager_ConfigName.Value
 
-			if name:gsub(' ', '') == '' then 
-				return self.Library:Notify('Invalid config name (empty)', 2)
+				if name:gsub(' ', '') == '' then 
+					return self.Library:Notify('Invalid config name (empty)', 2)
+				end
+
+				local success, err = self:Save(name)
+				if not success then
+					return self.Library:Notify('Failed to save config: ' .. err)
+				end
+
+				self.Library:Notify(string.format('Created config %q', name))
+
+				Options.SaveManager_ConfigList.Values = self:RefreshConfigList()
+				Options.SaveManager_ConfigList:SetValues()
+				Options.SaveManager_ConfigList:SetValue(nil)
 			end
+		}):AddButton({
+			Text = 'Load config', 
+			Func =  function()
+				local name = Options.SaveManager_ConfigList.Value
 
-			local success, err = self:Save(name)
-			if not success then
-				return self.Library:Notify('Failed to save config: ' .. err)
+				local success, err = self:Load(name)
+				if not success then
+					return self.Library:Notify('Failed to load config: ' .. err)
+				end
+
+				self.Library:Notify(string.format('Loaded config %q', name))
 			end
+		})
 
-			self.Library:Notify(string.format('Created config %q', name))
-
-			Options.SaveManager_ConfigList.Values = self:RefreshConfigList()
-			Options.SaveManager_ConfigList:SetValues()
-			Options.SaveManager_ConfigList:SetValue(nil)
-		end):AddButton('Load config', function()
-			local name = Options.SaveManager_ConfigList.Value
-
-			local success, err = self:Load(name)
-			if not success then
-				return self.Library:Notify('Failed to load config: ' .. err)
-			end
-
-			self.Library:Notify(string.format('Loaded config %q', name))
-		end)
-
-		section:AddButton('Overwrite config', function()
+		section:AddButton({ Text = 'Overwrite config', Func = function()
 			local name = Options.SaveManager_ConfigList.Value
 
 			local success, err = self:Save(name)
@@ -237,20 +243,20 @@ local SaveManager = {} do
 			end
 
 			self.Library:Notify(string.format('Overwrote config %q', name))
-		end)
+		end })
 		
-		section:AddButton('Autoload config', function()
+		section:AddButton({ Text = 'Autoload config', Func = function()
 			local name = Options.SaveManager_ConfigList.Value
 			writefile(self.Folder .. '/settings/autoload.txt', name)
 			SaveManager.AutoloadLabel:SetText('Current autoload config: ' .. name)
 			self.Library:Notify(string.format('Set %q to auto load', name))
-		end)
+		end })
 
-		section:AddButton('Refresh config list', function()
+		section:AddButton({ Text = 'Refresh config list', Func = function()
 			Options.SaveManager_ConfigList.Values = self:RefreshConfigList()
 			Options.SaveManager_ConfigList:SetValues()
 			Options.SaveManager_ConfigList:SetValue(nil)
-		end)
+		end })
 
 		SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
 
