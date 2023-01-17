@@ -1216,7 +1216,7 @@ do
                 Obj.Func = select(2, ...)
             end
 
-            if type(Button.Func) ~= 'function' then
+            if type(Obj.Func) ~= 'function' then
                 return error(Class .. ' must have a callback!')
             end
         end
