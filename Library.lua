@@ -512,6 +512,125 @@ do
         });
 
 
+        local ContextMenu = {}
+        do
+            ContextMenu.Options = {}
+            ContextMenu.Container = Library:Create('Frame', {
+                BorderColor3 = Color3.new(),
+                ZIndex = 14,
+
+                Visible = false,
+                Parent = ScreenGui
+            })
+
+            ContextMenu.Inner = Library:Create('Frame', {
+                BackgroundColor3 = Library.BackgroundColor;
+                BorderColor3 = Library.OutlineColor;
+                BorderMode = Enum.BorderMode.Inset;
+                Size = UDim2.fromScale(1, 1);
+                ZIndex = 15;
+                Parent = ContextMenu.Container;
+            });
+
+            Library:Create('UIListLayout', {
+                Name = 'Layout',
+                FillDirection = Enum.FillDirection.Vertical;
+                SortOrder = Enum.SortOrder.LayoutOrder;
+                Parent = ContextMenu.Inner;
+            });
+
+            Library:Create('UIPadding', {
+                Name = 'Padding',
+                PaddingLeft = UDim.new(0, 4),
+                Parent = ContextMenu.Inner,
+            });
+
+            local function updateMenuPosition()
+                ContextMenu.Container.Position = UDim2.fromOffset(
+                    (DisplayFrame.AbsolutePosition.X + DisplayFrame.AbsoluteSize.X) + 4,
+                    DisplayFrame.AbsolutePosition.Y + 1
+                )
+            end
+
+            local function updateMenuSize()
+                local menuWidth = 60
+                for i, label in next, ContextMenu.Inner:GetChildren() do
+                    if label:IsA('TextLabel') then
+                        menuWidth = math.max(menuWidth, label.TextBounds.X)
+                    end
+                end
+
+                ContextMenu.Container.Size = UDim2.fromOffset(
+                    menuWidth + 8,
+                    ContextMenu.Inner.Layout.AbsoluteContentSize.Y + 4
+                )
+            end
+
+            DisplayFrame:GetPropertyChangedSignal('AbsolutePosition'):Connect(updateMenuPosition)
+            ContextMenu.Inner.Layout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(updateMenuSize)
+
+            task.spawn(updateMenuPosition)
+            task.spawn(updateMenuSize)
+
+            Library:AddToRegistry(ContextMenu.Inner, {
+                BackgroundColor3 = 'BackgroundColor';
+                BorderColor3 = 'OutlineColor';
+            });
+
+            function ContextMenu:Show()
+                self.Container.Visible = true
+            end
+
+            function ContextMenu:Hide()
+                self.Container.Visible = false
+            end
+
+            function ContextMenu:AddOption(Str, Callback)
+                if type(Callback) ~= 'function' then 
+                    Callback = function() end
+                end
+
+                local Button = Library:CreateLabel({
+                    Size = UDim2.new(1, 0, 0, 15);
+                    TextSize = 13;
+                    Text = Str;
+                    ZIndex = 16;
+                    Parent = self.Inner;
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                });
+
+                Button.InputBegan:Connect(function(Input)
+                    if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+                        return
+                    end
+                    Callback()
+                end)
+            end
+
+            ContextMenu:AddOption('Copy color', function()
+                Library.ColorClipboard = ColorPicker.Value
+            end)
+
+            ContextMenu:AddOption('Paste color', function()
+                if not Library.ColorClipboard then
+                    return Library:Notify('You have not copied a color!', 2)
+                end
+                ColorPicker:SetValueRGB(Library.ColorClipboard)
+            end)
+
+
+            ContextMenu:AddOption('Copy HEX', function()
+                pcall(setclipboard, ColorPicker.Value:ToHex())
+                Library:Notify('Copied hex code to clipboard!', 2)
+            end)
+
+            ContextMenu:AddOption('Copy RGB', function()
+                pcall(setclipboard, table.concat({ math.floor(ColorPicker.Value.R * 255), math.floor(ColorPicker.Value.G * 255), math.floor(ColorPicker.Value.B * 255) }, ', '))
+                Library:Notify('Copied RGB values to clipboard!', 2)
+            end)
+
+        end
+
         Library:AddToRegistry(PickerFrameInner, { BackgroundColor3 = 'BackgroundColor'; BorderColor3 = 'OutlineColor'; });
         Library:AddToRegistry(Highlight, { BackgroundColor3 = 'AccentColor'; });
         Library:AddToRegistry(SatVibMapInner, { BackgroundColor3 = 'BackgroundColor'; BorderColor3 = 'OutlineColor'; });
@@ -648,11 +767,15 @@ do
         DisplayFrame.InputBegan:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
                 if PickerFrameOuter.Visible then
-                    ColorPicker:Hide();
+                    ColorPicker:Hide()
                 else
-                    ColorPicker:Show();
+                    ContextMenu:Hide()
+                    ColorPicker:Show()
                 end;
-            end;
+            elseif Input.UserInputType == Enum.UserInputType.MouseButton2 and not Library:MouseIsOverOpenedFrame() then
+                ContextMenu:Show()
+                ColorPicker:Hide()
+            end
         end);
 
         Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
@@ -664,7 +787,18 @@ do
 
                     ColorPicker:Hide();
                 end;
+
+                if not Library:IsMouseOverFrame(ContextMenu.Container) then
+                    ContextMenu:Hide()
+                end
             end;
+
+
+            if Input.UserInputType == Enum.UserInputType.MouseButton2 and ContextMenu.Container.Visible then
+                if not Library:IsMouseOverFrame(ContextMenu.Container) and not Library:IsMouseOverFrame(DisplayFrame) then
+                    ContextMenu:Hide()
+                end
+            end
         end))
 
         ColorPicker:Display();
@@ -3044,32 +3178,6 @@ function Library:CreateWindow(...)
             end
         elseif Input.KeyCode == Enum.KeyCode.RightControl or (Input.KeyCode == Enum.KeyCode.RightShift and (not Processed)) then
             task.spawn(Library.Toggle)
-        end
-
-        if Input:IsModifierKeyDown(Enum.ModifierKey.Ctrl) and Outer.Visible then
-            local HoveringColorPicker = nil
-
-            for i, colorPicker in next, Options do
-                if colorPicker.Type == 'ColorPicker' then
-                    local displayFrame = colorPicker.DisplayFrame
-                    local tabFrame = displayFrame and displayFrame:findFirstAncestor('TabFrame')
-
-                    if tabFrame.Visible and Library:IsMouseOverFrame(colorPicker.DisplayFrame) then
-                        HoveringColorPicker = colorPicker
-                        break
-                    end
-                end
-            end
-
-            if not HoveringColorPicker then
-                return
-            end
-
-            if Input.KeyCode == Enum.KeyCode.C then
-                Library.ColorClipboard = HoveringColorPicker.Value
-            elseif Input.KeyCode == Enum.KeyCode.V and Library.ColorClipboard then
-                HoveringColorPicker:SetValueRGB(Library.ColorClipboard)
-            end
         end
     end))
 
