@@ -1353,16 +1353,7 @@ do
 
         function Button:AddButton(...)
             local SubButton = {}
-
-            -- SubButton.Text = Props.Text
-            -- SubButton.Func = Props.Func
-            -- SubButton.DoubleClick = Props.DoubleClick
-            -- SubButton.Tooltip = Props.Tooltip
-
-            -- if type(SubButton.Func) ~= 'function' then
-            --     return error('SubButton must have a callback!')
-            -- end
-
+            
             ProcessButtonParams('SubButton', SubButton, ...)
 
             self.Outer.Size = UDim2.new(0.5, -2, 0, 20)
@@ -1388,8 +1379,8 @@ do
             return SubButton
         end
 
-        if type(Props.Tooltip) == 'string' then
-            Button:AddTooltip(Props.Tooltip)
+        if type(Button.Tooltip) == 'string' then
+            Button:AddTooltip(Button.Tooltip)
         end
 
         Groupbox:AddBlank(5);
