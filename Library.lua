@@ -1204,21 +1204,24 @@ do
     function Funcs:AddButton(...)
         -- TODO: Eventually redo this
         local Button = {};
+        local function ProcessButtonParams(Class, Obj, ...)
+            local Props = select(1, ...)
+            if type(Props) == 'table' then
+                Obj.Text = Props.Text
+                Obj.Func = Props.Func
+                Obj.DoubleClick = Props.DoubleClick
+                Obj.Tooltip = Props.Tooltip
+            else
+                Obj.Text = select(1, ...)
+                Obj.Func = select(2, ...)
+            end
 
-        local Props = select(1, ...)
-        if type(Props) == 'table' then
-            Button.Text = Props.Text
-            Button.Func = Props.Func
-            Button.DoubleClick = Props.DoubleClick
-            Button.Tooltip = Props.Tooltip
-        else
-            Button.Text = select(1, ...)
-            Button.Func = select(2, ...)
+            if type(Button.Func) ~= 'function' then
+                return error(Class .. ' must have a callback!')
+            end
         end
 
-        if type(Button.Func) ~= 'function' then
-            return error('Button must have a callback!')
-        end
+        ProcessButtonParams('Button', Button, ...)
 
         local Groupbox = self;
         local Container = Groupbox.Container;
@@ -1348,17 +1351,19 @@ do
         end
 
 
-        function Button:AddButton(Props)
+        function Button:AddButton(...)
             local SubButton = {}
 
-            SubButton.Text = Props.Text
-            SubButton.Func = Props.Func
-            SubButton.DoubleClick = Props.DoubleClick
-            SubButton.Tooltip = Props.Tooltip
+            -- SubButton.Text = Props.Text
+            -- SubButton.Func = Props.Func
+            -- SubButton.DoubleClick = Props.DoubleClick
+            -- SubButton.Tooltip = Props.Tooltip
 
-            if type(SubButton.Func) ~= 'function' then
-                return error('SubButton must have a callback!')
-            end
+            -- if type(SubButton.Func) ~= 'function' then
+            --     return error('SubButton must have a callback!')
+            -- end
+
+            ProcessButtonParams('SubButton', SubButton, ...)
 
             self.Outer.Size = UDim2.new(0.5, -2, 0, 20)
 
