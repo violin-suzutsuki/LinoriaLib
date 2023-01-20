@@ -1723,8 +1723,8 @@ do
 
         if Toggle.Risky then
             Library:RemoveFromRegistry(ToggleLabel)
-            ToggleLabel.TextColor3 = Library.RiskyColor
-            Library:AddToRegistry(ToggleLabel, { TextColor3 = 'RiskyColor' })
+            ToggleLabel.TextColor3 = Library.RiskColor
+            Library:AddToRegistry(ToggleLabel, { TextColor3 = 'RiskColor' })
         end
 
         Toggle:Display();
