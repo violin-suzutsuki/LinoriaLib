@@ -33,6 +33,7 @@ local Library = {
     BackgroundColor = Color3.fromRGB(20, 20, 20);
     AccentColor = Color3.fromRGB(0, 85, 255);
     OutlineColor = Color3.fromRGB(50, 50, 50);
+    RiskColor = Color3.fromRGB(255, 50, 50)
 
     Black = Color3.new(0, 0, 0);
     Font = Enum.Font.Code,
@@ -1312,7 +1313,7 @@ do
 
                 if Button.DoubleClick then
                     Library:RemoveFromRegistry(Button.Label)
-                    Library:AddToRegistry(Button, { TextColor3 = 'AccentColor' })
+                    Library:AddToRegistry(Button.Label, { TextColor3 = 'AccentColor' })
 
                     Button.Label.TextColor3 = Library.AccentColor
                     Button.Label.Text = 'Are you sure?'
@@ -1321,7 +1322,7 @@ do
                     local clicked = WaitForEvent(Button.Outer.InputBegan, 0.5, ValidateClick)
 
                     Library:RemoveFromRegistry(Button.Label)
-                    Library:AddToRegistry(Button, { TextColor3 = 'FontColor' })
+                    Library:AddToRegistry(Button.Label, { TextColor3 = 'FontColor' })
 
                     Button.Label.TextColor3 = Library.FontColor
                     Button.Label.Text = Button.Text
@@ -1613,6 +1614,7 @@ do
             Type = 'Toggle';
 
             Addons = {},
+            Risky = Info.Risky,
         };
 
         local Groupbox = self;
@@ -1718,6 +1720,12 @@ do
                 Library:AttemptSave();
             end;
         end);
+
+        if Toggle.Risky then
+            Library:RemoveFromRegistry(ToggleLabel)
+            ToggleLabel.TextColor3 = Library.RiskyColor
+            Library:AddToRegistry(ToggleLabel, { TextColor3 = 'RiskyColor' })
+        end
 
         Toggle:Display();
         Groupbox:AddBlank(Info.BlankSize or 5 + 2);
