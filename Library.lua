@@ -986,6 +986,10 @@ do
             if KeyPicker.Mode == 'Always' then
                 return true;
             elseif KeyPicker.Mode == 'Hold' then
+                if KeyPicker.Value == 'None' then
+                    return false;
+                end
+
                 local Key = KeyPicker.Value;
 
                 if Key == 'MB1' or Key == 'MB2' then
