@@ -53,7 +53,18 @@ local SaveManager = {} do
 					Options[idx]:SetValue({ data.key, data.mode })
 				end
 			end,
-		}
+		},
+
+		Input = {
+			Save = function(idx, object)
+				return { type = 'Input', idx = idx, text = object.Value }
+			end,
+			Load = function(idx, data)
+				if Options[idx] and type(data.text) == 'string' then
+					Options[idx]:SetValue(data.text)
+				end
+			end,
+		},
 	}
 
 	function SaveManager:SetIgnoreIndexes(list)
