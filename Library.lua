@@ -1265,7 +1265,7 @@ do
                 Obj.Func = select(2, ...)
             end
 
-            assert(type(Obj.Func) == 'function'), 'AddButton: `Func` callback is missing.');
+            assert(type(Obj.Func) == 'function', 'AddButton: `Func` callback is missing.');
         end
 
         ProcessButtonParams('Button', Button, ...)
