@@ -2984,27 +2984,6 @@ function Library:CreateWindow(...)
             end);
         end;
 
-        -- stupid hack to make sure our borders render correctly inside the scrolling frame
-        local LeftSidePad = Library:Create('Frame', {
-            BackgroundColor3 = Library.BackgroundColor;
-            BorderSizePixel = 0;
-            Size = UDim2.new(1, 0, 0, 1);
-            ZIndex = 2;
-            Parent = LeftSide;
-        });
-
-        Library:AddToRegistry(LeftSidePad, { BackgroundColor3 = 'BackgroundColor' });
-
-        local RightSidePad = Library:Create('Frame', {
-            BackgroundColor3 = Library.BackgroundColor;
-            BorderSizePixel = 0;
-            Size = UDim2.new(1, 0, 0, 1);
-            ZIndex = 2;
-            Parent = RightSide;
-        });
-
-        Library:AddToRegistry(RightSidePad, { BackgroundColor3 = 'BackgroundColor' });
-
         function Tab:ShowTab()
             for _, Tab in next, Window.Tabs do
                 Tab:HideTab();
@@ -3034,7 +3013,8 @@ function Library:CreateWindow(...)
             local BoxOuter = Library:Create('Frame', {
                 BackgroundColor3 = Library.BackgroundColor;
                 BorderColor3 = Library.OutlineColor;
-                Size = UDim2.new(1, -2, 0, 507);
+                BorderMode = Enum.BorderMode.Inset;
+                Size = UDim2.new(1, 0, 0, 507 + 2);
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
@@ -3047,8 +3027,9 @@ function Library:CreateWindow(...)
             local BoxInner = Library:Create('Frame', {
                 BackgroundColor3 = Library.BackgroundColor;
                 BorderColor3 = Color3.new(0, 0, 0);
-                BorderMode = Enum.BorderMode.Inset;
-                Size = UDim2.new(1, 0, 1, 0);
+                -- BorderMode = Enum.BorderMode.Inset;
+                Size = UDim2.new(1, -2, 1, -2);
+                Position = UDim2.new(0, 1, 0, 1);
                 ZIndex = 4;
                 Parent = BoxOuter;
             });
