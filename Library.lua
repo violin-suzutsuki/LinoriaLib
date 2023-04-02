@@ -2939,8 +2939,8 @@ function Library:CreateWindow(...)
         local LeftSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0, 8 - 1, 0, 8);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507);
+            Position = UDim2.new(0, 8 - 1, 0, 8 - 1);
+            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -2952,8 +2952,8 @@ function Library:CreateWindow(...)
         local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0.5, 4 + 1, 0, 8);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507);
+            Position = UDim2.new(0.5, 4 + 1, 0, 8 - 1);
+            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -2983,6 +2983,27 @@ function Library:CreateWindow(...)
                 Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y);
             end);
         end;
+
+        -- stupid hack to make sure our borders render correctly inside the scrolling frame
+        local LeftSidePad = Library:Create('Frame', {
+            BackgroundColor3 = Library.BackgroundColor;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, 0, 0, 1);
+            ZIndex = 2;
+            Parent = LeftSide;
+        });
+
+        Library:AddToRegistry(LeftSidePad, { BackgroundColor3 = 'BackgroundColor' });
+
+        local RightSidePad = Library:Create('Frame', {
+            BackgroundColor3 = Library.BackgroundColor;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, 0, 0, 1);
+            ZIndex = 2;
+            Parent = RightSide;
+        });
+
+        Library:AddToRegistry(RightSidePad, { BackgroundColor3 = 'BackgroundColor' });
 
         function Tab:ShowTab()
             for _, Tab in next, Window.Tabs do
