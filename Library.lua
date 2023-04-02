@@ -701,7 +701,7 @@ do
                     if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then
                         return
                     end
-                    
+
                     Callback()
                 end)
             end
@@ -817,14 +817,16 @@ do
             Library.OpenedFrames[PickerFrameOuter] = nil;
         end;
 
-        function ColorPicker:SetValue(HSV)
+        function ColorPicker:SetValue(HSV, Transparency)
             local Color = Color3.fromHSV(HSV[1], HSV[2], HSV[3]);
 
+            ColorPicker.Transparency = Transparency;
             ColorPicker:SetHSVFromRGB(Color);
             ColorPicker:Display();
         end;
 
-        function ColorPicker:SetValueRGB(Color)
+        function ColorPicker:SetValueRGB(Color, Transparency)
+            ColorPicker.Transparency = Transparency;
             ColorPicker:SetHSVFromRGB(Color);
             ColorPicker:Display();
         end;
