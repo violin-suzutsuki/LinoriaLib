@@ -820,13 +820,13 @@ do
         function ColorPicker:SetValue(HSV, Transparency)
             local Color = Color3.fromHSV(HSV[1], HSV[2], HSV[3]);
 
-            ColorPicker.Transparency = Transparency;
+            ColorPicker.Transparency = Transparency or 0;
             ColorPicker:SetHSVFromRGB(Color);
             ColorPicker:Display();
         end;
 
         function ColorPicker:SetValueRGB(Color, Transparency)
-            ColorPicker.Transparency = Transparency;
+            ColorPicker.Transparency = Transparency or 0;
             ColorPicker:SetHSVFromRGB(Color);
             ColorPicker:Display();
         end;
