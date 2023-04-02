@@ -1996,8 +1996,10 @@ do
     function Funcs:AddDropdown(Idx, Info)
         if Info.SpecialType == 'Player' then
             Info.Values = GetPlayersString();
+            Info.AllowNull = true;
         elseif Info.SpecialType == 'Team' then
             Info.Values = GetTeamsString();
+            Info.AllowNull = true;
         end;
 
         assert(Info.Values, 'AddDropdown: Missing dropdown value list.');
