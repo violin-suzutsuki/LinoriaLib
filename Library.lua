@@ -89,6 +89,10 @@ local function GetTeamsString()
 end;
 
 function Library:SafeCallback(f, ...)
+    if (not f) then
+        return;
+    end;
+
     if not Library.NotifyOnError then
         return f(...);
     end;
@@ -577,7 +581,7 @@ do
                 Parent = TransparencyBoxOuter;
             });
 
-            Library:AddToRegistry(TransparencyBoxInner, { 'BorderColor3' = 'OutlineColor' });
+            Library:AddToRegistry(TransparencyBoxInner, { BorderColor3 = 'OutlineColor' });
 
             Library:Create('ImageLabel', {
                 BackgroundTransparency = 1;
