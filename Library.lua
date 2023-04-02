@@ -387,6 +387,7 @@ do
 
         local ColorPicker = {
             Value = Info.Default;
+            Transparency = Info.Transparency or 0;
             Type = 'ColorPicker';
             Title = type(Info.Title) == 'string' and Info.Title or 'Color picker',
             Callback = Info.Callback or function(Color) end;
@@ -411,6 +412,14 @@ do
             Parent = ToggleLabel;
         });
 
+        local CheckerFrame = Library:Create('ImageLabel', {
+            BorderSizePixel = 0;
+            Size = UDim2.new(0, 27, 0, 13);
+            ZIndex = 5;
+            Image = 'rbxassetid://4887440500';
+            Parent = DisplayFrame;
+        });
+
         -- 1/16/23
         -- Rewrote this to be placed inside the Library ScreenGui
         -- There was some issue which caused RelativeOffset to be way off
@@ -421,7 +430,7 @@ do
             BackgroundColor3 = Color3.new(1, 1, 1);
             BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18),
-            Size = UDim2.fromOffset(230, 253);
+            Size = UDim2.fromOffset(230, 271);
             Visible = false;
             ZIndex = 15;
             Parent = ScreenGui,
@@ -538,13 +547,39 @@ do
             Position = UDim2.new(0.5, 2, 0, 228),
             Size = UDim2.new(0.5, -6, 0, 20),
             Parent = PickerFrameInner
-        })
+        });
 
         local RgbBox = Library:Create(RgbBoxBase.Frame:FindFirstChild('TextBox'), {
             Text = '255, 255, 255',
             PlaceholderText = 'RGB color',
-            TextColor3 = Library.FontColor,
-        })
+            TextColor3 = Library.FontColor
+        });
+
+        local TransparencyBoxOuter = Library:Create('Frame', {
+            BorderColor3 = Color3.new(0, 0, 0);
+            Position = UDim2.fromOffset(4, 251);
+            Size = UDim2.new(1, -8, 0, 15);
+            ZIndex = 19;
+            Parent = PickerFrameInner;
+        });
+
+        local TransparencyBoxInner = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(1, 1, 1);
+            BorderColor3 = Library.OutlineColor;
+            BorderMode = Enum.BorderMode.Inset;
+            Size = UDim2.new(1, 0, 1, 0);
+            ZIndex = 19;
+            Parent = TransparencyBoxOuter;
+        });
+
+        local Transparency = Library:Create('UIGradient', {
+            Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 212, 212))
+            });
+            Rotation = 0;
+            Parent = TransparencyBoxInner;
+        });
 
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 14);
@@ -726,6 +761,7 @@ do
 
             Library:Create(DisplayFrame, {
                 BackgroundColor3 = ColorPicker.Value;
+                BackgroundTransparency = ColorPicker.Transparency;
                 BorderColor3 = Library:GetDarkerColor(ColorPicker.Value);
             });
 
@@ -825,6 +861,23 @@ do
             end
         end);
 
+        TransparencyBoxInner.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                    local MinX = TransparencyBoxInner.AbsolutePosition.X;
+                    local MaxX = MinX + TransparencyBoxInner.AbsoluteSize.X;
+                    local MouseX = math.clamp(Mouse.X, MinX, MaxX);
+
+                    ColorPicker.Transparency = ((MouseX - MinX) / (MaxX - MinX));
+
+                    ColorPicker:Display();
+
+                    RenderStepped:Wait();
+                end;
+                Library:AttemptSave();
+            end;
+        end);
+
         Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                 local AbsPos, AbsSize = PickerFrameOuter.AbsolutePosition, PickerFrameOuter.AbsoluteSize;
@@ -839,7 +892,6 @@ do
                     ContextMenu:Hide()
                 end
             end;
-
 
             if Input.UserInputType == Enum.UserInputType.MouseButton2 and ContextMenu.Container.Visible then
                 if not Library:IsMouseOverFrame(ContextMenu.Container) and not Library:IsMouseOverFrame(DisplayFrame) then
