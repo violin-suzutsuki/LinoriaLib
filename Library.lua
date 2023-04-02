@@ -683,6 +683,7 @@ do
                 end
 
                 local Button = Library:CreateLabel({
+                    Active = false;
                     Size = UDim2.new(1, 0, 0, 15);
                     TextSize = 13;
                     Text = Str;
@@ -1027,12 +1028,18 @@ do
             local ModeButton = {};
 
             local Label = Library:CreateLabel({
+                Active = false;
                 Size = UDim2.new(1, 0, 0, 15);
                 TextSize = 13;
                 Text = Mode;
                 ZIndex = 16;
                 Parent = ModeSelectInner;
             });
+
+            Library:OnHighlight(Label, Label, 
+                { TextColor3 = 'AccentColor' },
+                { TextColor3 = 'FontColor' }
+            );
 
             function ModeButton:Select()
                 for _, Button in next, ModeButtons do
@@ -2295,6 +2302,7 @@ do
                 });
 
                 local ButtonLabel = Library:CreateLabel({
+                    Active = false;
                     Size = UDim2.new(1, -6, 1, 0);
                     Position = UDim2.new(0, 6, 0, 0);
                     TextSize = 14;
