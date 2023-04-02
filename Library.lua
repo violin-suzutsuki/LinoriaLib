@@ -884,12 +884,13 @@ do
                         local MaxX = MinX + TransparencyBoxInner.AbsoluteSize.X;
                         local MouseX = math.clamp(Mouse.X, MinX, MaxX);
 
-                        ColorPicker.Transparency = ((MouseX - MinX) / (MaxX - MinX));
+                        ColorPicker.Transparency = 1 - ((MouseX - MinX) / (MaxX - MinX));
 
                         ColorPicker:Display();
 
                         RenderStepped:Wait();
                     end;
+
                     Library:AttemptSave();
                 end;
             end);
@@ -2935,18 +2936,28 @@ function Library:CreateWindow(...)
             Parent = TabContainer;
         });
 
-        local LeftSide = Library:Create('Frame', {
+        local LeftSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
+            BorderSizePixel = 0;
             Position = UDim2.new(0, 8, 0, 8);
             Size = UDim2.new(0.5, -12, 0, 507);
+            CanvasSize = UDim2.new(0, 0, 0, 0);
+            BottomImage = '';
+            TopImage = '';
+            ScrollBarThickness = 0;
             ZIndex = 2;
             Parent = TabFrame;
         });
 
-        local RightSide = Library:Create('Frame', {
+        local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
+            BorderSizePixel = 0;
             Position = UDim2.new(0.5, 4, 0, 8);
             Size = UDim2.new(0.5, -12, 0, 507);
+            CanvasSize = UDim2.new(0, 0, 0, 0);
+            BottomImage = '';
+            TopImage = '';
+            ScrollBarThickness = 0;
             ZIndex = 2;
             Parent = TabFrame;
         });
@@ -2964,6 +2975,12 @@ function Library:CreateWindow(...)
             SortOrder = Enum.SortOrder.LayoutOrder;
             Parent = RightSide;
         });
+
+        for _, Side in next, { LeftSide, RightSide } do
+            Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+                Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y);
+            end);
+        end;
 
         function Tab:ShowTab()
             for _, Tab in next, Window.Tabs do
@@ -3057,7 +3074,7 @@ function Library:CreateWindow(...)
                 local Size = 0;
 
                 for _, Element in next, Groupbox.Container:GetChildren() do
-                    if not Element:IsA('UIListLayout') then
+                    if (not Element:IsA('UIListLayout')) and Element.Visible then
                         Size = Size + Element.Size.Y.Offset;
                     end;
                 end;

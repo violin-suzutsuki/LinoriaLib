@@ -264,6 +264,8 @@ LeftGroupBox:AddDropdown('MyPlayerDropdown', {
 LeftGroupBox:AddLabel('Color'):AddColorPicker('ColorPicker', {
     Default = Color3.new(0, 1, 0), -- Bright green
     Title = 'Some color', -- Optional. Allows you to have a custom color picker title (when you open it)
+    Transparency = 0, -- Optional. Enables transparency changing for this color picker (leave as nil to disable)
+
     Callback = function(Value)
         print('[cb] Color changed!', Value)
     end
@@ -271,6 +273,7 @@ LeftGroupBox:AddLabel('Color'):AddColorPicker('ColorPicker', {
 
 Options.ColorPicker:OnChanged(function()
     print('Color changed!', Options.ColorPicker.Value)
+    print('Transparency changed!', Options.ColorPicker.Transparency)
 end)
 
 Options.ColorPicker:SetValueRGB(Color3.fromRGB(0, 255, 140))
