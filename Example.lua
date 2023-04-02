@@ -275,6 +275,9 @@ end)
 
 Options.ColorPicker:SetValueRGB(Color3.fromRGB(0, 255, 140))
 
+-- Label:AddKeyPicker
+-- Arguments: Idx, Info
+
 LeftGroupBox:AddLabel('Keybind'):AddKeyPicker('KeyPicker', {
     -- SyncToggleState only works with toggles.
     -- It allows you to make a keybind which has its state synced with its parent toggle
@@ -292,9 +295,12 @@ LeftGroupBox:AddLabel('Keybind'):AddKeyPicker('KeyPicker', {
     Text = 'Auto lockpick safes', -- Text to display in the keybind menu
     NoUI = false, -- Set to true if you want to hide from the Keybind menu,
 
+    -- Occurs when the keybind is clicked, Value is `true`/`false`
     Callback = function(Value)
         print('[cb] Keybind clicked!', Value)
     end,
+
+    -- Occurs when the keybind itself is changed, `New` is a KeyCode Enum OR a UserInputType Enum
     ChangedCallback = function(New)
         print('[cb] Keybind changed!', New)
     end
@@ -322,12 +328,16 @@ end)
 
 Options.KeyPicker:SetValue({ 'MB2', 'Toggle' }) -- Sets keybind to MB2, mode to Hold
 
+-- Long text label to demonstrate UI scrolling behaviour.
+local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Groupbox #2');
+LeftGroupBox2:AddLabel('Oh no...\nThis label spans multiple lines!\n\nWe\'re gonna run out of UI space...\nJust kidding! Scroll down!\n\n\nHello from below!', true)
+
 -- Library functions
 -- Sets the watermark visibility
 Library:SetWatermarkVisibility(true)
 
 -- Sets the watermark text
-Library:SetWatermark('This is a really long watermark to text the resizing')
+Library:SetWatermark('This is a really long watermark to test the resizing')
 
 Library.KeybindFrame.Visible = true; -- todo: add a function for this
 

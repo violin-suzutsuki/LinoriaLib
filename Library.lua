@@ -412,11 +412,13 @@ do
             Parent = ToggleLabel;
         });
 
+        -- Transparency image taken from https://github.com/matas3535/SplixPrivateDrawingLibrary/blob/main/Library.lua cus i'm lazy
         local CheckerFrame = Library:Create('ImageLabel', {
             BorderSizePixel = 0;
             Size = UDim2.new(0, 27, 0, 13);
             ZIndex = 5;
-            Image = 'rbxassetid://4887440500';
+            Image = 'http://www.roblox.com/asset/?id=12977615774';
+            Visible = not not Info.Transparency;
             Parent = DisplayFrame;
         });
 
@@ -430,7 +432,7 @@ do
             BackgroundColor3 = Color3.new(1, 1, 1);
             BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18),
-            Size = UDim2.fromOffset(230, 271);
+            Size = UDim2.fromOffset(230, Info.Transparency and 271 or 253);
             Visible = false;
             ZIndex = 15;
             Parent = ScreenGui,
@@ -555,31 +557,36 @@ do
             TextColor3 = Library.FontColor
         });
 
-        local TransparencyBoxOuter = Library:Create('Frame', {
-            BorderColor3 = Color3.new(0, 0, 0);
-            Position = UDim2.fromOffset(4, 251);
-            Size = UDim2.new(1, -8, 0, 15);
-            ZIndex = 19;
-            Parent = PickerFrameInner;
-        });
-
-        local TransparencyBoxInner = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(1, 1, 1);
-            BorderColor3 = Library.OutlineColor;
-            BorderMode = Enum.BorderMode.Inset;
-            Size = UDim2.new(1, 0, 1, 0);
-            ZIndex = 19;
-            Parent = TransparencyBoxOuter;
-        });
-
-        local Transparency = Library:Create('UIGradient', {
-            Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 212, 212))
+        local TransparencyBoxOuter, TransparencyBoxInner;
+        
+        if Info.Transparency then 
+            TransparencyBoxOuter = Library:Create('Frame', {
+                BorderColor3 = Color3.new(0, 0, 0);
+                Position = UDim2.fromOffset(4, 251);
+                Size = UDim2.new(1, -8, 0, 15);
+                ZIndex = 19;
+                Parent = PickerFrameInner;
             });
-            Rotation = 0;
-            Parent = TransparencyBoxInner;
-        });
+
+            TransparencyBoxInner = Library:Create('Frame', {
+                BackgroundColor3 = ColorPicker.Value;
+                BorderColor3 = Library.OutlineColor;
+                BorderMode = Enum.BorderMode.Inset;
+                Size = UDim2.new(1, 0, 1, 0);
+                ZIndex = 19;
+                Parent = TransparencyBoxOuter;
+            });
+
+            Library:AddToRegistry(TransparencyBoxInner, { 'BorderColor3' = 'OutlineColor' });
+
+            Library:Create('ImageLabel', {
+                BackgroundTransparency = 1;
+                Size = UDim2.new(1, 0, 1, 0);
+                Image = 'http://www.roblox.com/asset/?id=12978095818';
+                ZIndex = 20;
+                Parent = TransparencyBoxInner;
+            });
+        end;
 
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 14);
@@ -765,6 +772,10 @@ do
                 BorderColor3 = Library:GetDarkerColor(ColorPicker.Value);
             });
 
+            if TransparencyBoxInner then
+                TransparencyBoxInner.BackgroundColor3 = ColorPicker.Value;
+            end;
+
             HueBox.Text = '#' .. ColorPicker.Value:ToHex()
             RgbBox.Text = table.concat({ math.floor(ColorPicker.Value.R * 255), math.floor(ColorPicker.Value.G * 255), math.floor(ColorPicker.Value.B * 255) }, ', ')
 
@@ -861,22 +872,24 @@ do
             end
         end);
 
-        TransparencyBoxInner.InputBegan:Connect(function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-                while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-                    local MinX = TransparencyBoxInner.AbsolutePosition.X;
-                    local MaxX = MinX + TransparencyBoxInner.AbsoluteSize.X;
-                    local MouseX = math.clamp(Mouse.X, MinX, MaxX);
+        if TransparencyBoxInner then
+            TransparencyBoxInner.InputBegan:Connect(function(Input)
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                        local MinX = TransparencyBoxInner.AbsolutePosition.X;
+                        local MaxX = MinX + TransparencyBoxInner.AbsoluteSize.X;
+                        local MouseX = math.clamp(Mouse.X, MinX, MaxX);
 
-                    ColorPicker.Transparency = ((MouseX - MinX) / (MaxX - MinX));
+                        ColorPicker.Transparency = ((MouseX - MinX) / (MaxX - MinX));
 
-                    ColorPicker:Display();
+                        ColorPicker:Display();
 
-                    RenderStepped:Wait();
+                        RenderStepped:Wait();
+                    end;
+                    Library:AttemptSave();
                 end;
-                Library:AttemptSave();
-            end;
-        end);
+            end);
+        end;
 
         Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 then
