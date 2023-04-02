@@ -2939,8 +2939,8 @@ function Library:CreateWindow(...)
         local LeftSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0, 8, 0, 8);
-            Size = UDim2.new(0.5, -12, 0, 507);
+            Position = UDim2.new(0, 8 - 1, 0, 8);
+            Size = UDim2.new(0.5, -12 + 2, 0, 507);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -2952,8 +2952,8 @@ function Library:CreateWindow(...)
         local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0.5, 4, 0, 8);
-            Size = UDim2.new(0.5, -12, 0, 507);
+            Position = UDim2.new(0.5, 4 + 1, 0, 8);
+            Size = UDim2.new(0.5, -12 + 2, 0, 507);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
