@@ -692,10 +692,16 @@ do
                     TextXAlignment = Enum.TextXAlignment.Left,
                 });
 
+                Library:OnHighlight(Button, Button, 
+                    { TextColor3 = 'AccentColor' },
+                    { TextColor3 = 'FontColor' }
+                );
+
                 Button.InputBegan:Connect(function(Input)
                     if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then
                         return
                     end
+                    
                     Callback()
                 end)
             end
@@ -1035,11 +1041,6 @@ do
                 ZIndex = 16;
                 Parent = ModeSelectInner;
             });
-
-            Library:OnHighlight(Label, Label, 
-                { TextColor3 = 'AccentColor' },
-                { TextColor3 = 'FontColor' }
-            );
 
             function ModeButton:Select()
                 for _, Button in next, ModeButtons do
