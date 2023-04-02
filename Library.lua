@@ -66,17 +66,25 @@ end))
 
 local function GetPlayersString()
     local PlayerList = Players:GetPlayers();
+
     for i = 1, #PlayerList do
         PlayerList[i] = PlayerList[i].Name;
     end;
+
+    table.sort(PlayerList, function(str1, str2) return str1 < str2 end);
+
     return PlayerList;
 end;
 
 local function GetTeamsString()
     local TeamList = Teams:GetTeams();
+
     for i = 1, #TeamList do
         TeamList[i] = TeamList[i].Name;
     end;
+
+    table.sort(TeamList, function(str1, str2) return str1 < str2 end);
+    
     return TeamList;
 end;
 
@@ -3266,6 +3274,7 @@ end;
 
 local function OnPlayerChange()
     local PlayerList = GetPlayersString();
+
     for _, Value in next, Options do
         if Value.Type == 'Dropdown' and Value.SpecialType == 'Player' then
             Value.Values = PlayerList;
