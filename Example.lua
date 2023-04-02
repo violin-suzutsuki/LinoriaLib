@@ -1,7 +1,7 @@
 -- New example script written by wally
 -- You can suggest changes with a pull request or something
 
-local repo = 'https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/'
+local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/dev/'
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
@@ -14,20 +14,23 @@ local Window = Library:CreateWindow({
     -- but you do not need to define them unless you are changing them :)
 
     Title = 'Example menu',
-    Center = true, 
+    Center = true,
     AutoShow = true,
 })
 
 -- You do not have to set your tabs & groups up this way, just a prefrence.
 local Tabs = {
     -- Creates a new tab titled Main
-    Main = Window:AddTab('Main'), 
+    Main = Window:AddTab('Main'),
     ['UI Settings'] = Window:AddTab('UI Settings'),
 }
 
 -- Groupbox and Tabbox inherit the same functions
 -- except Tabboxes you have to call the functions on a tab (Tabbox:AddTab(name))
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Groupbox')
+
+-- We can also get our Main tab via the following code:
+-- local LeftGroupBox = Window.Tabs.Main:AddLeftGroupbox('Groupbox')
 
 -- Tabboxes are a tiny bit different, but here's a basic example:
 --[[
@@ -46,6 +49,9 @@ LeftGroupBox:AddToggle('MyToggle', {
     Text = 'This is a toggle',
     Default = true, -- Default value (true / false)
     Tooltip = 'This is a tooltip', -- Information shown when you hover over the toggle
+    Callback = function(Value)
+        print('[cb] MyToggle changed to:', Value)
+    end
 })
 
 
@@ -65,33 +71,46 @@ end)
 -- This should print to the console: "My toggle state changed! New value: false"
 Toggles.MyToggle:SetValue(false)
 
--- Groupbox:AddButton
--- Arguments: Text, Callback
+-- 1/15/23
+-- Deprecated old way of creating buttons in favor of using a table
+-- Added DoubleClick button functionality
 
-local MyButton = LeftGroupBox:AddButton('Button', function()
-    print('You clicked a button!')
-end)
-
--- Button:AddButton
--- Arguments: Text, Callback
--- Adds a sub button to the side of the main button
-
-local MyButton2 = MyButton:AddButton('Sub button', function()
-    print('You clicked a sub button!')
-end)
-
--- Button:AddTooltip
--- Arguments: ToolTip
-
-MyButton:AddTooltip('This is a button')
-MyButton2:AddTooltip('This is a sub button')
-
--- NOTE: You can chain the button methods!
 --[[
-    EXAMPLE: 
+    Groupbox:AddButton
+    Arguments: {
+        Text = string,
+        Func = function,
+        DoubleClick = boolean
+        Tooltip = string,
+    }
 
-    LeftGroupBox:AddButton('Kill all', Functions.KillAll):AddTooltip('This will kill everyone in the game!')
-        :AddButton('Kick all', Functions.KickAll):AddTooltip('This will kick everyone in the game!')
+    You can call :AddButton on a button to add a SubButton!
+]]
+
+local MyButton = LeftGroupBox:AddButton({
+    Text = 'Button',
+    Func = function()
+        print('You clicked a button!')
+    end,
+    DoubleClick = false,
+    Tooltip = 'This is the main button'
+})
+
+local MyButton2 = MyButton:AddButton({
+    Text = 'Sub button',
+    Func = function()
+        print('You clicked a sub button!')
+    end,
+    DoubleClick = true, -- You will have to click this button twice to trigger the callback
+    Tooltip = 'This is the sub button (double click me!)'
+})
+
+--[[
+    NOTE: You can chain the button methods!
+    EXAMPLE:
+
+    LeftGroupBox:AddButton({ Text = 'Kill all', Func = Functions.KillAll, Tooltip = 'This will kill everyone in the game!' })
+        :AddButton({ Text = 'Kick all', Func = Functions.KickAll, Tooltip = 'This will kick everyone in the game!' })
 ]]
 
 -- Groupbox:AddLabel
@@ -103,26 +122,40 @@ LeftGroupBox:AddLabel('This is a label\n\nwhich wraps its text!', true)
 -- Arguments: None
 LeftGroupBox:AddDivider()
 
--- Groupbox:AddSlider
--- Arguments: Idx, Options
+--[[
+    Groupbox:AddSlider
+    Arguments: Idx, SliderOptions
+
+    SliderOptions: {
+        Text = string,
+        Default = number,
+        Min = number,
+        Max = number,
+        Suffix = string,
+        Rounding = number,
+        Compact = boolean,
+        HideMax = boolean,
+    }
+
+    Text, Default, Min, Max, Rounding must be specified.
+    Suffix is optional.
+    Rounding is the number of decimal places for precision.
+
+    Compact will hide the title label of the Slider
+
+    HideMax will only display the value instead of the value & max value of the slider
+    Compact will do the same thing
+]]
 LeftGroupBox:AddSlider('MySlider', {
     Text = 'This is my slider!',
-
-    -- Text, Default, Min, Max, Rounding must be specified.
-    -- Rounding is the number of decimal places for precision.
-
-    -- Example:
-    -- Rounding 0 - 5
-    -- Rounding 1 - 5.1
-    -- Rounding 2 - 5.15
-    -- Rounding 3 - 5.155
-
     Default = 0,
     Min = 0,
     Max = 5,
     Rounding = 1,
-
-    Compact = false, -- If set to true, then it will hide the label
+    Compact = false,
+    Callback = function(Value)
+        print('[cb] MySlider was changed! New value:', Value)
+    end
 })
 
 -- Options is a table added to getgenv() by the library
@@ -149,6 +182,10 @@ LeftGroupBox:AddInput('MyTextbox', {
 
     Placeholder = 'Placeholder text', -- placeholder text when the box is empty
     -- MaxLength is also an option which is the max length of the text
+
+    Callback = function(Value)
+        print('[cb] Text updated. New text:', Value)
+    end
 })
 
 Options.MyTextbox:OnChanged(function()
@@ -164,7 +201,11 @@ LeftGroupBox:AddDropdown('MyDropdown', {
     Multi = false, -- true / false, allows multiple choices to be selected
 
     Text = 'A dropdown',
-    Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+
+    Callback = function(Value)
+        print('[cb] Dropdown got changed. New value:', Value)
+    end
 })
 
 Options.MyDropdown:OnChanged(function()
@@ -181,11 +222,15 @@ LeftGroupBox:AddDropdown('MyMultiDropdown', {
     -- Currently you can not set multiple values with a dropdown
 
     Values = { 'This', 'is', 'a', 'dropdown' },
-    Default = 1, 
+    Default = 1,
     Multi = true, -- true / false, allows multiple choices to be selected
 
     Text = 'A dropdown',
-    Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+
+    Callback = function(Value)
+        print('[cb] Multi dropdown got changed:', Value)
+    end
 })
 
 Options.MyMultiDropdown:OnChanged(function()
@@ -201,6 +246,16 @@ Options.MyMultiDropdown:SetValue({
     is = true,
 })
 
+LeftGroupBox:AddDropdown('MyPlayerDropdown', {
+    SpecialType = 'Player',
+    Text = 'A player dropdown',
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+
+    Callback = function(Value)
+        print('[cb] Player dropdown got changed:', Value)
+    end
+})
+
 -- Label:AddColorPicker
 -- Arguments: Idx, Info
 
@@ -209,6 +264,9 @@ Options.MyMultiDropdown:SetValue({
 LeftGroupBox:AddLabel('Color'):AddColorPicker('ColorPicker', {
     Default = Color3.new(0, 1, 0), -- Bright green
     Title = 'Some color', -- Optional. Allows you to have a custom color picker title (when you open it)
+    Callback = function(Value)
+        print('[cb] Color changed!', Value)
+    end
 })
 
 Options.ColorPicker:OnChanged(function()
@@ -218,14 +276,14 @@ end)
 Options.ColorPicker:SetValueRGB(Color3.fromRGB(0, 255, 140))
 
 LeftGroupBox:AddLabel('Keybind'):AddKeyPicker('KeyPicker', {
-    -- SyncToggleState only works with toggles. 
+    -- SyncToggleState only works with toggles.
     -- It allows you to make a keybind which has its state synced with its parent toggle
 
     -- Example: Keybind which you use to toggle flyhack, etc.
     -- Changing the toggle disables the keybind state and toggling the keybind switches the toggle state
 
-    Default = 'MB2', -- String as the name of the keybind (MB1, MB2 for mouse buttons)  
-    SyncToggleState = false, 
+    Default = 'MB2', -- String as the name of the keybind (MB1, MB2 for mouse buttons)
+    SyncToggleState = false,
 
 
     -- You can define custom Modes but I have never had a use for it.
@@ -233,6 +291,13 @@ LeftGroupBox:AddLabel('Keybind'):AddKeyPicker('KeyPicker', {
 
     Text = 'Auto lockpick safes', -- Text to display in the keybind menu
     NoUI = false, -- Set to true if you want to hide from the Keybind menu,
+
+    Callback = function(Value)
+        print('[cb] Keybind clicked!', Value)
+    end,
+    ChangedCallback = function(New)
+        print('[cb] Keybind changed!', New)
+    end
 })
 
 -- OnClick is only fired when you press the keybind and the mode is Toggle
@@ -276,7 +341,7 @@ local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 
 -- I set NoUI so it does not show up in the keybinds menu
 MenuGroup:AddButton('Unload', function() Library:Unload() end)
-MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' }) 
+MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
 
 Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybind for the menu
 
@@ -288,26 +353,26 @@ Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybi
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 
--- Ignore keys that are used by ThemeManager. 
+-- Ignore keys that are used by ThemeManager.
 -- (we dont want configs to save themes, do we?)
-SaveManager:IgnoreThemeSettings() 
+SaveManager:IgnoreThemeSettings()
 
--- Adds our MenuKeybind to the ignore list 
+-- Adds our MenuKeybind to the ignore list
 -- (do you want each config to have a different menu key? probably not.)
-SaveManager:SetIgnoreIndexes({ 'MenuKeybind' }) 
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
 
--- use case for doing it this way: 
+-- use case for doing it this way:
 -- a script hub could have themes in a global folder
 -- and game configs in a separate folder per game
 ThemeManager:SetFolder('MyScriptHub')
 SaveManager:SetFolder('MyScriptHub/specific-game')
 
 -- Builds our config menu on the right side of our tab
-SaveManager:BuildConfigSection(Tabs['UI Settings']) 
+SaveManager:BuildConfigSection(Tabs['UI Settings'])
 
 -- Builds our theme menu (with plenty of built in themes) on the left side
 -- NOTE: you can also call ThemeManager:ApplyToGroupbox to add it to a specific groupbox
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
 
--- You can use the SaveManager:LoadAutoloadConfig() to load a config 
+-- You can use the SaveManager:LoadAutoloadConfig() to load a config
 -- which has been marked to be one that auto loads!
