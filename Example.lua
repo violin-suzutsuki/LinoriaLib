@@ -201,7 +201,7 @@ LeftGroupBox:AddDropdown('MyDropdown', {
     Multi = false, -- true / false, allows multiple choices to be selected
 
     Text = 'A dropdown',
-    Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
 
     Callback = function(Value)
         print('[cb] Dropdown got changed. New value:', Value)
@@ -226,7 +226,7 @@ LeftGroupBox:AddDropdown('MyMultiDropdown', {
     Multi = true, -- true / false, allows multiple choices to be selected
 
     Text = 'A dropdown',
-    Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
 
     Callback = function(Value)
         print('[cb] Multi dropdown got changed:', Value)
@@ -249,7 +249,7 @@ Options.MyMultiDropdown:SetValue({
 LeftGroupBox:AddDropdown('MyPlayerDropdown', {
     SpecialType = 'Player',
     Text = 'A player dropdown',
-    Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
 
     Callback = function(Value)
         print('[cb] Player dropdown got changed:', Value)
