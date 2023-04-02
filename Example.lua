@@ -18,6 +18,11 @@ local Window = Library:CreateWindow({
     AutoShow = true,
 })
 
+-- CALLBACK NOTE:
+-- Passing in callback functions via the initial element parameters (i.e. Callback = function(Value)...) works
+-- HOWEVER, using Toggles/Options.INDEX:OnChanged(function(Value) ... ) is the RECOMMENDED way to do this.
+-- I strongly recommend decoupling UI code from logic code. i.e. Create your UI elements FIRST, and THEN setup :OnChanged functions later.
+
 -- You do not have to set your tabs & groups up this way, just a prefrence.
 local Tabs = {
     -- Creates a new tab titled Main
@@ -49,6 +54,7 @@ LeftGroupBox:AddToggle('MyToggle', {
     Text = 'This is a toggle',
     Default = true, -- Default value (true / false)
     Tooltip = 'This is a tooltip', -- Information shown when you hover over the toggle
+
     Callback = function(Value)
         print('[cb] MyToggle changed to:', Value)
     end
@@ -153,6 +159,7 @@ LeftGroupBox:AddSlider('MySlider', {
     Max = 5,
     Rounding = 1,
     Compact = false,
+
     Callback = function(Value)
         print('[cb] MySlider was changed! New value:', Value)
     end
@@ -312,7 +319,11 @@ LeftGroupBox:AddLabel('Keybind'):AddKeyPicker('KeyPicker', {
 -- OnClick is only fired when you press the keybind and the mode is Toggle
 -- Otherwise, you will have to use Keybind:GetState()
 Options.KeyPicker:OnClick(function()
-    print('Keybind clicked!', Options.KeyPicker.Value)
+    print('Keybind clicked!', Options.KeyPicker:GetState())
+end)
+
+Options.KeyPicker:OnChanged(function()
+    print('Keybind changed!', Options.KeyPicker.Value)
 end)
 
 task.spawn(function()
@@ -334,6 +345,15 @@ Options.KeyPicker:SetValue({ 'MB2', 'Toggle' }) -- Sets keybind to MB2, mode to 
 -- Long text label to demonstrate UI scrolling behaviour.
 local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Groupbox #2');
 LeftGroupBox2:AddLabel('Oh no...\nThis label spans multiple lines!\n\nWe\'re gonna run out of UI space...\nJust kidding! Scroll down!\n\n\nHello from below!', true)
+
+local TabBox = Tabs.Main:AddRightTabbox() -- Add Tabbox on right side
+
+-- Anything we can do in a Groupbox, we can do in a Tabbox tab (AddToggle, AddSlider, AddLabel, etc etc...)
+local Tab1 = TabBox:AddTab('Tab 1')
+Tab1:AddToggle('Tab1Toggle', { Text = 'Tab1 Toggle' });
+
+local Tab2 = TabBox:AddTab('Tab 2')
+Tab2:AddToggle('Tab2Toggle', { Text = 'Tab2 Toggle' });
 
 -- Library functions
 -- Sets the watermark visibility

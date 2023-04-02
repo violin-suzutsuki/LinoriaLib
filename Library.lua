@@ -784,9 +784,7 @@ do
             RgbBox.Text = table.concat({ math.floor(ColorPicker.Value.R * 255), math.floor(ColorPicker.Value.G * 255), math.floor(ColorPicker.Value.B * 255) }, ', ')
 
             Library:SafeCallback(ColorPicker.Callback, ColorPicker.Value);
-            if ColorPicker.Changed then
-                ColorPicker.Changed(ColorPicker.Value)
-            end;
+            Library:SafeCallback(ColorPicker.Changed, ColorPicker.Value);
         end;
 
         function ColorPicker:OnChanged(Func)
@@ -1135,6 +1133,10 @@ do
             KeyPicker.Clicked = Callback
         end
 
+        function KeyPicker:OnChanged(Callback)
+            KeyPicker.Changed = Callback
+            Callback(KeyPicker.Value)
+        end
 
         if ParentObj.Addons then
             table.insert(ParentObj.Addons, KeyPicker)
@@ -1146,9 +1148,7 @@ do
             end
 
             Library:SafeCallback(KeyPicker.Callback, KeyPicker.Toggled)
-            if KeyPicker.Clicked then
-                KeyPicker.Clicked()
-            end
+            Library:SafeCallback(KeyPicker.Clicked, KeyPicker.Toggled)
         end
 
         local Picking = false;
@@ -1191,10 +1191,12 @@ do
 
                     Break = true;
                     Picking = false;
-
-                    Library:SafeCallback(KeyPicker.ChangedCallback, Input.KeyCode or Input.UserInputType)
+                    
                     DisplayLabel.Text = Key;
                     KeyPicker.Value = Key;
+
+                    Library:SafeCallback(KeyPicker.ChangedCallback, Input.KeyCode or Input.UserInputType)
+                    Library:SafeCallback(KeyPicker.Changed, Input.KeyCode or Input.UserInputType)
 
                     Library:AttemptSave();
 
@@ -1662,9 +1664,7 @@ do
             Box.Text = Text;
 
             Library:SafeCallback(Textbox.Callback, Textbox.Value);
-            if Textbox.Changed then
-                Textbox.Changed(Textbox.Value)
-            end;
+            Library:SafeCallback(Textbox.Changed, Textbox.Value);
         end;
 
         if Textbox.Finished then
@@ -1841,9 +1841,7 @@ do
             end
 
             Library:SafeCallback(Toggle.Callback, Toggle.Value);
-            if Toggle.Changed then
-                Toggle.Changed(Toggle.Value)
-            end;
+            Library:SafeCallback(Toggle.Changed, Toggle.Value);
         end;
 
         ToggleRegion.InputBegan:Connect(function(Input)
@@ -2027,9 +2025,7 @@ do
             Slider:Display();
 
             Library:SafeCallback(Slider.Callback, Slider.Value);
-            if Slider.Changed then
-                Slider.Changed(Slider.Value)
-            end;
+            Library:SafeCallback(Slider.Changed, Slider.Value);
         end;
 
         SliderInner.InputBegan:Connect(function(Input)
@@ -2050,9 +2046,7 @@ do
 
                     if nValue ~= OldValue then
                         Library:SafeCallback(Slider.Callback, Slider.Value);
-                        if Slider.Changed then
-                            Slider.Changed(Slider.Value)
-                        end;
+                        Library:SafeCallback(Slider.Changed, Slider.Value);
                     end;
 
                     RenderStepped:Wait();
@@ -2369,9 +2363,7 @@ do
                             Dropdown:Display();
 
                             Library:SafeCallback(Dropdown.Callback, Dropdown.Value);
-                            if Dropdown.Changed then
-                                Dropdown.Changed(Dropdown.Value)
-                            end;
+                            Library:SafeCallback(Dropdown.Changed, Dropdown.Value);
 
                             Library:AttemptSave();
                         end;
@@ -2430,7 +2422,7 @@ do
             Dropdown:SetValues();
 
             Library:SafeCallback(Dropdown.Callback, Dropdown.Value);
-            if Dropdown.Changed then Dropdown.Changed(Dropdown.Value) end
+            Library:SafeCallback(Dropdown.Changed, Dropdown.Value);
         end;
 
         DropdownOuter.InputBegan:Connect(function(Input)
@@ -3374,7 +3366,8 @@ local function OnPlayerChange()
             Value:SetValues();
         end;
     end;
-end
+end;
+
 Players.PlayerAdded:Connect(OnPlayerChange);
 Players.PlayerRemoving:Connect(OnPlayerChange);
 
