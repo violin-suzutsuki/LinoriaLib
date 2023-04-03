@@ -805,7 +805,7 @@ do
                 TransparencyBoxInner.BackgroundColor3 = ColorPicker.Value;
             end;
 
-            CursorOuter.Position = UDim2.new(0, ColorPicker.Sat * SatVibMap.AbsoluteSize.X, 0, (1 - ColorPicker.Vib) * SatVibMap.AbsoluteSize.Y);
+            CursorOuter.Position = UDim2.new(ColorPicker.Sat, 0, 1 - ColorPicker.Vib, 0);
 
             HueBox.Text = '#' .. ColorPicker.Value:ToHex()
             RgbBox.Text = table.concat({ math.floor(ColorPicker.Value.R * 255), math.floor(ColorPicker.Value.G * 255), math.floor(ColorPicker.Value.B * 255) }, ', ')
