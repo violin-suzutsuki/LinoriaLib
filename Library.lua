@@ -39,6 +39,7 @@ local Library = {
     Font = Enum.Font.Code,
 
     OpenedFrames = {};
+    DependencyBoxes = {};
 
     Signals = {};
     ScreenGui = ScreenGui;
@@ -273,7 +274,13 @@ function Library:IsMouseOverFrame(Frame)
 
         return true;
     end;
-end
+end;
+
+function Library:UpdateDependencyBoxes()
+    for _, Depbox in next, Library.DependencyBoxes do
+        Depbox:Update();
+    end;
+end;
 
 function Library:MapValue(Value, MinA, MaxA, MinB, MaxB)
     return (1 - ((Value - MinA) / (MaxA - MinA))) * MinB + ((Value - MinA) / (MaxA - MinA)) * MaxB;
@@ -1870,6 +1877,7 @@ do
 
             Library:SafeCallback(Toggle.Callback, Toggle.Value);
             Library:SafeCallback(Toggle.Changed, Toggle.Value);
+            Library:UpdateDependencyBoxes();
         end;
 
         ToggleRegion.InputBegan:Connect(function(Input)
@@ -1894,6 +1902,8 @@ do
         setmetatable(Toggle, BaseAddons);
 
         Toggles[Idx] = Toggle;
+
+        Library:UpdateDependencyBoxes();
 
         return Toggle;
     end;
@@ -2519,6 +2529,83 @@ do
         Options[Idx] = Dropdown;
 
         return Dropdown;
+    end;
+
+    function Funcs:AddDependencyBox()
+        local Depbox = {
+            Dependencies = {};
+        };
+        
+        local Groupbox = self;
+        local Container = Groupbox.Container;
+
+        local Holder = Library:Create('Frame', {
+            BackgroundTransparency = 1;
+            Size = UDim2.new(1, 0, 0, 0);
+            Visible = false;
+            Parent = Container;
+        });
+
+        local Frame = Library:Create('Frame', {
+            BackgroundTransparency = 1;
+            Size = UDim2.new(1, 0, 1, 0);
+            Visible = true;
+            Parent = Holder;
+        });
+
+        local Layout = Library:Create('UIListLayout', {
+            FillDirection = Enum.FillDirection.Vertical;
+            SortOrder = Enum.SortOrder.LayoutOrder;
+            Parent = Frame;
+        });
+
+        function Depbox:Resize()
+            Holder.Size = UDim2.new(1, 0, 0, Layout.AbsoluteContentSize.Y);
+            Groupbox:Resize();
+        end;
+
+        Layout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+            Depbox:Resize();
+        end);
+
+        Holder:GetPropertyChangedSignal('Visible'):Connect(function()
+            Depbox:Resize();
+        end);
+
+        function Depbox:Update()
+            for _, Dependency in next, Depbox.Dependencies do
+                local Elem = Dependency[1];
+                local Value = Dependency[2];
+
+                if Elem.Type == 'Toggle' and Elem.Value ~= Value then
+                    Holder.Visible = false;
+                    Depbox:Resize();
+                    return;
+                end;
+            end;
+
+            Holder.Visible = true;
+            Depbox:Resize();
+        end;
+
+        function Depbox:SetupDependencies(Dependencies)
+            for _, Dependency in next, Dependencies do
+                assert(type(Dependency) == 'table', 'SetupDependencies: Dependency is not of type `table`.');
+                assert(Dependency[1], 'SetupDependencies: Dependency is missing element argument.');
+                assert(Dependency[2] ~= nil, 'SetupDependencies: Dependency is missing value argument.');
+            end;
+
+            Depbox.Dependencies = Dependencies;
+            Depbox:Update();
+        end;
+
+        Depbox.Container = Frame;
+
+        setmetatable(Depbox, BaseGroupbox);
+
+        table.insert(Library.DependencyBoxes, Depbox);
+
+        return Depbox;
     end;
 
     BaseGroupbox.__index = Funcs;
@@ -3249,6 +3336,8 @@ function Library:CreateWindow(...)
 
                     Button.BackgroundColor3 = Library.BackgroundColor;
                     Library.RegistryMap[Button].Properties.BackgroundColor3 = 'BackgroundColor';
+
+                    Tab:Resize();
                 end;
 
                 function Tab:Hide()
@@ -3263,7 +3352,7 @@ function Library:CreateWindow(...)
                     local TabCount = 0;
 
                     for _, Tab in next, Tabbox.Tabs do
-                        TabCount = TabCount +  1;
+                        TabCount = TabCount + 1;
                     end;
 
                     for _, Button in next, TabboxButtons:GetChildren() do
@@ -3272,22 +3361,25 @@ function Library:CreateWindow(...)
                         end;
                     end;
 
+                    if (not Container.Visible) then
+                        return;
+                    end;
+
                     local Size = 0;
 
                     for _, Element in next, Tab.Container:GetChildren() do
-                        if not Element:IsA('UIListLayout') then
+                        if (not Element:IsA('UIListLayout')) and Element.Visible then
                             Size = Size + Element.Size.Y.Offset;
                         end;
                     end;
 
-                    if BoxOuter.Size.Y.Offset < 20 + Size + 2 + 2 then
-                        BoxOuter.Size = UDim2.new(1, 0, 0, 20 + Size + 2 + 2);
-                    end;
+                    BoxOuter.Size = UDim2.new(1, 0, 0, 20 + Size + 2 + 2);
                 end;
 
                 Button.InputBegan:Connect(function(Input)
                     if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
                         Tab:Show();
+                        Tab:Resize();
                     end;
                 end);
 
@@ -3299,6 +3391,7 @@ function Library:CreateWindow(...)
                 Tab:AddBlank(3);
                 Tab:Resize();
 
+                -- Show first tab (number is 2 cus of the UIListLayout that also sits in that instance)
                 if #TabboxButtons:GetChildren() == 2 then
                     Tab:Show();
                 end;
