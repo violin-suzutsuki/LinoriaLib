@@ -36,11 +36,11 @@ local SaveManager = {} do
 		},
 		ColorPicker = {
 			Save = function(idx, object)
-				return { type = 'ColorPicker', idx = idx, value = object.Value:ToHex() }
+				return { type = 'ColorPicker', idx = idx, value = object.Value:ToHex(), transparency = object.Transparency }
 			end,
 			Load = function(idx, data)
 				if Options[idx] then 
-					Options[idx]:SetValueRGB(Color3.fromHex(data.value))
+					Options[idx]:SetValueRGB(Color3.fromHex(data.value), data.transparency)
 				end
 			end,
 		},
