@@ -494,6 +494,7 @@ do
             BackgroundTransparency = 1;
             Image = 'http://www.roblox.com/asset/?id=9619665977';
             ImageColor3 = Color3.new(0, 0, 0);
+            ZIndex = 19;
             Parent = SatVibMap;
         });
 
@@ -502,6 +503,7 @@ do
             Position = UDim2.new(0, 1, 0, 1);
             BackgroundTransparency = 1;
             Image = 'http://www.roblox.com/asset/?id=9619665977';
+            ZIndex = 20;
             Parent = CursorOuter;
         })
 
