@@ -372,7 +372,6 @@ Depbox:SetupDependencies({
 });
 
 SubDepbox:SetupDependencies({
-    { Toggles.ControlToggle, true },
     { Toggles.DepboxToggle, true }
 });
 
