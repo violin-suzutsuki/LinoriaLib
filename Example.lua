@@ -364,6 +364,9 @@ RightGroupbox:AddToggle('ControlToggle', { Text = 'Toggle me :)' });
 
 local Depbox = RightGroupbox:AddDependencyBox();
 Depbox:AddToggle('DepboxToggle', { Text = 'Toggle' });
+
+-- We can also nest dependency boxes!
+-- When we do this, our SupDepbox automatically relies on the visiblity of the Depbox - on top of whatever additional dependencies we set
 local SubDepbox = Depbox:AddDependencyBox();
 SubDepbox:AddSlider('DepboxSlider', { Text = 'Slider', Default = 50, Min = 0, Max = 100, Rounding = 0 });
 
