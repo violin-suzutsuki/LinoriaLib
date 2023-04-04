@@ -382,12 +382,31 @@ SubDepbox:SetupDependencies({
 -- Sets the watermark visibility
 Library:SetWatermarkVisibility(true)
 
--- Sets the watermark text
-Library:SetWatermark('This is a really long watermark to test the resizing')
+-- Example of dynamically-updating watermark with common traits (fps and ping)
+local FrameTimer = tick()
+local FrameCounter = 0;
+local FPS = 60;
+
+local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
+    FrameCounter += 1;
+
+    if (tick() - FrameTimer) >= 1 then
+        FPS = FrameCounter;
+        FrameTimer = tick();
+        FrameCounter = 0;
+    end;
+
+    Library:SetWatermark(('LinoriaLib demo | %s fps | %s ms'):format(
+        math.floor(FPS),
+        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
+    ));
+end);
 
 Library.KeybindFrame.Visible = true; -- todo: add a function for this
 
 Library:OnUnload(function()
+    WatermarkConnection:Disconnect()
+
     print('Unloaded!')
     Library.Unloaded = true
 end)
