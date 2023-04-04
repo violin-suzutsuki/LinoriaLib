@@ -360,10 +360,10 @@ Tab2:AddToggle('Tab2Toggle', { Text = 'Tab2 Toggle' });
 -- e.g. we have a 'Feature Enabled' toggle, and we only want to show that features sliders, dropdowns etc when it's enabled!
 -- Dependency box example:
 local RightGroupbox = Tabs.Main:AddRightGroupbox('Groupbox #3');
-RightGroupbox:AddToggle('ControlToggle', { Text = 'Toggle me :)' });
+RightGroupbox:AddToggle('ControlToggle', { Text = 'Dependency box toggle' });
 
 local Depbox = RightGroupbox:AddDependencyBox();
-Depbox:AddToggle('DepboxToggle', { Text = 'Toggle' });
+Depbox:AddToggle('DepboxToggle', { Text = 'Sub-dependency box toggle' });
 
 -- We can also nest dependency boxes!
 -- When we do this, our SupDepbox automatically relies on the visiblity of the Depbox - on top of whatever additional dependencies we set
