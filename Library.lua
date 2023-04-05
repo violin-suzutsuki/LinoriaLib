@@ -137,8 +137,8 @@ function Library:ApplyTextStroke(Inst)
 
     Library:Create('UIStroke', {
         Color = Color3.new(0, 0, 0);
-        Thickness = 1;
-        LineJoinMode = Enum.LineJoinMode.Miter;
+        Thickness = 1.25;
+        LineJoinMode = Enum.LineJoinMode.Round;
         Parent = Inst;
     });
 end;
@@ -1344,7 +1344,6 @@ do
             TextSize = 14;
             Text = Text;
             TextWrapped = DoesWrap or false,
-            RichText = true,
             TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 5;
             Parent = Container;
