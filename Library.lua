@@ -211,7 +211,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
     });
 
     local IsHovering = false
-    
+
     HoverInstance.MouseEnter:Connect(function()
         if Library:MouseIsOverOpenedFrame() then
             return
@@ -1567,6 +1567,7 @@ do
 
         Groupbox:AddBlank(2);
         local DividerOuter = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(1, 1, 1);
             BorderColor3 = Color3.new(0, 0, 0);
             Size = UDim2.new(1, -4, 0, 5);
             ZIndex = 5;
