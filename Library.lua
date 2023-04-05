@@ -132,6 +132,17 @@ function Library:Create(Class, Properties)
     return _Instance;
 end;
 
+function Library:ApplyTextStroke(Inst)
+    Inst.TextStrokeTransparency = 1;
+
+    Library:Create('UIStroke', {
+        Color = Color3.new(0, 0, 0);
+        Thickness = 1;
+        LineJoinMode = Enum.LineJoinMode.Miter;
+        Parent = Inst;
+    });
+end;
+
 function Library:CreateLabel(Properties, IsHud)
     local _Instance = Library:Create('TextLabel', {
         BackgroundTransparency = 1;
@@ -140,6 +151,8 @@ function Library:CreateLabel(Properties, IsHud)
         TextSize = 16;
         TextStrokeTransparency = 0;
     });
+
+    Library:ApplyTextStroke(_Instance);
 
     Library:AddToRegistry(_Instance, {
         TextColor3 = 'FontColor';
@@ -580,6 +593,8 @@ do
             ZIndex = 20,
             Parent = HueBoxInner;
         });
+
+        Library:ApplyTextStroke(HueBox);
 
         local RgbBoxBase = Library:Create(HueBoxOuter:Clone(), {
             Position = UDim2.new(0.5, 2, 0, 228),
@@ -1693,6 +1708,8 @@ do
             ZIndex = 7;
             Parent = Container;
         });
+
+        Library:ApplyTextStroke(Box);
 
         function Textbox:SetValue(Text)
             if Info.MaxLength and #Text > Info.MaxLength then
