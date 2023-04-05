@@ -3448,11 +3448,10 @@ function Library:CreateWindow(...)
 
         Fading = true;
         Toggled = (not Toggled);
+        ModalElement.Modal = Toggled;
 
         if Toggled then
             task.spawn(function()
-                ModalElement.Modal = Toggled;
-
                 local State = InputService.MouseIconEnabled;
 
                 local Cursor = Drawing.new('Triangle');
