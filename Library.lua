@@ -137,8 +137,8 @@ function Library:ApplyTextStroke(Inst)
 
     Library:Create('UIStroke', {
         Color = Color3.new(0, 0, 0);
-        Thickness = 1.25;
-        LineJoinMode = Enum.LineJoinMode.Bevel;
+        Thickness = 1;
+        LineJoinMode = Enum.LineJoinMode.Miter;
         Parent = Inst;
     });
 end;
@@ -636,9 +636,9 @@ do
 
             TransparencyCursor = Library:Create('Frame', { 
                 BackgroundColor3 = Color3.new(1, 1, 1);
-                AnchorPoint = Vector2.new(0, 0.5);
+                AnchorPoint = Vector2.new(0.5, 0);
                 BorderColor3 = Color3.new(0, 0, 0);
-                Size = UDim2.new(1, 0, 0, 1);
+                Size = UDim2.new(0, 1, 1, 0);
                 ZIndex = 18;
                 Parent = TransparencyBoxInner;
             });
