@@ -4,6 +4,7 @@ local CoreGui = game:GetService('CoreGui');
 local Teams = game:GetService('Teams');
 local Players = game:GetService('Players');
 local RunService = game:GetService('RunService')
+local TweenService = game:GetService('TweenService');
 local RenderStepped = RunService.RenderStepped;
 local LocalPlayer = Players.LocalPlayer;
 local Mouse = LocalPlayer:GetMouse();
@@ -3438,7 +3439,15 @@ function Library:CreateWindow(...)
 
     local TransparencyCache = {};
 
+    local Fading = false;
+
     function Library:Toggle()
+        if Fading then
+            return;
+        end;
+
+        Fading = true;
+
         local NewState = not Outer.Visible;
 
         for _, Desc in next, Outer:GetDescendants() do
@@ -3465,11 +3474,15 @@ function Library:CreateWindow(...)
                     Cache[Prop] = Desc[Prop];
                 end;
 
-                Desc[Prop] = NewState and Cache[Prop] or 0.5;
+                TweenService:Create(Desc, TweenInfo.new(0.3), { Prop = NewState and Cache[Prop] or 1 }):Play();
             end;
         end;
 
+        task.wait(0.3);
+
         Outer.Visible = NewState;
+
+        Fading = false;
 
         ModalElement.Modal = Outer.Visible;
 
@@ -3498,8 +3511,8 @@ function Library:CreateWindow(...)
             Cursor.Color = Library.AccentColor;
 
             Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
-            Cursor.PointB = Vector2.new(mPos.X + 12, mPos.Y + 4);
-            Cursor.PointC = Vector2.new(mPos.X + 4, mPos.Y + 12);
+            Cursor.PointB = Vector2.new(mPos.X + 16, mPos.Y + 6);
+            Cursor.PointC = Vector2.new(mPos.X + 6, mPos.Y + 16);
 
             CursorOutline.PointA = Cursor.PointA;
             CursorOutline.PointB = Cursor.PointB;
