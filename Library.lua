@@ -3496,7 +3496,7 @@ function Library:CreateWindow(...)
             if Desc:IsA('ImageLabel') then
                 table.insert(Properties, 'ImageTransparency');
                 table.insert(Properties, 'BackgroundTransparency');
-            elseif Desc:IsA('TextLabel') then
+            elseif Desc:IsA('TextLabel') or Desc:IsA('TextBox') then
                 table.insert(Properties, 'TextTransparency');
             elseif Desc:IsA('Frame') or Desc:IsA('ScrollingFrame') then
                 table.insert(Properties, 'BackgroundTransparency');
@@ -3514,7 +3514,11 @@ function Library:CreateWindow(...)
                     Cache[Prop] = Desc[Prop];
                 end;
 
-                TweenService:Create(Desc, TweenInfo.new(0.3), { [Prop] = Toggled and Cache[Prop] or 1 }):Play();
+                if Cache[Prop] == 1 then
+                    continue;
+                end;
+
+                TweenService:Create(Desc, TweenInfo.new(0.25, Enum.EasingStyle.Linear), { [Prop] = Toggled and Cache[Prop] or 1 }):Play();
             end;
         end;
 
