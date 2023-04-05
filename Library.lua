@@ -3438,7 +3438,7 @@ function Library:CreateWindow(...)
     });
 
     local TransparencyCache = {};
-
+    local Toggled = false;
     local Fading = false;
 
     function Library:Toggle()
@@ -3447,8 +3447,49 @@ function Library:CreateWindow(...)
         end;
 
         Fading = true;
+        Toggled = (not Toggled);
 
-        local NewState = not Outer.Visible;
+        if Toggled then
+            task.spawn(function()
+                ModalElement.Modal = Toggled;
+
+                local State = InputService.MouseIconEnabled;
+
+                local Cursor = Drawing.new('Triangle');
+                Cursor.Thickness = 1;
+                Cursor.Filled = true;
+                Cursor.Visible = true;
+
+                local CursorOutline = Drawing.new('Triangle');
+                CursorOutline.Thickness = 1;
+                CursorOutline.Filled = false;
+                CursorOutline.Color = Color3.new(0, 0, 0);
+                CursorOutline.Visible = true;
+
+                while Toggled and ScreenGui.Parent do
+                    InputService.MouseIconEnabled = false;
+
+                    local mPos = InputService:GetMouseLocation();
+
+                    Cursor.Color = Library.AccentColor;
+
+                    Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
+                    Cursor.PointB = Vector2.new(mPos.X + 16, mPos.Y + 6);
+                    Cursor.PointC = Vector2.new(mPos.X + 6, mPos.Y + 16);
+
+                    CursorOutline.PointA = Cursor.PointA;
+                    CursorOutline.PointB = Cursor.PointB;
+                    CursorOutline.PointC = Cursor.PointC;
+
+                    RenderStepped:Wait();
+                end;
+
+                InputService.MouseIconEnabled = State;
+
+                Cursor:Remove();
+                CursorOutline:Remove();
+            end);
+        end;
 
         for _, Desc in next, Outer:GetDescendants() do
             local Properties = {};
@@ -3480,51 +3521,9 @@ function Library:CreateWindow(...)
 
         task.wait(0.3);
 
-        Outer.Visible = NewState;
+        Outer.Visible = Toggled;
 
         Fading = false;
-
-        ModalElement.Modal = Outer.Visible;
-
-        if (not Outer.Visible) then
-            return;
-        end;
-
-        local State = InputService.MouseIconEnabled;
-
-        local Cursor = Drawing.new('Triangle');
-        Cursor.Thickness = 1;
-        Cursor.Filled = true;
-        Cursor.Visible = true;
-
-        local CursorOutline = Drawing.new('Triangle');
-        CursorOutline.Thickness = 1;
-        CursorOutline.Filled = false;
-        CursorOutline.Color = Color3.new(0, 0, 0);
-        CursorOutline.Visible = true;
-
-        while Outer.Visible and ScreenGui.Parent do
-            InputService.MouseIconEnabled = false;
-
-            local mPos = InputService:GetMouseLocation();
-
-            Cursor.Color = Library.AccentColor;
-
-            Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
-            Cursor.PointB = Vector2.new(mPos.X + 16, mPos.Y + 6);
-            Cursor.PointC = Vector2.new(mPos.X + 6, mPos.Y + 16);
-
-            CursorOutline.PointA = Cursor.PointA;
-            CursorOutline.PointB = Cursor.PointB;
-            CursorOutline.PointC = Cursor.PointC;
-
-            RenderStepped:Wait();
-        end;
-
-        InputService.MouseIconEnabled = State;
-
-        Cursor:Remove();
-        CursorOutline:Remove();
     end
 
     Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
