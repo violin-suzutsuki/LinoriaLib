@@ -634,15 +634,6 @@ do
                 Parent = TransparencyBoxOuter;
             });
 
-            TransparencyCursor = Library:Create('Frame', { 
-                BackgroundColor3 = Color3.new(1, 1, 1);
-                AnchorPoint = Vector2.new(0.5, 0);
-                BorderColor3 = Color3.new(0, 0, 0);
-                Size = UDim2.new(0, 1, 1, 0);
-                ZIndex = 19;
-                Parent = TransparencyBoxInner;
-            });
-
             Library:AddToRegistry(TransparencyBoxInner, { BorderColor3 = 'OutlineColor' });
 
             Library:Create('ImageLabel', {
@@ -650,6 +641,15 @@ do
                 Size = UDim2.new(1, 0, 1, 0);
                 Image = 'http://www.roblox.com/asset/?id=12978095818';
                 ZIndex = 20;
+                Parent = TransparencyBoxInner;
+            });
+
+            TransparencyCursor = Library:Create('Frame', { 
+                BackgroundColor3 = Color3.new(1, 1, 1);
+                AnchorPoint = Vector2.new(0.5, 0);
+                BorderColor3 = Color3.new(0, 0, 0);
+                Size = UDim2.new(0, 1, 1, 0);
+                ZIndex = 21;
                 Parent = TransparencyBoxInner;
             });
         end;
