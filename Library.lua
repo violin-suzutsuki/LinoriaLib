@@ -992,6 +992,7 @@ do
         end
 
         local PickOuter = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
             Size = UDim2.new(0, 28, 0, 15);
             ZIndex = 6;
@@ -1396,6 +1397,7 @@ do
 
         local function CreateBaseButton(Button)
             local Outer = Library:Create('Frame', {
+                BackgroundColor3 = Color3.new(0, 0, 0);
                 BorderColor3 = Color3.new(0, 0, 0);
                 Size = UDim2.new(1, -4, 0, 20);
                 ZIndex = 5;
@@ -1622,6 +1624,7 @@ do
         Groupbox:AddBlank(1);
 
         local TextBoxOuter = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
             Size = UDim2.new(1, -4, 0, 20);
             ZIndex = 5;
@@ -1794,6 +1797,7 @@ do
         local Container = Groupbox.Container;
 
         local ToggleOuter = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
             Size = UDim2.new(0, 13, 0, 13);
             ZIndex = 5;
@@ -1950,6 +1954,7 @@ do
         end
 
         local SliderOuter = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
             Size = UDim2.new(1, -4, 0, 13);
             ZIndex = 5;
@@ -2161,6 +2166,7 @@ do
         end;
 
         local DropdownOuter = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
             Size = UDim2.new(1, -4, 0, 20);
             ZIndex = 5;
@@ -2227,6 +2233,7 @@ do
         local MAX_DROPDOWN_ITEMS = 8;
 
         local ListOuter = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.new(0, 4, 0, 20 + RelativeOffset + 1 + 20);
             Size = UDim2.new(1, -8, 0, MAX_DROPDOWN_ITEMS * 20 + 2);
