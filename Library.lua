@@ -552,7 +552,7 @@ do
         local HueCursor = Library:Create('Frame', { 
             BackgroundColor3 = Color3.new(1, 1, 1);
             BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, 0, 0, 2);
+            Size = UDim2.new(1, 0, 0, 1);
             ZIndex = 18;
             Parent = HueSelectorInner;
         })
