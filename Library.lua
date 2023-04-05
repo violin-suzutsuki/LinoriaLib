@@ -3515,7 +3515,7 @@ function Library:CreateWindow(...)
                     Cache[Prop] = Desc[Prop];
                 end;
 
-                TweenService:Create(Desc, TweenInfo.new(0.3), { Prop = Toggled and Cache[Prop] or 1 }):Play();
+                TweenService:Create(Desc, TweenInfo.new(0.3), { [Prop] = Toggled and Cache[Prop] or 1 }):Play();
             end;
         end;
 
