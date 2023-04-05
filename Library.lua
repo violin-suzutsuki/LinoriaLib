@@ -3436,8 +3436,40 @@ function Library:CreateWindow(...)
         Parent = ScreenGui;
     });
 
+    local TransparencyCache = {};
+
     function Library:Toggle()
-        Outer.Visible = not Outer.Visible;
+        local NewState = not Outer.Visible;
+
+        for _, Desc in next, Outer:GetDescendants() do
+            local Properties = {};
+
+            if Desc:IsA('ImageLabel') then
+                table.insert(Properties, 'ImageTransparency');
+                table.insert(Properties, 'BackgroundTransparency');
+            elseif Desc:IsA('TextLabel') then
+                table.insert(Properties, 'TextTransparency');
+            elseif Desc:IsA('Frame') or Desc:IsA('ScrollingFrame') then
+                table.insert(Properties, 'BackgroundTransparency');
+            end;
+
+            local Cache = TransparencyCache[Desc];
+
+            if (not Cache) then
+                Cache = {};
+                TransparencyCache[Desc] = Cache;
+            end;
+
+            for _, Prop in next, Properties do
+                if not Cache[Prop] then
+                    Cache[Prop] = Desc[Prop];
+                end;
+
+                Desc[Prop] = NewState and Cache[Prop] or 0.5;
+            end;
+        end;
+
+        Outer.Visible = NewState;
 
         ModalElement.Modal = Outer.Visible;
 
@@ -3466,8 +3498,8 @@ function Library:CreateWindow(...)
             Cursor.Color = Library.AccentColor;
 
             Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
-            Cursor.PointB = Vector2.new(mPos.X + 14, mPos.Y + 4);
-            Cursor.PointC = Vector2.new(mPos.X + 4, mPos.Y + 14);
+            Cursor.PointB = Vector2.new(mPos.X + 12, mPos.Y + 4);
+            Cursor.PointC = Vector2.new(mPos.X + 4, mPos.Y + 12);
 
             CursorOutline.PointA = Cursor.PointA;
             CursorOutline.PointB = Cursor.PointB;
@@ -3479,6 +3511,7 @@ function Library:CreateWindow(...)
         InputService.MouseIconEnabled = State;
 
         Cursor:Remove();
+        CursorOutline:Remove();
     end
 
     Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
