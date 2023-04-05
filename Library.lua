@@ -138,7 +138,7 @@ function Library:ApplyTextStroke(Inst)
     Library:Create('UIStroke', {
         Color = Color3.new(0, 0, 0);
         Thickness = 1.25;
-        LineJoinMode = Enum.LineJoinMode.Round;
+        LineJoinMode = Enum.LineJoinMode.Bevel;
         Parent = Inst;
     });
 end;
