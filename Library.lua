@@ -3453,7 +3453,7 @@ function Library:CreateWindow(...)
         Cursor.Visible = true;
 
         local CursorOutline = Drawing.new('Triangle');
-        CursorOutline.Thickness = 1.5;
+        CursorOutline.Thickness = 1;
         CursorOutline.Filled = false;
         CursorOutline.Color = Color3.new(0, 0, 0);
         CursorOutline.Visible = true;
@@ -3466,8 +3466,8 @@ function Library:CreateWindow(...)
             Cursor.Color = Library.AccentColor;
 
             Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
-            Cursor.PointB = Vector2.new(mPos.X + 10, mPos.Y + 4);
-            Cursor.PointC = Vector2.new(mPos.X + 4, mPos.Y + 10);
+            Cursor.PointB = Vector2.new(mPos.X + 14, mPos.Y + 4);
+            Cursor.PointC = Vector2.new(mPos.X + 4, mPos.Y + 14);
 
             CursorOutline.PointA = Cursor.PointA;
             CursorOutline.PointB = Cursor.PointB;
