@@ -1567,7 +1567,7 @@ do
 
         Groupbox:AddBlank(2);
         local DividerOuter = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(1, 1, 1);
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
             Size = UDim2.new(1, -4, 0, 5);
             ZIndex = 5;
@@ -2888,6 +2888,7 @@ function Library:CreateWindow(...)
 
     if type(Config.Title) ~= 'string' then Config.Title = 'No title' end
     if type(Config.TabPadding) ~= 'number' then Config.TabPadding = 0 end
+    if type(Config.MenuFadeTime) ~= 'number' then Config.MenuFadeTime = 0.25 end
 
     if typeof(Config.Position) ~= 'UDim2' then Config.Position = UDim2.fromOffset(175, 50) end
     if typeof(Config.Size) ~= 'UDim2' then Config.Size = UDim2.fromOffset(550, 600) end
@@ -3452,6 +3453,7 @@ function Library:CreateWindow(...)
             return;
         end;
 
+        local FadeTime = Config.MenuFadeTime;
         Fading = true;
         Toggled = (not Toggled);
         ModalElement.Modal = Toggled;
@@ -3461,6 +3463,8 @@ function Library:CreateWindow(...)
             Outer.Visible = true;
 
             task.spawn(function()
+                task.wait(FadeTime);
+
                 local State = InputService.MouseIconEnabled;
 
                 local Cursor = Drawing.new('Triangle');
@@ -3527,11 +3531,11 @@ function Library:CreateWindow(...)
                     continue;
                 end;
 
-                TweenService:Create(Desc, TweenInfo.new(0.25, Enum.EasingStyle.Linear), { [Prop] = Toggled and Cache[Prop] or 1 }):Play();
+                TweenService:Create(Desc, TweenInfo.new(FadeTime, Enum.EasingStyle.Linear), { [Prop] = Toggled and Cache[Prop] or 1 }):Play();
             end;
         end;
 
-        task.wait(0.3);
+        task.wait(FadeTime);
 
         Outer.Visible = Toggled;
 
