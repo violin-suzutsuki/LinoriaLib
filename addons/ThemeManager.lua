@@ -109,16 +109,14 @@ local ThemeManager = {} do
 		groupbox:AddButton('Save theme', function() 
 			self:SaveCustomTheme(Options.ThemeManager_CustomThemeName.Value)
 
-			Options.ThemeManager_CustomThemeList.Values = self:ReloadCustomThemes()
-			Options.ThemeManager_CustomThemeList:SetValues()
+			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
 			Options.ThemeManager_CustomThemeList:SetValue(nil)
 		end):AddButton('Load theme', function() 
 			self:ApplyTheme(Options.ThemeManager_CustomThemeList.Value) 
 		end)
 
 		groupbox:AddButton('Refresh list', function()
-			Options.ThemeManager_CustomThemeList.Values = self:ReloadCustomThemes()
-			Options.ThemeManager_CustomThemeList:SetValues()
+			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
 			Options.ThemeManager_CustomThemeList:SetValue(nil)
 		end)
 

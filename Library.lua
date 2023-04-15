@@ -2349,13 +2349,12 @@ do
             end;
         end;
 
-        function Dropdown:SetValues()
+        function Dropdown:BuildDropdownList()
             local Values = Dropdown.Values;
             local Buttons = {};
 
             for _, Element in next, Scrolling:GetChildren() do
                 if not Element:IsA('UIListLayout') then
-                    -- Library:RemoveFromRegistry(Element);
                     Element:Destroy();
                 end;
             end;
@@ -2465,8 +2464,14 @@ do
             local Y = math.clamp(Count * 20, 0, MAX_DROPDOWN_ITEMS * 20) + 1;
             ListOuter.Size = UDim2.new(1, -8, 0, Y);
             Scrolling.CanvasSize = UDim2.new(0, 0, 0, (Count * 20) + 1);
+        end;
 
-            -- ListOuter.Size = UDim2.new(1, -8, 0, (#Values * 20) + 2);
+        function Dropdown:SetValues(NewValues)
+            if NewValues then
+                Dropdown.Values = NewValues;
+            end;
+
+            Dropdown:BuildDropdownList();
         end;
 
         function Dropdown:OpenDropdown()
@@ -2505,7 +2510,7 @@ do
                 end;
             end;
 
-            Dropdown:SetValues();
+            Dropdown:BuildDropdownList();
 
             Library:SafeCallback(Dropdown.Callback, Dropdown.Value);
             Library:SafeCallback(Dropdown.Changed, Dropdown.Value);
@@ -2533,7 +2538,7 @@ do
             end;
         end);
 
-        Dropdown:SetValues();
+        Dropdown:BuildDropdownList();
         Dropdown:Display();
 
         local Defaults = {}
@@ -2566,7 +2571,7 @@ do
                 if (not Info.Multi) then break end
             end
 
-            Dropdown:SetValues();
+            Dropdown:BuildDropdownList();
             Dropdown:Display();
         end
 
@@ -3607,8 +3612,7 @@ local function OnPlayerChange()
 
     for _, Value in next, Options do
         if Value.Type == 'Dropdown' and Value.SpecialType == 'Player' then
-            Value.Values = PlayerList;
-            Value:SetValues();
+            Value:SetValues(PlayerList);
         end;
     end;
 end;
