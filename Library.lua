@@ -164,7 +164,7 @@ end;
 function Library:MakeDraggable(Instance, Cutoff)
     Instance.Active = true;
 
-   Instance.InputBegan:Connect(function(Input)
+    Instance.InputBegan:Connect(function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton1 then
             local ObjPos = Vector2.new(
                 Mouse.X - Instance.AbsolutePosition.X,
@@ -3030,6 +3030,7 @@ function Library:CreateWindow(...)
         ZIndex = 2;
         Parent = MainSectionInner;
     });
+    
 
     Library:AddToRegistry(TabContainer, {
         BackgroundColor3 = 'MainColor';
