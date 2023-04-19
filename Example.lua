@@ -16,7 +16,8 @@ local Window = Library:CreateWindow({
     Title = 'Example menu',
     Center = true,
     AutoShow = true,
-    TabPadding = 8
+    TabPadding = 8,
+    MenuFadeTime = 0.2
 })
 
 -- CALLBACK NOTE:
@@ -360,15 +361,16 @@ Tab2:AddToggle('Tab2Toggle', { Text = 'Tab2 Toggle' });
 -- e.g. we have a 'Feature Enabled' toggle, and we only want to show that features sliders, dropdowns etc when it's enabled!
 -- Dependency box example:
 local RightGroupbox = Tabs.Main:AddRightGroupbox('Groupbox #3');
-RightGroupbox:AddToggle('ControlToggle', { Text = 'Toggle me :)' });
+RightGroupbox:AddToggle('ControlToggle', { Text = 'Dependency box toggle' });
 
 local Depbox = RightGroupbox:AddDependencyBox();
-Depbox:AddToggle('DepboxToggle', { Text = 'Toggle' });
+Depbox:AddToggle('DepboxToggle', { Text = 'Sub-dependency box toggle' });
 
 -- We can also nest dependency boxes!
 -- When we do this, our SupDepbox automatically relies on the visiblity of the Depbox - on top of whatever additional dependencies we set
 local SubDepbox = Depbox:AddDependencyBox();
 SubDepbox:AddSlider('DepboxSlider', { Text = 'Slider', Default = 50, Min = 0, Max = 100, Rounding = 0 });
+SubDepbox:AddDropdown('DepboxDropdown', { Text = 'Dropdown', Default = 1, Values = {'a', 'b', 'c'} });
 
 Depbox:SetupDependencies({
     { Toggles.ControlToggle, true } -- We can also pass `false` if we only want our features to show when the toggle is off!
@@ -382,12 +384,31 @@ SubDepbox:SetupDependencies({
 -- Sets the watermark visibility
 Library:SetWatermarkVisibility(true)
 
--- Sets the watermark text
-Library:SetWatermark('This is a really long watermark to test the resizing')
+-- Example of dynamically-updating watermark with common traits (fps and ping)
+local FrameTimer = tick()
+local FrameCounter = 0;
+local FPS = 60;
+
+local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
+    FrameCounter += 1;
+
+    if (tick() - FrameTimer) >= 1 then
+        FPS = FrameCounter;
+        FrameTimer = tick();
+        FrameCounter = 0;
+    end;
+
+    Library:SetWatermark(('LinoriaLib demo | %s fps | %s ms'):format(
+        math.floor(FPS),
+        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
+    ));
+end);
 
 Library.KeybindFrame.Visible = true; -- todo: add a function for this
 
 Library:OnUnload(function()
+    WatermarkConnection:Disconnect()
+
     print('Unloaded!')
     Library.Unloaded = true
 end)
