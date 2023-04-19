@@ -2268,12 +2268,23 @@ do
         local ListOuter = Library:Create('Frame', {
             BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
-            Position = UDim2.new(0, 4, 0, 20 + RelativeOffset + 1 + 20);
-            Size = UDim2.new(1, -8, 0, MAX_DROPDOWN_ITEMS * 20 + 2);
             ZIndex = 20;
             Visible = false;
-            Parent = Container.Parent;
+            Parent = ScreenGui;
         });
+
+        local function RecalculateListPosition()
+            ListOuter.Position = UDim2.fromOffset(DropdownOuter.AbsolutePosition.X, DropdownOuter.AbsolutePosition.Y + DropdownOuter.Size.X.Offset + 1);
+        end;
+
+        local function RecalculateListSize(YSize)
+            ListOuter.Size = UDim2.fromOffset(DropdownOuter.AbsoluteSize.X, YSize or (MAX_DROPDOWN_ITEMS * 20 + 2))
+        end;
+
+        RecalculateListPosition();
+        RecalculateListSize();
+
+        DropdownOuter:GetPropertyChangedSignal('AbsolutePosition'):Connect(RecalculateListPosition);
 
         local ListInner = Library:Create('Frame', {
             BackgroundColor3 = Library.MainColor;
@@ -2461,9 +2472,10 @@ do
                 Buttons[Button] = Table;
             end;
 
+            Scrolling.CanvasSize = UDim2.fromOffset(0, (Count * 20) + 1);
+
             local Y = math.clamp(Count * 20, 0, MAX_DROPDOWN_ITEMS * 20) + 1;
-            ListOuter.Size = UDim2.new(1, -8, 0, Y);
-            Scrolling.CanvasSize = UDim2.new(0, 0, 0, (Count * 20) + 1);
+            RecalculateListSize(Y);
         end;
 
         function Dropdown:SetValues(NewValues)
