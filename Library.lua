@@ -2956,7 +2956,7 @@ function Library:CreateWindow(...)
         Config.Position = UDim2.fromScale(0.5, 0.5)
     end
     
-    if Config.AutoResize then
+    if typeof(Config.AutoResize) == "boolean" then
         Library.AutoResize = Config.AutoResize
     end
     
