@@ -2084,11 +2084,11 @@ do
 
         local function Round(Value)
             if Slider.Rounding == 0 then
-                return math.floor(Value);
+                return Value - Value % 1;
             end;
 
-
-            return tonumber(string.format('%.' .. Slider.Rounding .. 'f', Value))
+            local Value = Value / Slider.Rounding;
+            return (Value - Value % 1) * Slider.Rounding;
         end;
 
         function Slider:GetValueFromXOffset(X)
