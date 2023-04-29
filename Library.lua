@@ -44,6 +44,7 @@ local Library = {
 
     Signals = {};
     ScreenGui = ScreenGui;
+    AutoResize = false;
 };
 
 local RainbowStep = 0
@@ -2954,7 +2955,11 @@ function Library:CreateWindow(...)
         Config.AnchorPoint = Vector2.new(0.5, 0.5)
         Config.Position = UDim2.fromScale(0.5, 0.5)
     end
-
+    
+    if Config.AutoResize then
+        Library.AutoResize = Config.AutoResize
+    end
+    
     local Window = {
         Tabs = {};
     };
