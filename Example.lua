@@ -17,7 +17,7 @@ local Window = Library:CreateWindow({
     Title = 'Example menu',
     Center = true,
     AutoShow = true,
-    AutoResize = true,
+    AutoResize = false,
     TabPadding = 8,
     MenuFadeTime = 0.2
 })
