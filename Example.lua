@@ -12,10 +12,12 @@ local Window = Library:CreateWindow({
     -- Set AutoShow to true if you want the menu to appear when it is created
     -- Position and Size are also valid options here
     -- but you do not need to define them unless you are changing them :)
-
+    -- Set AutoResize to true if you want your UI elements to be resized depending on their text content (will fix labels (for example) going out of the Window)
+    
     Title = 'Example menu',
     Center = true,
     AutoShow = true,
+    AutoResize = true,
     TabPadding = 8,
     MenuFadeTime = 0.2
 })
