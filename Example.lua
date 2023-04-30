@@ -1,8 +1,12 @@
 -- New example script written by wally
 -- You can suggest changes with a pull request or something
 
-local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
+-- The variable 'commit' lets you use a past version of the library to prevent any updates from breaking your script.
+-- It is highly recommended to avoid setting the commit to 'main'
+local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib'
+local commit = 'main' -- The latest commit at the time of this edit would be '1be38aa599bb1f6a7c28f47e6fc13ade52dd0acd'
 
+local root = repo .. '/' .. commit .. '/'
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
