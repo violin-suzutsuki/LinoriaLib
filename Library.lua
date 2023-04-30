@@ -3058,7 +3058,8 @@ function Library:CreateWindow(...)
 
     Library:MakeDraggable(Outer, 25);
 
-    if typeof(Config.Resizeable) == "boolean" and Config.Resizeable == true then
+    print(Config.Resizeable)
+    if Config.Resizeable == true then
         Library:MakeResizeable(Outer, Vector2.new(300, 300));
     end
 
