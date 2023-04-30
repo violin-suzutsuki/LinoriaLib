@@ -10,9 +10,9 @@ local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 local Window = Library:CreateWindow({
     -- Set Center to true if you want the menu to appear in the center
     -- Set AutoShow to true if you want the menu to appear when it is created
+    -- Set Resizeable to true if you want to have in-game resizeable Window
     -- Position and Size are also valid options here
     -- but you do not need to define them unless you are changing them :)
-    -- Set Resizeable to true if you want to have in-game resizeable Window
 
     Title = 'Example menu',
     Center = true,
