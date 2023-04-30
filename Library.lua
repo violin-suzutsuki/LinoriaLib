@@ -193,7 +193,7 @@ end;
 function Library:MakeResizeable(Instance, MinSize)
     Instance.Active = true;
     
-    local ResizerImage_Size = 30;
+    local ResizerImage_Size = 28.5;
 	local ResizerImage_HoverTransparency = .5;
     local Resizer = Library:Create('Frame', {
         SizeConstraint = Enum.SizeConstraint.RelativeXX;
@@ -227,7 +227,7 @@ function Library:MakeResizeable(Instance, MinSize)
     Resizer.Position = UDim2.new(1, -ResizerImage_Size, 1, -ResizerImage_Size)
     MinSize = MinSize or Library.MinSize
 
-    local startDrag, startSize;
+    local OffsetPos;
     Resizer.Parent = Instance
 
     local function FinishResize(Transparency)
@@ -236,13 +236,13 @@ function Library:MakeResizeable(Instance, MinSize)
         ResizerImage.Parent = Resizer
         ResizerImage.BackgroundTransparency = Transparency
         ResizerImageUICorner.Parent = ResizerImage
-        startDrag = nil
+        OffsetPos = nil
     end
 
     ResizerImage.MouseButton1Down:Connect(function()
-        if not startDrag then
-            startSize = Instance.AbsoluteSize
-            startDrag = InputService:GetMouseLocation()
+        if not OffsetPos then
+            OffsetPos = Vector2.new(Mouse.X - (Instance.AbsolutePosition.X + Instance.AbsoluteSize.X), Mouse.Y - (Instance.AbsolutePosition.Y + Instance.AbsoluteSize.Y))
+
             ResizerImage.BackgroundTransparency = 1
             ResizerImage.Size = UDim2.fromOffset(Library.ScreenGui.AbsoluteSize.X, Library.ScreenGui.AbsoluteSize.Y)
             ResizerImage.Position = UDim2.new()
@@ -252,15 +252,10 @@ function Library:MakeResizeable(Instance, MinSize)
     end)	
 
     ResizerImage.MouseMoved:Connect(function()
-        if startDrag then		
-            local m = InputService:GetMouseLocation();
-            local mouseMoved = Vector2.new(m.X - startDrag.X, m.Y - startDrag.Y);
-
-            local s = startSize + mouseMoved;
-            local sx = math.max(MinSize.X, s.X);
-            local sy = math.max(MinSize.Y, s.Y);
-
-            Instance.Size = UDim2.fromOffset(sx, sy)
+        if OffsetPos then		
+            local MousePos = Vector2.new(Mouse.X - OffsetPos.X, Mouse.Y - OffsetPos.Y)
+            local FinalSize = Vector2.new(math.clamp(MousePos.X - Instance.AbsolutePosition.X, MinSize.X, math.huge), math.clamp(MousePos.Y - Instance.AbsolutePosition.Y, MinSize.Y, math.huge))
+            Instance.Size = UDim2.fromOffset(FinalSize.X, FinalSize.Y)
         end
     end)
 
@@ -1650,7 +1645,7 @@ do
             SubButton.Outer, SubButton.Inner, SubButton.Label = CreateBaseButton(SubButton)
 
             SubButton.Outer.Position = UDim2.new(1, 3, 0, 0)
-            SubButton.Outer.Size = UDim2.fromOffset(self.Outer.AbsoluteSize.X - 2, self.Outer.AbsoluteSize.Y)
+            SubButton.Outer.Size = UDim2.new(1, -3, 1, 0)--UDim2.fromOffset(self.Outer.AbsoluteSize.X - 2, self.Outer.AbsoluteSize.Y)
             SubButton.Outer.Parent = self.Outer
 
             function SubButton:AddTooltip(tooltip)
