@@ -44,7 +44,7 @@ local Library = {
 
     Signals = {};
     ScreenGui = ScreenGui;
-    MinSize = Vector2.new(275, 600);
+    MinSize = Vector2.new(550, 300);
 };
 
 local RainbowStep = 0
@@ -3061,6 +3061,11 @@ function Library:CreateWindow(...)
     Library:MakeDraggable(Outer, 25);
     if Config.Resizeable == true then
         Library:MakeResizeable(Outer, Library.MinSize);
+        table.insert(Library.Signals, Outer:GetPropertyChangedSignal("Size"):Connect(function()
+            for _, Tab in next, Window.Tabs do 
+                Tab:ResizeByWindowSize(); 
+            end;
+        end))
     end
 
     local Inner = Library:Create('Frame', {
@@ -3219,7 +3224,7 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0.5, 4 + 1, 0, 8 - 1);
-            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 25, Config.Size.Y.Offset-85);--UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 25, Config.Size.Y.Offset - 85);--UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3248,6 +3253,11 @@ function Library:CreateWindow(...)
             Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
                 Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y);
             end);
+        end;
+
+        function Tab:ResizeByWindowSize()
+            LeftSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 25, Outer.Size.Y.Offset - 85);
+            RightSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 25, Outer.Size.Y.Offset - 85);
         end;
 
         function Tab:ShowTab()
