@@ -44,7 +44,6 @@ local Library = {
 
     Signals = {};
     ScreenGui = ScreenGui;
-    AutoResize = false;
 };
 
 local RainbowStep = 0
@@ -189,6 +188,92 @@ function Library:MakeDraggable(Instance, Cutoff)
         end;
     end)
 end;
+
+function Library:MakeResizeable(Instance, MinSize)
+    Instance.Active = true;
+    
+    local ResizerImage_Size = 30
+	local ResizerImage_HoverTransparency = .5
+    local Resizer = Library:Create('Frame', {
+        SizeConstraint = Enum.SizeConstraint.RelativeXX,
+        BackgroundColor3 = Color3.new(0, 0, 0),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        Size = UDim2.new(0, 30, 0, 30),
+        Position = UDim2.new(1, -30, 1, -30),
+        Visible = false,
+        ZIndex = 1,
+        Parent = Instance
+    });
+
+    local ResizerImage = Library:Create('ImageButton', {
+        BackgroundColor3 = Library.MainColor,
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        Size = UDim2.new(2, 0, 2, 0),
+        Position = UDim2.new(1, -30, 1, -30),
+        ZIndex = 2,
+        Parent = Resizer
+    });
+
+    local ResizerImageUICorner = Library:Create('UICorner', {
+        CornerRadius = UDim.new(0.5, 0),
+        Parent = ResizerImage
+    });
+
+    Resizer.Size = UDim2.fromOffset(ResizerImage_Size, ResizerImage_Size)
+    Resizer.Position = UDim2.new(1, -ResizerImage_Size, 1, -ResizerImage_Size)
+    MinSize = MinSize or Vector2.new(300, 300)
+
+    local startDrag, startSize
+    Resizer.Parent = Instance
+
+    local function FinishResize(Transparency)
+        ResizerImage.Position = UDim2.new()
+        ResizerImage.Size = UDim2.new(2, 0, 2, 0)
+        ResizerImage.Parent = Resizer
+        ResizerImage.BackgroundTransparency = Transparency
+        ResizerImageUICorner.Parent = ResizerImage
+        startDrag = nil
+    end
+
+    ResizerImage.MouseButton1Down:Connect(function()
+        if not startDrag then
+            startSize = Instance.AbsoluteSize			
+            startDrag = InputService:GetMouseLocation()
+            ResizerImage.BackgroundTransparency = 1
+            ResizerImage.Size = UDim2.fromOffset(Library.ScreenGui.AbsoluteSize.X, Library.ScreenGui.AbsoluteSize.Y)
+            ResizerImage.Position = UDim2.new(0,0,0,0)
+            ResizerImageUICorner.Parent = nil
+            ResizerImage.Parent = Library.ScreenGui
+        end
+    end)	
+
+    ResizerImage.MouseMoved:Connect(function()
+        if startDrag then		
+            local m = InputService:GetMouseLocation()
+            local mouseMoved = Vector2.new(m.X - startDrag.X, m.Y - startDrag.Y)
+
+            local s = startSize + mouseMoved
+            local sx = math.max(MinSize.X, s.X) 
+            local sy = math.max(MinSize.Y, s.Y)
+
+            Instance.Size = UDim2.fromOffset(sx, sy)
+        end
+    end)
+
+    ResizerImage.MouseEnter:Connect(function()
+        FinishResize(ResizerImage_HoverTransparency)				
+    end)
+
+    ResizerImage.MouseLeave:Connect(function() 
+        FinishResize(1)
+    end)
+
+    ResizerImage.MouseButton1Up:Connect(function()
+        FinishResize(ResizerImage_HoverTransparency)
+    end)
+end
 
 function Library:AddToolTip(InfoStr, HoverInstance)
     local X, Y = Library:GetTextBounds(InfoStr, Library.Font, 14);
@@ -2956,10 +3041,6 @@ function Library:CreateWindow(...)
         Config.Position = UDim2.fromScale(0.5, 0.5)
     end
     
-    if typeof(Config.AutoResize) == "boolean" then
-        Library.AutoResize = Config.AutoResize
-    end
-    
     local Window = {
         Tabs = {};
     };
@@ -2976,6 +3057,10 @@ function Library:CreateWindow(...)
     });
 
     Library:MakeDraggable(Outer, 25);
+
+    if typeof(Config.Resizeable) == "boolean" and Config.Resizeable == true then
+        Library:MakeResizeable(Outer, Vector2.new(300, 300));
+    end
 
     local Inner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
