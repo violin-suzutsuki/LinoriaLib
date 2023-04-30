@@ -193,7 +193,7 @@ end;
 function Library:MakeResizeable(Instance, MinSize)
     Instance.Active = true;
     
-    local ResizerImage_Size = 28.5;
+    local ResizerImage_Size = 25;
 	local ResizerImage_HoverTransparency = .5;
     local Resizer = Library:Create('Frame', {
         SizeConstraint = Enum.SizeConstraint.RelativeXX;
@@ -222,6 +222,8 @@ function Library:MakeResizeable(Instance, MinSize)
         CornerRadius = UDim.new(0.5, 0);
         Parent = ResizerImage;
     });
+
+    Library:AddToRegistry(ResizerImage, { BackgroundColor3 = 'AccentColor'; });
 
     Resizer.Size = UDim2.fromOffset(ResizerImage_Size, ResizerImage_Size)
     Resizer.Position = UDim2.new(1, -ResizerImage_Size, 1, -ResizerImage_Size)
