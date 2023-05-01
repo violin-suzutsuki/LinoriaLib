@@ -269,6 +269,8 @@ local SaveManager = {} do
 			end
 
 			self.Library:Notify(string.format('Deleted config %q', name))
+			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+			Options.SaveManager_ConfigList:SetValue(nil)
 		end)
 
 		section:AddButton('Refresh list', function()
