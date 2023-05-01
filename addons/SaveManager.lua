@@ -131,6 +131,20 @@ local SaveManager = {} do
 		return true
 	end
 
+	function SaveManager:Delete(name)
+		if (not name) then
+			return false, 'no config file is selected'
+		end
+		
+		local file = self.Folder .. '/settings/' .. name .. '.json'
+		if not isfile(file) then return false, 'invalid file' end
+
+		local success, decoded = pcall(delfile, file)
+		if not success then return false, 'delete file error' end
+		
+		return true
+	end
+
 	function SaveManager:IgnoreThemeSettings()
 		self:SetIgnoreIndexes({ 
 			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", -- themes
@@ -244,6 +258,17 @@ local SaveManager = {} do
 			end
 
 			self.Library:Notify(string.format('Overwrote config %q', name))
+		end)
+		
+		section:AddButton('Delete config', function()
+			local name = Options.SaveManager_ConfigList.Value
+
+			local success, err = self:Delete(name)
+			if not success then
+				return self.Library:Notify('Failed to delete config: ' .. err)
+			end
+
+			self.Library:Notify(string.format('Deleted config %q', name))
 		end)
 
 		section:AddButton('Refresh list', function()
