@@ -3208,7 +3208,7 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0, 8 - 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);--UDim2.fromOffset(Config.Size.X.Offset / 2 - 25, Config.Size.Y.Offset - 85);--
+            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 30, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3221,7 +3221,7 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0.5, 4 + 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);--UDim2.fromOffset(Config.Size.X.Offset / 2 - 25, Config.Size.Y.Offset - 85);--
+            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 30, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3253,8 +3253,8 @@ function Library:CreateWindow(...)
         end;
 
         function Tab:ResizeByWindowSize()
-            LeftSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 25, Outer.Size.Y.Offset - 85);
-            RightSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 25, Outer.Size.Y.Offset - 85);
+            LeftSide.Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 30, Config.Size.Y.Offset - 91);
+            RightSide.Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 30, Config.Size.Y.Offset - 91);
         end;
 
         function Tab:ShowTab()
