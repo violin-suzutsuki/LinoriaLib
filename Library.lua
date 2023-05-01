@@ -3253,8 +3253,8 @@ function Library:CreateWindow(...)
         end;
 
         function Tab:ResizeByWindowSize()
-            LeftSide.Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91);
-            RightSide.Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91);
+            LeftSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 28.5, Outer.Size.Y.Offset - 91);
+            RightSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 28.5, Outer.Size.Y.Offset - 91);
         end;
 
         function Tab:ShowTab()
