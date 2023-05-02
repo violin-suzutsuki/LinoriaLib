@@ -2082,10 +2082,8 @@ do
             Parent = Container;
         });
 
-        warn('SliderOuter AbsSize', SliderOuter.AbsoluteSize.X);
-
         SliderOuter:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
-            Slider.MaxSize = SliderOuter.AbsoluteSize.X;
+            Slider.MaxSize = SliderOuter.AbsoluteSize.X - 2;
         end);
 
         Library:AddToRegistry(SliderOuter, {
@@ -2208,7 +2206,7 @@ do
         SliderInner.InputBegan:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
                 local mPos = Mouse.X;
-                local gPos = Fill.Size.X.Offset;
+                local gPos = Fill.AbsoluteSize.X;
                 local Diff = mPos - (Fill.AbsolutePosition.X + gPos);
 
                 while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
