@@ -2084,7 +2084,7 @@ do
 
         warn('SliderOuter AbsSize', SliderOuter.AbsoluteSize.X);
 
-        SliderOuter:GetPropertyChangedSignal('Size'):Connect(function()
+        SliderOuter:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
             Slider.MaxSize = SliderOuter.AbsoluteSize.X;
         end);
 
