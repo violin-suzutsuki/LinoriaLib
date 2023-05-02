@@ -190,11 +190,12 @@ function Library:MakeDraggable(Instance, Cutoff)
     end)
 end;
 
-function Library:MakeResizeable(Instance, MinSize)
+function Library:MakeResizable(Instance, MinSize)
     Instance.Active = true;
     
     local ResizerImage_Size = 25;
-	local ResizerImage_HoverTransparency = .5;
+	local ResizerImage_HoverTransparency = 0.5;
+
     local Resizer = Library:Create('Frame', {
         SizeConstraint = Enum.SizeConstraint.RelativeXX;
         BackgroundColor3 = Color3.new(0, 0, 0);
@@ -225,54 +226,54 @@ function Library:MakeResizeable(Instance, MinSize)
 
     Library:AddToRegistry(ResizerImage, { BackgroundColor3 = 'AccentColor'; });
 
-    Resizer.Size = UDim2.fromOffset(ResizerImage_Size, ResizerImage_Size)
-    Resizer.Position = UDim2.new(1, -ResizerImage_Size, 1, -ResizerImage_Size)
-    MinSize = MinSize or Library.MinSize
+    Resizer.Size = UDim2.fromOffset(ResizerImage_Size, ResizerImage_Size);
+    Resizer.Position = UDim2.new(1, -ResizerImage_Size, 1, -ResizerImage_Size);
+    MinSize = MinSize or Library.MinSize;
 
     local OffsetPos;
-    Resizer.Parent = Instance
+    Resizer.Parent = Instance;
 
     local function FinishResize(Transparency)
-        ResizerImage.Position = UDim2.new()
-        ResizerImage.Size = UDim2.new(2, 0, 2, 0)
-        ResizerImage.Parent = Resizer
-        ResizerImage.BackgroundTransparency = Transparency
-        ResizerImageUICorner.Parent = ResizerImage
-        OffsetPos = nil
-    end
+        ResizerImage.Position = UDim2.new();
+        ResizerImage.Size = UDim2.new(2, 0, 2, 0);
+        ResizerImage.Parent = Resizer;
+        ResizerImage.BackgroundTransparency = Transparency;
+        ResizerImageUICorner.Parent = ResizerImage;
+        OffsetPos = nil;
+    end;
 
     ResizerImage.MouseButton1Down:Connect(function()
         if not OffsetPos then
-            OffsetPos = Vector2.new(Mouse.X - (Instance.AbsolutePosition.X + Instance.AbsoluteSize.X), Mouse.Y - (Instance.AbsolutePosition.Y + Instance.AbsoluteSize.Y))
+            OffsetPos = Vector2.new(Mouse.X - (Instance.AbsolutePosition.X + Instance.AbsoluteSize.X), Mouse.Y - (Instance.AbsolutePosition.Y + Instance.AbsoluteSize.Y));
 
             ResizerImage.BackgroundTransparency = 1
-            ResizerImage.Size = UDim2.fromOffset(Library.ScreenGui.AbsoluteSize.X, Library.ScreenGui.AbsoluteSize.Y)
-            ResizerImage.Position = UDim2.new()
-            ResizerImageUICorner.Parent = nil
-            ResizerImage.Parent = Library.ScreenGui
-        end
-    end)	
+            ResizerImage.Size = UDim2.fromOffset(Library.ScreenGui.AbsoluteSize.X, Library.ScreenGui.AbsoluteSize.Y);
+            ResizerImage.Position = UDim2.new();
+            ResizerImageUICorner.Parent = nil;
+            ResizerImage.Parent = Library.ScreenGui;
+        end;
+    end);
 
     ResizerImage.MouseMoved:Connect(function()
         if OffsetPos then		
-            local MousePos = Vector2.new(Mouse.X - OffsetPos.X, Mouse.Y - OffsetPos.Y)
-            local FinalSize = Vector2.new(math.clamp(MousePos.X - Instance.AbsolutePosition.X, MinSize.X, math.huge), math.clamp(MousePos.Y - Instance.AbsolutePosition.Y, MinSize.Y, math.huge))
-            Instance.Size = UDim2.fromOffset(FinalSize.X, FinalSize.Y)
-        end
-    end)
+            local MousePos = Vector2.new(Mouse.X - OffsetPos.X, Mouse.Y - OffsetPos.Y);
+            local FinalSize = Vector2.new(math.clamp(MousePos.X - Instance.AbsolutePosition.X, MinSize.X, math.huge), math.clamp(MousePos.Y - Instance.AbsolutePosition.Y, MinSize.Y, math.huge));
+            Instance.Size = UDim2.fromOffset(FinalSize.X, FinalSize.Y);
+        end;
+    end);
 
     ResizerImage.MouseEnter:Connect(function()
         FinishResize(ResizerImage_HoverTransparency);		
-    end)
+    end);
 
     ResizerImage.MouseLeave:Connect(function() 
-        FinishResize(1)
-    end)
+        FinishResize(1);
+    end);
 
     ResizerImage.MouseButton1Up:Connect(function()
-        FinishResize(ResizerImage_HoverTransparency)
-    end)
-end
+        FinishResize(ResizerImage_HoverTransparency);
+    end);
+end;
 
 function Library:AddToolTip(InfoStr, HoverInstance)
     local X, Y = Library:GetTextBounds(InfoStr, Library.Font, 14);
@@ -2561,6 +2562,11 @@ do
 
             Scrolling.CanvasSize = UDim2.fromOffset(0, (Count * 20) + 1);
 
+            -- Workaround for silly roblox bug - not sure why it happens but sometimes the dropdown list will be empty
+            -- ... and for some reason refreshing the Visible property fixes the issue??????? thanks roblox!
+            Scrolling.Visible = false;
+            Scrolling.Visible = true;
+
             local Y = math.clamp(Count * 20, 0, MAX_DROPDOWN_ITEMS * 20) + 1;
             RecalculateListSize(Y);
         end;
@@ -3060,8 +3066,9 @@ function Library:CreateWindow(...)
     });
 
     Library:MakeDraggable(Outer, 25);
-    if Config.Resizeable == true then
-        Library:MakeResizeable(Outer, Library.MinSize);
+
+    if Config.Resizable then
+        Library:MakeResizable(Outer, Library.MinSize);
         table.insert(Library.Signals, Outer:GetPropertyChangedSignal("Size"):Connect(function()
             for _, Tab in next, Window.Tabs do 
                 Tab:ResizeByWindowSize(); 
@@ -3212,7 +3219,8 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0, 8 - 1, 0, 8 - 1);
-            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            -- Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            Size = UDim2.new(0.5, -12 + 2, 1, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3221,11 +3229,14 @@ function Library:CreateWindow(...)
             Parent = TabFrame;
         });
 
+        warn('TabFrame AbsSize:', TabFrame.AbsoluteSize.Y);
+
         local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0.5, 4 + 1, 0, 8 - 1);
-            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            -- Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
