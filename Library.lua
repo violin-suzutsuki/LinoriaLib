@@ -2163,7 +2163,7 @@ do
                 DisplayLabel.Text = string.format('%s/%s', Slider.Value .. Suffix, Slider.Max .. Suffix);
             end
 
-            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, 1));
+            local X = Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, 1);
             Fill.Size = UDim2.new(X, 0, 1, 0);
 
             -- I have no idea what this is
@@ -2211,9 +2211,10 @@ do
 
                 while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
                     local nMPos = Mouse.X;
-                    local nX = Library:MapValue(gPos + (nMPos - mPos) + Diff, 0, Slider.MaxSize, 0, 1);
+                    local nXOffset = math.clamp(gPos + (nMPos - mPos) + Diff, 0, Slider.MaxSize); -- what in tarnation are these variable names
+                    local nXScale = Library:MapValue(nXOffset, 0, Slider.MaxSize, 0, 1);
 
-                    local nValue = Slider:GetValueFromXScale(nX);
+                    local nValue = Slider:GetValueFromXScale(nXScale);
                     local OldValue = Slider.Value;
                     Slider.Value = nValue;
 
