@@ -2082,6 +2082,12 @@ do
             Parent = Container;
         });
 
+        warn('SliderOuter AbsSize', SliderOuter.AbsoluteSize.X);
+
+        SliderOuter:GetPropertyChangedSignal('Size'):Connect(function()
+            Slider.MaxSize = SliderOuter.AbsoluteSize.X;
+        end);
+
         Library:AddToRegistry(SliderOuter, {
             BorderColor3 = 'Black';
         });
@@ -2159,10 +2165,11 @@ do
                 DisplayLabel.Text = string.format('%s/%s', Slider.Value .. Suffix, Slider.Max .. Suffix);
             end
 
-            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, Slider.MaxSize));
-            Fill.Size = UDim2.new(0, X, 1, 0);
+            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, 1));
+            Fill.Size = UDim2.new(X, 0, 1, 0);
 
-            HideBorderRight.Visible = not (X == Slider.MaxSize or X == 0);
+            -- I have no idea what this is
+            HideBorderRight.Visible = not (X == 1 or X == 0);
         end;
 
         function Slider:OnChanged(Func)
@@ -2174,7 +2181,6 @@ do
             if Slider.Rounding == 0 then
                 return math.floor(Value);
             end;
-
 
             return tonumber(string.format('%.' .. Slider.Rounding .. 'f', Value))
         end;
@@ -3046,8 +3052,8 @@ function Library:CreateWindow(...)
     if typeof(Config.Size) ~= 'UDim2' then Config.Size = UDim2.fromOffset(550, 600) end
 
     if Config.Center then
-        Config.AnchorPoint = Vector2.new(0.5, 0.5)
-        Config.Position = UDim2.fromScale(0.5, 0.5)
+        -- Config.AnchorPoint = Vector2.new(0.5, 0.5)
+        Config.Position = UDim2.new(0.5, -Config.Size.X.Offset/2, 0.5, -Config.Size.Y.Offset/2)
     end
     
     local Window = {
@@ -3069,12 +3075,6 @@ function Library:CreateWindow(...)
 
     if Config.Resizable then
         Library:MakeResizable(Outer, Library.MinSize);
-
-        --[[ table.insert(Library.Signals, Outer:GetPropertyChangedSignal("Size"):Connect(function()
-            for _, Tab in next, Window.Tabs do 
-                Tab:ResizeByWindowSize(); 
-            end;
-        end)) ]]
     end
 
     local Inner = Library:Create('Frame', {
@@ -3263,11 +3263,6 @@ function Library:CreateWindow(...)
                 Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y);
             end);
         end;
-
-        --[[ function Tab:ResizeByWindowSize()
-            LeftSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 28.5, Outer.Size.Y.Offset - 91);
-            RightSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 28.5, Outer.Size.Y.Offset - 91);
-        end; ]]
 
         function Tab:ShowTab()
             for _, Tab in next, Window.Tabs do
