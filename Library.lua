@@ -2185,8 +2185,8 @@ do
             return tonumber(string.format('%.' .. Slider.Rounding .. 'f', Value))
         end;
 
-        function Slider:GetValueFromXOffset(X)
-            return Round(Library:MapValue(X, 0, Slider.MaxSize, Slider.Min, Slider.Max));
+        function Slider:GetValueFromXScale(X)
+            return Round(Library:MapValue(X, 0, 1, Slider.Min, Slider.Max));
         end;
 
         function Slider:SetValue(Str)
@@ -2213,9 +2213,9 @@ do
 
                 while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
                     local nMPos = Mouse.X;
-                    local nX = math.clamp(gPos + (nMPos - mPos) + Diff, 0, Slider.MaxSize);
+                    local nX = Library:MapValue(gPos + (nMPos - mPos) + Diff, 0, Slider.MaxSize, 0, 1);
 
-                    local nValue = Slider:GetValueFromXOffset(nX);
+                    local nValue = Slider:GetValueFromXScale(nX);
                     local OldValue = Slider.Value;
                     Slider.Value = nValue;
 
