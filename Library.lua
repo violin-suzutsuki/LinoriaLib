@@ -44,6 +44,7 @@ local Library = {
 
     Signals = {};
     ScreenGui = ScreenGui;
+    MinSize = Vector2.new(550, 300);
 };
 
 local RainbowStep = 0
@@ -189,6 +190,90 @@ function Library:MakeDraggable(Instance, Cutoff)
     end)
 end;
 
+function Library:MakeResizeable(Instance, MinSize)
+    Instance.Active = true;
+    
+    local ResizerImage_Size = 25;
+	local ResizerImage_HoverTransparency = .5;
+    local Resizer = Library:Create('Frame', {
+        SizeConstraint = Enum.SizeConstraint.RelativeXX;
+        BackgroundColor3 = Color3.new(0, 0, 0);
+        BackgroundTransparency = 1;
+        BorderSizePixel = 0;
+        Size = UDim2.new(0, 30, 0, 30);
+        Position = UDim2.new(1, -30, 1, -30);
+        Visible = true;
+        ClipsDescendants = true;
+        ZIndex = 1;
+        Parent = Library.ScreenGui;
+    });
+
+    local ResizerImage = Library:Create('ImageButton', {
+        BackgroundColor3 = Library.AccentColor;
+        BackgroundTransparency = 1;
+        BorderSizePixel = 0;
+        Size = UDim2.new(2, 0, 2, 0);
+        Position = UDim2.new(1, -30, 1, -30);
+        ZIndex = 2;
+        Parent = Resizer;
+    });
+
+    local ResizerImageUICorner = Library:Create('UICorner', {
+        CornerRadius = UDim.new(0.5, 0);
+        Parent = ResizerImage;
+    });
+
+    Library:AddToRegistry(ResizerImage, { BackgroundColor3 = 'AccentColor'; });
+
+    Resizer.Size = UDim2.fromOffset(ResizerImage_Size, ResizerImage_Size)
+    Resizer.Position = UDim2.new(1, -ResizerImage_Size, 1, -ResizerImage_Size)
+    MinSize = MinSize or Library.MinSize
+
+    local OffsetPos;
+    Resizer.Parent = Instance
+
+    local function FinishResize(Transparency)
+        ResizerImage.Position = UDim2.new()
+        ResizerImage.Size = UDim2.new(2, 0, 2, 0)
+        ResizerImage.Parent = Resizer
+        ResizerImage.BackgroundTransparency = Transparency
+        ResizerImageUICorner.Parent = ResizerImage
+        OffsetPos = nil
+    end
+
+    ResizerImage.MouseButton1Down:Connect(function()
+        if not OffsetPos then
+            OffsetPos = Vector2.new(Mouse.X - (Instance.AbsolutePosition.X + Instance.AbsoluteSize.X), Mouse.Y - (Instance.AbsolutePosition.Y + Instance.AbsoluteSize.Y))
+
+            ResizerImage.BackgroundTransparency = 1
+            ResizerImage.Size = UDim2.fromOffset(Library.ScreenGui.AbsoluteSize.X, Library.ScreenGui.AbsoluteSize.Y)
+            ResizerImage.Position = UDim2.new()
+            ResizerImageUICorner.Parent = nil
+            ResizerImage.Parent = Library.ScreenGui
+        end
+    end)	
+
+    ResizerImage.MouseMoved:Connect(function()
+        if OffsetPos then		
+            local MousePos = Vector2.new(Mouse.X - OffsetPos.X, Mouse.Y - OffsetPos.Y)
+            local FinalSize = Vector2.new(math.clamp(MousePos.X - Instance.AbsolutePosition.X, MinSize.X, math.huge), math.clamp(MousePos.Y - Instance.AbsolutePosition.Y, MinSize.Y, math.huge))
+            Instance.Size = UDim2.fromOffset(FinalSize.X, FinalSize.Y)
+        end
+    end)
+
+    ResizerImage.MouseEnter:Connect(function()
+        FinishResize(ResizerImage_HoverTransparency);		
+    end)
+
+    ResizerImage.MouseLeave:Connect(function() 
+        FinishResize(1)
+    end)
+
+    ResizerImage.MouseButton1Up:Connect(function()
+        FinishResize(ResizerImage_HoverTransparency)
+    end)
+end
+
 function Library:AddToolTip(InfoStr, HoverInstance)
     local X, Y = Library:GetTextBounds(InfoStr, Library.Font, 14);
     local Tooltip = Library:Create('Frame', {
@@ -200,7 +285,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         Parent = Library.ScreenGui,
 
         Visible = false,
-    })
+    });
 
     local Label = Library:CreateLabel({
         Position = UDim2.fromOffset(3, 1),
@@ -1282,7 +1367,7 @@ do
         end);
 
         Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
-            if (not Picking) then
+            if (not Picking) and (not InputService:GetFocusedTextBox()) then
                 if KeyPicker.Mode == 'Toggle' then
                     local Key = KeyPicker.Value;
 
@@ -1562,7 +1647,7 @@ do
             SubButton.Outer, SubButton.Inner, SubButton.Label = CreateBaseButton(SubButton)
 
             SubButton.Outer.Position = UDim2.new(1, 3, 0, 0)
-            SubButton.Outer.Size = UDim2.fromOffset(self.Outer.AbsoluteSize.X - 2, self.Outer.AbsoluteSize.Y)
+            SubButton.Outer.Size = UDim2.new(1, -3, 1, 0)--UDim2.fromOffset(self.Outer.AbsoluteSize.X - 2, self.Outer.AbsoluteSize.Y)
             SubButton.Outer.Parent = self.Outer
 
             function SubButton:AddTooltip(tooltip)
@@ -1720,6 +1805,8 @@ do
             TextSize = 14;
             TextStrokeTransparency = 0;
             TextXAlignment = Enum.TextXAlignment.Left;
+
+            ClearTextOnFocus = (typeof(Info.ClearTextOnFocus) ~= "boolean" and true or Info.ClearTextOnFocus);
 
             ZIndex = 7;
             Parent = Container;
@@ -2278,7 +2365,8 @@ do
         end;
 
         local function RecalculateListSize(YSize)
-            ListOuter.Size = UDim2.fromOffset(DropdownOuter.AbsoluteSize.X, YSize or (MAX_DROPDOWN_ITEMS * 20 + 2))
+            local Y = YSize or math.clamp(#Dropdown.Values * 20, 0, MAX_DROPDOWN_ITEMS * 20) + 1;
+            ListOuter.Size = UDim2.fromOffset(DropdownOuter.AbsoluteSize.X + 0.5, Y)
         end;
 
         RecalculateListPosition();
@@ -2371,7 +2459,6 @@ do
             end;
 
             local Count = 0;
-
             for Idx, Value in next, Values do
                 local Table = {};
 
@@ -2490,6 +2577,8 @@ do
             ListOuter.Visible = true;
             Library.OpenedFrames[ListOuter] = true;
             DropdownArrow.Rotation = 180;
+            
+            RecalculateListSize();
         end;
 
         function Dropdown:CloseDropdown()
@@ -2954,23 +3043,31 @@ function Library:CreateWindow(...)
         Config.AnchorPoint = Vector2.new(0.5, 0.5)
         Config.Position = UDim2.fromScale(0.5, 0.5)
     end
-
+    
     local Window = {
         Tabs = {};
     };
 
     local Outer = Library:Create('Frame', {
-        AnchorPoint = Config.AnchorPoint,
+        AnchorPoint = Config.AnchorPoint;
         BackgroundColor3 = Color3.new(0, 0, 0);
         BorderSizePixel = 0;
-        Position = Config.Position,
-        Size = Config.Size,
+        Position = Config.Position;
+        Size = Config.Size;
         Visible = false;
         ZIndex = 1;
         Parent = ScreenGui;
     });
 
     Library:MakeDraggable(Outer, 25);
+    if Config.Resizeable == true then
+        Library:MakeResizeable(Outer, Library.MinSize);
+        table.insert(Library.Signals, Outer:GetPropertyChangedSignal("Size"):Connect(function()
+            for _, Tab in next, Window.Tabs do 
+                Tab:ResizeByWindowSize(); 
+            end;
+        end))
+    end
 
     local Inner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
@@ -3115,7 +3212,7 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0, 8 - 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3128,7 +3225,7 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0.5, 4 + 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            Size = UDim2.fromOffset(Config.Size.X.Offset / 2 - 28.5, Config.Size.Y.Offset - 91); -- UDim2.new(0.5, -12 + 2, 0, 507 + 2);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3157,6 +3254,11 @@ function Library:CreateWindow(...)
             Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
                 Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y);
             end);
+        end;
+
+        function Tab:ResizeByWindowSize()
+            LeftSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 28.5, Outer.Size.Y.Offset - 91);
+            RightSide.Size = UDim2.fromOffset(Outer.Size.X.Offset / 2 - 28.5, Outer.Size.Y.Offset - 91);
         end;
 
         function Tab:ShowTab()
