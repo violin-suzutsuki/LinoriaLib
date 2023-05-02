@@ -187,7 +187,7 @@ LeftGroupBox:AddInput('MyTextbox', {
     Default = 'My textbox!',
     Numeric = false, -- true / false, only allows numbers
     Finished = false, -- true / false, only calls callback when you press enter
-    ClearTextOnFocus = true, -- true / false, if true the text will not clear when focused
+    ClearTextOnFocus = true, -- true / false, if false the text will not clear when textbox focused
         
     Text = 'This is a textbox',
     Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
