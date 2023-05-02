@@ -2059,7 +2059,19 @@ do
             Fill.BackgroundColor3 = Library.AccentColor;
             Fill.BorderColor3 = Library.AccentColorDark;
         end;
-
+        
+        function Slider:SetMax(Value)
+            Slider.Value = math.clamp(Slider.Value,Slider.Min,Value)
+            Slider.Max = Value
+            Slider:Display()
+        end
+        
+        function Slider:SetMin(Value)
+            Slider.Value = math.clamp(Slider.Value,Value,Slider.Max)
+            Slider.Min = Value
+            Slider:Display()
+        end
+        
         function Slider:Display()
             local Suffix = Info.Suffix or '';
 
