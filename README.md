@@ -14,7 +14,7 @@ Used in the Linoria script hub: https://kyaru.cloud
 - Almost any UI element you would ever need (toggles, sliders, dropdowns, etc)
 - Interface automatically becomes scrollable whenever there are too many UI elements
 - Dependency boxes, allowing you to easily hide/show UI elements depending on the state of other UI elements
-- Resizable menu interfac (both via code and by using the mouse)
+- Resizable menu interface (both via code and by using the mouse)
 
 ## Interface Preview
 <img src="https://i.imgur.com/qs0Hqc6.png" />
