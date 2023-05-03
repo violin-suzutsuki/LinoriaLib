@@ -2061,7 +2061,7 @@ do
         end;
         
         function Slider:SetMax(Value)
-            if Value < Slider.Min then error("Max value cannot be less than or equal to current min value.") end
+            if Value < Slider.Min then error("Max value cannot be less than the current min value.") end
             
             Slider.Value = math.clamp(Slider.Value,Slider.Min,Value)
             Slider.Max = Value
@@ -2069,7 +2069,7 @@ do
         end
         
         function Slider:SetMin(Value)
-            if Value > Slider.Max then error("Min value cannot be greater than or equal to current max value.") end
+            if Value > Slider.Max then error("Min value cannot be greater than the current max value.") end
             Slider.Value = math.clamp(Slider.Value,Value,Slider.Max)
             Slider.Min = Value
             Slider:Display()
