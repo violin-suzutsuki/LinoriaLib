@@ -14,12 +14,14 @@ Used in the Linoria script hub: https://kyaru.cloud
 - Almost any UI element you would ever need (toggles, sliders, dropdowns, etc)
 - Interface automatically becomes scrollable whenever there are too many UI elements
 - Dependency boxes, allowing you to easily hide/show UI elements depending on the state of other UI elements
+- Resizable menu interfac (both via code and by using the mouse)
 
 ## Interface Preview
 <img src="https://i.imgur.com/qs0Hqc6.png" />
 
 ## Contributors
 - Inori: Main developer.
-- Wally: Cleaning up verbose code, extending library functionality.
+- Wally: Cleaning up verbose code, extending library functionality and creating helpful addons.
+- mstudio45: Extending library functionality and adding resizing to the menu.
 - Stefanuk: Extending library functionality.
 - matas3535: Creator of Splix.
