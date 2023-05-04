@@ -2151,7 +2151,7 @@ do
             Fill.BackgroundColor3 = Library.AccentColor;
             Fill.BorderColor3 = Library.AccentColorDark;
         end;
-
+        
         function Slider:Display()
             local Suffix = Info.Suffix or '';
 
@@ -2185,6 +2185,22 @@ do
 
         function Slider:GetValueFromXScale(X)
             return Round(Library:MapValue(X, 0, 1, Slider.Min, Slider.Max));
+        end;
+        
+        function Slider:SetMax(Value)
+            assert(Value > Slider.Min, 'Max value cannot be less than the current min value.');
+            
+            Slider.Value = math.clamp(Slider.Value, Slider.Min, Value);
+            Slider.Max = Value;
+            Slider:Display();
+        end;
+        
+        function Slider:SetMin(Value)
+            assert(Value < Slider.Max, 'Min value cannot be greater than the current max value.');
+
+            Slider.Value = math.clamp(Slider.Value, Value, Slider.Max);
+            Slider.Min = Value;
+            Slider:Display();
         end;
 
         function Slider:SetValue(Str)
