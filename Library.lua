@@ -54,7 +54,7 @@ table.insert(Library.Signals, RenderStepped:Connect(function(Delta)
     RainbowStep = RainbowStep + Delta
 
     if RainbowStep >= (1 / 60) then
-        RainbowStep = 0
+        RainbowStep = 0;
 
         Hue = Hue + (1 / 400);
 
@@ -64,8 +64,8 @@ table.insert(Library.Signals, RenderStepped:Connect(function(Delta)
 
         Library.CurrentRainbowHue = Hue;
         Library.CurrentRainbowColor = Color3.fromHSV(Hue, 0.8, 1);
-    end
-end))
+    end;
+end));
 
 local function GetPlayersString()
     local PlayerList = Players:GetPlayers();
