@@ -1023,14 +1023,18 @@ do
         end);
 
         DisplayFrame.InputBegan:Connect(function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
+            if Library:MouseIsOverOpenedFrame() then
+                return;
+            end;
+
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                 if PickerFrameOuter.Visible then
                     ColorPicker:Hide()
                 else
                     ContextMenu:Hide()
                     ColorPicker:Show()
                 end;
-            elseif Input.UserInputType == Enum.UserInputType.MouseButton2 and not Library:MouseIsOverOpenedFrame() then
+            elseif Input.UserInputType == Enum.UserInputType.MouseButton2 then
                 ContextMenu:Show()
                 ColorPicker:Hide()
             end
