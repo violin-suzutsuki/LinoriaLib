@@ -248,7 +248,7 @@ function Library:MakeResizable(Instance, MinSize)
     Instance.Active = true;
     
     local ResizerImage_Size = 25;
-	local ResizerImage_HoverTransparency = 0.5;
+    local ResizerImage_HoverTransparency = 0.5;
 
     local Resizer = Library:Create('Frame', {
         SizeConstraint = Enum.SizeConstraint.RelativeXX;
@@ -260,7 +260,7 @@ function Library:MakeResizable(Instance, MinSize)
         Visible = true;
         ClipsDescendants = true;
         ZIndex = 1;
-        Parent = Library.ScreenGui;
+        Parent = Instance;--Library.ScreenGui;
     });
 
     local ResizerImage = Library:Create('ImageButton', {
