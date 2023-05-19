@@ -21,5 +21,6 @@ Used in the Linoria script hub: https://kyaru.cloud
 ## Contributors
 - Inori: Main developer.
 - Wally: Cleaning up verbose code, extending library functionality.
+- mstudio45: Extending library functionality and adding resizing to the menu.
 - Stefanuk: Extending library functionality.
 - matas3535: Creator of Splix.
