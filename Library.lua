@@ -3267,8 +3267,8 @@ function Library:CreateWindow(...)
 		AutomaticCanvasSize = Enum.AutomaticSize.XY;
 		ScrollBarThickness = 0;
 		BackgroundTransparency = 1;
-		Position = UDim2.new(0, 8, 0, 8);
-		Size = UDim2.new(1, -16, 0, 21);
+		Position = UDim2.new(0, 2, 0, 4);
+		Size = UDim2.new(1, -10, 0, 26);
 		ZIndex = 1;
 		Parent = MainSectionInner;
 	});
@@ -3277,7 +3277,27 @@ function Library:CreateWindow(...)
         Padding = UDim.new(0, Config.TabPadding);
         FillDirection = Enum.FillDirection.Horizontal;
         SortOrder = Enum.SortOrder.LayoutOrder;
+		VerticalAlignment = Enum.VerticalAlignment.Center;
         Parent = TabArea;
+    });
+
+	Library:Create('Frame', {
+		BackgroundColor3 = Library.BackgroundColor;
+		BorderColor3 = Library.OutlineColor;
+		Size = UDim2.new(0, 0, 0, 0);
+		LayoutOrder = -1;
+		BackgroundTransparency = 1;
+		ZIndex = 1;
+		Parent = TabArea;
+    });
+	Library:Create('Frame', {
+		BackgroundColor3 = Library.BackgroundColor;
+		BorderColor3 = Library.OutlineColor;
+		Size = UDim2.new(0, 0, 0, 0);
+		LayoutOrder = 9999999;
+		BackgroundTransparency = 1;
+		ZIndex = 1;
+		Parent = TabArea;
     });
 
     local TabContainer = Library:Create('Frame', {
