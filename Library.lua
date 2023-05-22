@@ -3821,13 +3821,15 @@ function Library:CreateWindow(...)
             task.spawn(function()
                 -- TODO: add cursor fade?
                 local State = InputService.MouseIconEnabled;
-
-                local Cursor = Drawing.new('Triangle');
+                local Cursor, CursorOutline;
+					local CursorSuccess, CursorError = pcall(function()
+					
+                Cursor = Drawing.new('Triangle');
                 Cursor.Thickness = 1;
                 Cursor.Filled = true;
                 Cursor.Visible = true;
 
-                local CursorOutline = Drawing.new('Triangle');
+                CursorOutline = Drawing.new('Triangle');
                 CursorOutline.Thickness = 1;
                 CursorOutline.Filled = false;
                 CursorOutline.Color = Color3.new(0, 0, 0);
@@ -3850,11 +3852,12 @@ function Library:CreateWindow(...)
 
                     RenderStepped:Wait();
                 end;
-
+                end)
+			
                 InputService.MouseIconEnabled = State;
-
-                Cursor:Remove();
-                CursorOutline:Remove();
+ 
+                if Cursor and CursorSuccess then Cursor:Remove(); end;
+                if CursorOutline and CursorSuccess then CursorOutline:Remove(); end;
             end);
         end;
 
