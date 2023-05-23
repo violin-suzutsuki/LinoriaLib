@@ -23,6 +23,7 @@ local Options = {};
 getgenv().Toggles = Toggles;
 getgenv().Options = Options;
 
+local LibraryMainOuterFrame = nil;
 local Library = {
     Registry = {};
     RegistryMap = {};
@@ -386,6 +387,15 @@ function Library:AddToolTip(InfoStr, HoverInstance)
         IsHovering = false
         Tooltip.Visible = false
     end)
+	
+	if LibraryMainOuterFrame then
+		LibraryMainOuterFrame:GetPropertyChangedSignal("Visible"):Connect(function() 
+			if LibraryMainOuterFrame.Visible == false then
+				IsHovering = false
+        		Tooltip.Visible = false
+			end
+		end)
+	end
 end
 
 function Library:OnHighlight(HighlightInstance, Instance, Properties, PropertiesDefault)
@@ -3203,7 +3213,7 @@ function Library:CreateWindow(...)
         ZIndex = 1;
         Parent = ScreenGui;
     });
-
+	LibraryMainOuterFrame = Outer;
     Library:MakeDraggable(Outer, 25);
 
     if Config.Resizable then
