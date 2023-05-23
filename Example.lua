@@ -11,6 +11,7 @@ local Window = Library:CreateWindow({
     -- Set Center to true if you want the menu to appear in the center
     -- Set AutoShow to true if you want the menu to appear when it is created
     -- Set Resizable to true if you want to have in-game resizable Window
+    -- Set ShowCustomCursor to false if you don't want to use the Linoria cursor
     -- Position and Size are also valid options here
     -- but you do not need to define them unless you are changing them :)
 
@@ -18,6 +19,7 @@ local Window = Library:CreateWindow({
     Center = true,
     AutoShow = true,
     Resizable = true,
+    ShowCustomCursor = true,
     TabPadding = 8,
     MenuFadeTime = 0.2
 })
