@@ -3838,7 +3838,7 @@ function Library:CreateWindow(...)
 						CursorOutline.Color = Color3.new(0, 0, 0);
 						CursorOutline.Visible = true;
 
-						while Toggled and ScreenGui.Parent do
+						while Toggled and ScreenGui.Parent and Library.ShowCustomCursor do
 							InputService.MouseIconEnabled = false;
 
 							local mPos = InputService:GetMouseLocation();
