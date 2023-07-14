@@ -208,7 +208,7 @@ function Library:MakeDraggable(Instance, Cutoff)
         local Dragging, DraggingInput, DraggingStart, StartPosition;
 
         InputService.TouchStarted:Connect(function(Input)
-            if not Dragging and Library:IsMouseOverFrame(Instance, Input) then
+            if not Dragging and Library:IsMouseOverFrame(Instance, Input) and Library.Window.Holder.Visible == true then
                 DraggingInput = Input;
                 DraggingStart = Input.Position;
                 StartPosition = Instance.Position;
@@ -223,7 +223,7 @@ function Library:MakeDraggable(Instance, Cutoff)
             end;
         end);
         InputService.TouchMoved:Connect(function(Input)
-            if Input == DraggingInput and Dragging and Library.CanDrag == true then
+            if Input == DraggingInput and Dragging and Library.CanDrag == true and Library.Window.Holder.Visible == true then
                 local OffsetPos = Input.Position - DraggingStart;
 
                 Instance.Position = UDim2.new(
@@ -3815,7 +3815,7 @@ function Library:CreateWindow(...)
     local TransparencyCache = {};
     local Toggled = false;
     local Fading = false;
-
+	
     function Library:Toggle()
         if Fading then
             return;
