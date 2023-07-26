@@ -3868,10 +3868,12 @@ function Library:CreateWindow(...)
 					end)
 
 					if Cursor then Cursor:Remove(); end;
-					if CursorOutline then CursorOutline:Remove(); end;		
+					if CursorOutline then CursorOutline:Remove(); end;
+
+					InputService.MouseIconEnabled = State;
+				else
+					InputService.MouseIconEnabled = true;
 				end;
-					
-                InputService.MouseIconEnabled = State;
             end);
         end;
 
