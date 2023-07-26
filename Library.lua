@@ -1416,11 +1416,11 @@ do
                         Text = Text .. '.';
                         DisplayLabel.Text = Text;
 
-                        wait(0.4);
+                        task.wait(0.4);
                     end;
                 end);
 
-                wait(0.2);
+                task.wait(0.2);
 
                 local Event;
                 Event = InputService.InputBegan:Connect(function(Input)
@@ -3080,6 +3080,8 @@ function Library:SetWatermark(Text)
 end;
 
 function Library:Notify(Text, Time)
+    assert(typeof(time) ~= "Instance" and typeof(time) ~= "number", "2nd argument of the notify function is a invalid type.")
+
     local XSize, YSize = Library:GetTextBounds(Text, Library.Font, 14);
 
     YSize = YSize + 7
@@ -3160,11 +3162,15 @@ function Library:Notify(Text, Time)
     pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, XSize + 8 + 4, 0, YSize), 'Out', 'Quad', 0.4, true);
 
     task.spawn(function()
-        wait(Time or 5);
+        if typeof(Time) == "Instance" then
+            Time.Destroying:Wait();
+        else
+            task.wait(Time or 5);
+        end
 
         pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, 0, 0, YSize), 'Out', 'Quad', 0.4, true);
 
-        wait(0.4);
+        task.wait(0.4);
 
         NotifyOuter:Destroy();
     end);
