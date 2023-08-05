@@ -3878,7 +3878,7 @@ function Library:CreateWindow(...)
 				else
 					while Toggled and ScreenGui.Parent do
 						InputService.MouseIconEnabled = true;
-						RenderStepped:Wait();
+						task.wait();
 					end;
 				end;
 		
