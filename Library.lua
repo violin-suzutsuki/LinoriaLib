@@ -3836,9 +3836,9 @@ function Library:CreateWindow(...)
             -- A bit scuffed, but if we're going from not toggled -> toggled we want to show the frame immediately so that the fade is visible.
             Outer.Visible = true;
 
-            local State = InputService.MouseIconEnabled;
             task.spawn(function()
                 -- TODO: add cursor fade?
+			    local State = InputService.MouseIconEnabled;
                 local Cursor, CursorOutline;
 				
 				if Library.ShowCustomCursor then
@@ -3875,6 +3875,10 @@ function Library:CreateWindow(...)
 
 					if Cursor then Cursor:Remove(); end;
 					if CursorOutline then CursorOutline:Remove(); end;
+				else;
+					while Toggled and ScreenGui.Parent do
+						InputService.MouseIconEnabled = true;
+					end;
 				end;
 		
 				InputService.MouseIconEnabled = State;
