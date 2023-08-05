@@ -3875,7 +3875,7 @@ function Library:CreateWindow(...)
 
 					if Cursor then Cursor:Remove(); end;
 					if CursorOutline then CursorOutline:Remove(); end;
-				else;
+				else
 					while Toggled and ScreenGui.Parent do
 						InputService.MouseIconEnabled = true;
 					end;
