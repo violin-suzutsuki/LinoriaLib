@@ -212,7 +212,8 @@ function Library:MakeDraggable(Instance, Cutoff)
 
         InputService.TouchStarted:Connect(function(Input)
 			if Library.CantDragForced == true then
-				return Dragging = false;
+				Dragging = false
+				return;
 			end
             if not Dragging and Library:IsMouseOverFrame(Instance, Input) and Library.Window.Holder.Visible == true then
                 DraggingInput = Input;
@@ -230,7 +231,8 @@ function Library:MakeDraggable(Instance, Cutoff)
         end);
         InputService.TouchMoved:Connect(function(Input)
 			if Library.CantDragForced == true then
-				return Dragging = false;
+				Dragging = false;
+				return;
 			end
             if Input == DraggingInput and Dragging and Library.CanDrag == true and Library.Window.Holder.Visible == true then
                 local OffsetPos = Input.Position - DraggingStart;
