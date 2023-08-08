@@ -53,7 +53,7 @@ local Library = {
     IsMobile = false;
     DevicePlatform = Enum.Platform.None;
     CanDrag = true;
-	CantDragForced = false;
+    CantDragForced = false;
     ShowCustomCursor = true; 
     VideoLink = "";
     TotalTabs = 0;
@@ -3845,7 +3845,7 @@ function Library:CreateWindow(...)
     });
 
     local TransparencyCache = {};
-    Library.Toggled = false;
+    local Toggled = false;
     local Fading = false;
 	
     function Library:Toggle()
@@ -3855,10 +3855,11 @@ function Library:CreateWindow(...)
 
         local FadeTime = Config.MenuFadeTime;
         Fading = true;
-        Library.Toggled = (not Library.Toggled);
-        ModalElement.Modal = Library.Toggled;
+        Toggled = (not Toggled);
+		Library.Toggled = Toggled;
+        ModalElement.Modal = Toggled;
 
-        if Library.Toggled then
+        if Toggled then
             -- A bit scuffed, but if we're going from not toggled -> toggled we want to show the frame immediately so that the fade is visible.
             Outer.Visible = true;
 
@@ -3880,7 +3881,7 @@ function Library:CreateWindow(...)
 						CursorOutline.Color = Color3.new(0, 0, 0);
 						CursorOutline.Visible = true;
 
-						while Library.Toggled and ScreenGui.Parent and Library.ShowCustomCursor do
+						while Toggled and ScreenGui.Parent and Library.ShowCustomCursor do
 							InputService.MouseIconEnabled = false;
 
 							local mPos = InputService:GetMouseLocation();
