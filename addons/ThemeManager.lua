@@ -192,7 +192,7 @@ local ThemeManager = {} do
 		groupbox:AddButton('Load theme', function() 
 			self:ApplyTheme(Options.ThemeManager_CustomThemeList.Value) 
 		end)
-		groupbox:AddButton('Overwrite theme', function()
+		groupbox:AddButton('Save/Overwrite theme', function()
 			self:SaveCustomTheme(Options.ThemeManager_CustomThemeName.Value)
 		end)
 		groupbox:AddButton('Delete theme', function()
