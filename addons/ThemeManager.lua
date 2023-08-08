@@ -1,4 +1,6 @@
 local httpService = game:GetService('HttpService')
+local httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+local getassetfunc = getcustomasset or getsynasset
 local ThemeManager = {} do
 	ThemeManager.Folder = 'LinoriaLibSettings'
 	-- if not isfolder(ThemeManager.Folder) then makefolder(ThemeManager.Folder) end
@@ -15,6 +17,44 @@ local ThemeManager = {} do
 		['Quartz'] 			= { 8, httpService:JSONDecode('{"FontColor":"ffffff","MainColor":"232330","AccentColor":"426e87","BackgroundColor":"1d1b26","OutlineColor":"27232f"}') },
 	}
 
+	function ApplyBackgroundVideo(webmLink)
+		if writefile == nil then return end;if readfile == nil then return end;if isfile == nil then return end
+		if ThemeManager.Library == nil then return end
+		if ThemeManager.Library.InnerVideoBackground == nil then return end
+
+		if string.sub(tostring(webmLink), -5) == ".webm" then
+			local CurrentSaved = ""
+			if isfile(ThemeManager.Folder .. '/themes/currentVideoLink.txt') then
+				 CurrentSaved = readfile(ThemeManager.Folder .. '/themes/currentVideoLink.txt')
+			end
+			local VideoData = nil;
+			if CurrentSaved == tostring(webmLink) then
+				VideoData = {
+					Success = true,
+					Body = nil
+				}
+			else
+				VideoData = httprequest({
+					Url = tostring(webmLink),
+					Method = 'GET'
+				})
+			end
+			
+			if (VideoData.Success) then
+				VideoData = VideoData.Body
+				if (isfile(ThemeManager.Folder .. '/themes/currentVideo.webm') == false and VideoData ~= nil) or VideoData ~= nil then
+					writefile(ThemeManager.Folder .. '/themes/currentVideo.webm', VideoData)
+					writefile(ThemeManager.Folder .. '/themes/currentVideoLink.txt', tostring(webmLink))
+				end
+				
+				local Video = getassetfunc(ThemeManager.Folder .. '/themes/currentVideo.webm')
+				ThemeManager.Library.InnerVideoBackground.Video = Video
+				ThemeManager.Library.InnerVideoBackground.Visible = true
+				ThemeManager.Library.InnerVideoBackground:Play()
+			end
+		end
+	end
+	
 	function ThemeManager:ApplyTheme(theme)
 		local customThemeData = self:GetCustomTheme(theme)
 		local data = customThemeData or self.BuiltInThemes[theme]
@@ -22,13 +62,26 @@ local ThemeManager = {} do
 		if not data then return end
 
 		-- custom themes are just regular dictionaries instead of an array with { index, dictionary }
-
+		if self.Library.InnerVideoBackground ~= nil then
+			self.Library.InnerVideoBackground.Visible = false
+		end
+		
 		local scheme = data[2]
 		for idx, col in next, customThemeData or scheme do
-			self.Library[idx] = Color3.fromHex(col)
-			
-			if Options[idx] then
-				Options[idx]:SetValueRGB(Color3.fromHex(col))
+			if idx ~= "VideoLink" then
+				self.Library[idx] = Color3.fromHex(col)
+				
+				if Options[idx] then
+					Options[idx]:SetValueRGB(Color3.fromHex(col))
+				end
+			else
+				self.Library[idx] = col
+				
+				if Options[idx] then
+					Options[idx]:SetValue(col)
+				end
+				
+				ApplyBackgroundVideo(col)
 			end
 		end
 
@@ -37,10 +90,17 @@ local ThemeManager = {} do
 
 	function ThemeManager:ThemeUpdate()
 		-- This allows us to force apply themes without loading the themes tab :)
-		local options = { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor" }
+		if self.Library.InnerVideoBackground ~= nil then
+			self.Library.InnerVideoBackground.Visible = false
+		end
+		
+		local options = { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor", "VideoLink" }
 		for i, field in next, options do
 			if Options and Options[field] then
 				self.Library[field] = Options[field].Value
+				if field == "VideoLink" then
+					ApplyBackgroundVideo(Options[field].Value)
+				end
 			end
 		end
 
@@ -75,13 +135,28 @@ local ThemeManager = {} do
 		writefile(self.Folder .. '/themes/default.txt', theme)
 	end
 
+	function ThemeManager:Delete(name)
+		if (not name) then
+			return false, 'no config file is selected'
+		end
+		
+		local file = self.Folder .. '/themes/' .. name .. '.json'
+		if not isfile(file) then return false, 'invalid file' end
+
+		local success, decoded = pcall(delfile, file)
+		if not success then return false, 'delete file error' end
+		
+		return true
+	end
+	
 	function ThemeManager:CreateThemeManager(groupbox)
 		groupbox:AddLabel('Background color'):AddColorPicker('BackgroundColor', { Default = self.Library.BackgroundColor });
 		groupbox:AddLabel('Main color')	:AddColorPicker('MainColor', { Default = self.Library.MainColor });
 		groupbox:AddLabel('Accent color'):AddColorPicker('AccentColor', { Default = self.Library.AccentColor });
 		groupbox:AddLabel('Outline color'):AddColorPicker('OutlineColor', { Default = self.Library.OutlineColor });
 		groupbox:AddLabel('Font color')	:AddColorPicker('FontColor', { Default = self.Library.FontColor });
-
+		groupbox:AddInput('VideoLink', { Text = '.webm Video Link', Default = self.Library.VideoLink });
+		
 		local ThemesArray = {}
 		for Name, Theme in next, self.BuiltInThemes do
 			table.insert(ThemesArray, Name)
@@ -90,8 +165,8 @@ local ThemeManager = {} do
 		table.sort(ThemesArray, function(a, b) return self.BuiltInThemes[a][1] < self.BuiltInThemes[b][1] end)
 
 		groupbox:AddDivider()
-		groupbox:AddDropdown('ThemeManager_ThemeList', { Text = 'Theme list', Values = ThemesArray, Default = 1 })
 
+		groupbox:AddDropdown('ThemeManager_ThemeList', { Text = 'Theme list', Values = ThemesArray, Default = 1 })
 		groupbox:AddButton('Set as default', function()
 			self:SaveDefault(Options.ThemeManager_ThemeList.Value)
 			self.Library:Notify(string.format('Set default theme to %q', Options.ThemeManager_ThemeList.Value))
@@ -102,24 +177,40 @@ local ThemeManager = {} do
 		end)
 
 		groupbox:AddDivider()
+
 		groupbox:AddInput('ThemeManager_CustomThemeName', { Text = 'Custom theme name' })
-		groupbox:AddDropdown('ThemeManager_CustomThemeList', { Text = 'Custom themes', Values = self:ReloadCustomThemes(), AllowNull = true, Default = 1 })
-		groupbox:AddDivider()
-		
-		groupbox:AddButton('Save theme', function() 
+		groupbox:AddButton('Create theme', function() 
 			self:SaveCustomTheme(Options.ThemeManager_CustomThemeName.Value)
 
 			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
 			Options.ThemeManager_CustomThemeList:SetValue(nil)
-		end):AddButton('Load theme', function() 
-			self:ApplyTheme(Options.ThemeManager_CustomThemeList.Value) 
 		end)
 
+		groupbox:AddDivider()
+
+		groupbox:AddDropdown('ThemeManager_CustomThemeList', { Text = 'Custom themes', Values = self:ReloadCustomThemes(), AllowNull = true, Default = 1 })
+		groupbox:AddButton('Load theme', function() 
+			self:ApplyTheme(Options.ThemeManager_CustomThemeList.Value) 
+		end)
+		groupbox:AddButton('Overwrite theme', function()
+			self:SaveCustomTheme(Options.ThemeManager_CustomThemeName.Value)
+		end)
+		groupbox:AddButton('Delete theme', function()
+			local name = Options.ThemeManager_CustomThemeName.Value
+
+			local success, err = self:Delete(name)
+			if not success then
+				return self.Library:Notify('Failed to delete theme: ' .. err)
+			end
+
+			self.Library:Notify(string.format('Deleted theme %q', name))
+			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
+			Options.ThemeManager_CustomThemeList:SetValue(nil)
+		end)
 		groupbox:AddButton('Refresh list', function()
 			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
 			Options.ThemeManager_CustomThemeList:SetValue(nil)
 		end)
-
 		groupbox:AddButton('Set as default', function()
 			if Options.ThemeManager_CustomThemeList.Value ~= nil and Options.ThemeManager_CustomThemeList.Value ~= '' then
 				self:SaveDefault(Options.ThemeManager_CustomThemeList.Value)
@@ -162,10 +253,14 @@ local ThemeManager = {} do
 		end
 
 		local theme = {}
-		local fields = { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor" }
+		local fields = { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor", "VideoLink" }
 
 		for _, field in next, fields do
-			theme[field] = Options[field].Value:ToHex()
+			if field == "VideoLink" then
+				theme[field] = Options[field].Value
+			else
+				theme[field] = Options[field].Value:ToHex()
+			end
 		end
 
 		writefile(self.Folder .. '/themes/' .. file .. '.json', httpService:JSONEncode(theme))
@@ -213,7 +308,6 @@ local ThemeManager = {} do
 		end
 
 		table.insert(paths, self.Folder .. '/themes')
-		table.insert(paths, self.Folder .. '/settings')
 
 		for i = 1, #paths do
 			local str = paths[i]
