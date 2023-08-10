@@ -290,9 +290,8 @@ local SaveManager = {} do
 				return self.Library:Notify('Failed to reset autoload: delete file error')
 			end
 				
-			self.Library:Notify('Set autoload to nothing')
-			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
-			Options.SaveManager_ConfigList:SetValue(nil)
+			self.Library:Notify('Set autoload to none')
+			SaveManager.AutoloadLabel:SetText('Current autoload config: none')
 		end)
 
 		SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
