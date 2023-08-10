@@ -284,6 +284,16 @@ local SaveManager = {} do
 			SaveManager.AutoloadLabel:SetText('Current autoload config: ' .. name)
 			self.Library:Notify(string.format('Set %q to auto load', name))
 		end)
+		section:AddButton('Reset autoload', function()
+			local success, decoded = pcall(delfile, self.Folder .. '/settings/autoload.txt')
+			if not success then 
+				return self.Library:Notify('Failed to reset autoload: delete file error')
+			end
+				
+			self.Library:Notify('Set autoload to nothing')
+			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+			Options.SaveManager_ConfigList:SetValue(nil)
+		end)
 
 		SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
 
