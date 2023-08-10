@@ -224,8 +224,8 @@ local ThemeManager = {} do
 			end
 				
 			self.Library:Notify('Set default theme to nothing')
-			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
-			Options.SaveManager_ConfigList:SetValue(nil)
+			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
+			Options.ThemeManager_CustomThemeList:SetValue(nil)
 		end)
 
 		ThemeManager:LoadDefault()
