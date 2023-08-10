@@ -217,6 +217,16 @@ local ThemeManager = {} do
 				self.Library:Notify(string.format('Set default theme to %q', Options.ThemeManager_CustomThemeList.Value))
 			end
 		end)
+		section:AddButton('Reset default', function()
+			local success = pcall(delfile, self.Folder .. '/themes/default.txt')
+			if not success then 
+				return self.Library:Notify('Failed to reset default: delete file error')
+			end
+				
+			self.Library:Notify('Set default theme to nothing')
+			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+			Options.SaveManager_ConfigList:SetValue(nil)
+		end)
 
 		ThemeManager:LoadDefault()
 
