@@ -285,7 +285,7 @@ local SaveManager = {} do
 			self.Library:Notify(string.format('Set %q to auto load', name))
 		end)
 		section:AddButton('Reset autoload', function()
-			local success, decoded = pcall(delfile, self.Folder .. '/settings/autoload.txt')
+			local success = pcall(delfile, self.Folder .. '/settings/autoload.txt')
 			if not success then 
 				return self.Library:Notify('Failed to reset autoload: delete file error')
 			end
