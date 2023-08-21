@@ -22,6 +22,7 @@ local ThemeManager = {} do
 
 		for Index, Color in next, CustomThemeData or Scheme do
 			self.Library[Index] 		= Color3.fromHex(Color)
+
 			if Options[Index] then Options[Index]:SetValueRGB(Color3.fromHex(Color)) end
 		end
 
@@ -135,7 +136,7 @@ local ThemeManager = {} do
 	end
 
 	function ThemeManager:GetCustomTheme(Name)
-		local Path 						= string.format("%s/%s", self.Folder, Name)
+		local Path 						= string.format("%s/%s.json", self.Folder, Name)
 
 		if not isfile(Path) then return nil end
 
