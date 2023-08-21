@@ -255,8 +255,8 @@ local SaveManager = {} do
 
 		SaveManager.AutoloadLabel 		= Section:AddLabel("Current autoload config: none", true)
 
-		if isfile(string.format("%s/AutoLoad.txt")) then
-			local Name 					= readfile(string.format("%s/AutoLoad.txt"))
+		if isfile(string.format("%s/AutoLoad.txt", self.Folder)) then
+			local Name 					= readfile(string.format("%s/AutoLoad.txt", self.Folder))
 			SaveManager.AutoloadLabel:SetText(string.format("Current autoload config: %s", Name))
 		end
 
