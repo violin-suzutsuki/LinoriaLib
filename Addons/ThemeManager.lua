@@ -29,11 +29,11 @@ local ThemeManager = {} do
 	end
 
 	function ThemeManager:ThemeUpdate()
-		local Options 					= { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor" }
+		local Indexes 					= { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor" }
 
-		for Index, Field in next, Options do
+		for Index, Field in next, Indexes do
 			if not Options or not Options[Field] then continue end
-		
+
 			self.Library[Field] 		= Options[Field].Value
 		end
 
@@ -148,7 +148,7 @@ local ThemeManager = {} do
 	end
 
 	function ThemeManager:SaveCustomTheme(Name)
-		if File:gsub(" ", "") == "" then return self.Library:Notify("Invalid file name for theme. [Empty]", 3) end
+		if Name:gsub(" ", "") == "" then return self.Library:Notify("Invalid file name for theme. [Empty]", 3) end
 
 		local Theme 					= {}
 		local Fields 					= { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor" }
