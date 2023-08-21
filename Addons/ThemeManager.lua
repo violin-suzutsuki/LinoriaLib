@@ -69,72 +69,6 @@ local ThemeManager = {} do
 		writefile(string.format("%s/Default.txt", self.Folder), theme)
 	end
 
-	function ThemeManager:CreateThemeManager(Groupbox)
-		Groupbox:AddLabel("Background color"):AddColorPicker("BackgroundColor", { Default = self.Library.BackgroundColor });
-		Groupbox:AddLabel("Main color")	:AddColorPicker("MainColor", { Default = self.Library.MainColor });
-		Groupbox:AddLabel("Accent color"):AddColorPicker("AccentColor", { Default = self.Library.AccentColor });
-		Groupbox:AddLabel("Outline color"):AddColorPicker("OutlineColor", { Default = self.Library.OutlineColor });
-		Groupbox:AddLabel("Font color")	:AddColorPicker("FontColor", { Default = self.Library.FontColor });
-
-		local ThemesArray 				= {}
-
-		for Name, Theme in next, self.BuiltInThemes do
-			table.insert(ThemesArray, Name)
-		end
-
-		table.sort(ThemesArray, function(A, B) return self.BuiltInThemes[A][1] < self.BuiltInThemes[B][1] end)
-
-		Groupbox:AddDivider()
-		Groupbox:AddDropdown("ThemeManager_ThemeList", { Text = "Theme list", Values = ThemesArray, Default = 1 })
-
-		Groupbox:AddButton("Set as default", function()
-			self:SaveDefault(Options.ThemeManager_ThemeList.Value)
-			self.Library:Notify(string.format("Set default theme to %q", Options.ThemeManager_ThemeList.Value))
-		end)
-
-		Options.ThemeManager_ThemeList:OnChanged(function()
-			self:ApplyTheme(Options.ThemeManager_ThemeList.Value)
-		end)
-
-		Groupbox:AddDivider()
-		Groupbox:AddInput("ThemeManager_CustomThemeName", { Text = "Custom theme name" })
-		Groupbox:AddDropdown("ThemeManager_CustomThemeList", { Text = "Custom themes", Values = self:ReloadCustomThemes(), AllowNull = true, Default = 1 })
-		Groupbox:AddDivider()
-		
-		Groupbox:AddButton("Save theme", function() 
-			self:SaveCustomTheme(Options.ThemeManager_CustomThemeName.Value)
-
-			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
-			Options.ThemeManager_CustomThemeList:SetValue(nil)
-		end):AddButton("Load theme", function() 
-			self:ApplyTheme(Options.ThemeManager_CustomThemeList.Value) 
-		end)
-
-		Groupbox:AddButton("Refresh list", function()
-			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
-			Options.ThemeManager_CustomThemeList:SetValue(nil)
-		end)
-
-		Groupbox:AddButton("Set as default", function()
-			if Options.ThemeManager_CustomThemeList.Value ~= nil and Options.ThemeManager_CustomThemeList.Value ~= "" then
-				self:SaveDefault(Options.ThemeManager_CustomThemeList.Value)
-				self.Library:Notify(string.format("Set default theme to %q", Options.ThemeManager_CustomThemeList.Value))
-			end
-		end)
-
-		ThemeManager:LoadDefault()
-
-		local function UpdateTheme()
-			self:ThemeUpdate()
-		end
-
-		Options.BackgroundColor:OnChanged(UpdateTheme)
-		Options.MainColor:OnChanged(UpdateTheme)
-		Options.AccentColor:OnChanged(UpdateTheme)
-		Options.OutlineColor:OnChanged(UpdateTheme)
-		Options.FontColor:OnChanged(UpdateTheme)
-	end
-
 	function ThemeManager:GetCustomTheme(Name)
 		local Path 						= string.format("%s/%s.json", self.Folder, Name)
 
@@ -213,22 +147,74 @@ local ThemeManager = {} do
 		self:BuildFolderTree()
 	end
 
-	function ThemeManager:CreateGroupBox(Tab)
+	function ThemeManager:BuildThemeSection(Tab)
 		assert(self.Library, "Must set ThemeManager.Library first!")
 
-		return Tab:AddLeftGroupbox("Themes")
-	end
+		local Groupbox 					= Tab:AddLeftGroupbox("Themes")
+		
+		Groupbox:AddLabel("Background color"):AddColorPicker("BackgroundColor", { Default = self.Library.BackgroundColor });
+		Groupbox:AddLabel("Main color")	:AddColorPicker("MainColor", { Default = self.Library.MainColor });
+		Groupbox:AddLabel("Accent color"):AddColorPicker("AccentColor", { Default = self.Library.AccentColor });
+		Groupbox:AddLabel("Outline color"):AddColorPicker("OutlineColor", { Default = self.Library.OutlineColor });
+		Groupbox:AddLabel("Font color")	:AddColorPicker("FontColor", { Default = self.Library.FontColor });
 
-	function ThemeManager:ApplyToTab(Tab)
-		assert(self.Library, "Must set ThemeManager.Library first!")
+		local ThemesArray 				= {}
 
-		local Groupbox 					= self:CreateGroupBox(Tab)
-		self:CreateThemeManager(Groupbox)
-	end
+		for Name, Theme in next, self.BuiltInThemes do
+			table.insert(ThemesArray, Name)
+		end
 
-	function ThemeManager:ApplyToGroupbox(Groupbox)
-		assert(self.Library, "Must set ThemeManager.Library first!")
-		self:CreateThemeManager(Groupbox)
+		table.sort(ThemesArray, function(A, B) return self.BuiltInThemes[A][1] < self.BuiltInThemes[B][1] end)
+
+		Groupbox:AddDivider()
+		Groupbox:AddDropdown("ThemeManager_ThemeList", { Text = "Theme list", Values = ThemesArray, Default = 1 })
+
+		Groupbox:AddButton("Set as default", function()
+			self:SaveDefault(Options.ThemeManager_ThemeList.Value)
+			self.Library:Notify(string.format("Set default theme to %q", Options.ThemeManager_ThemeList.Value))
+		end)
+
+		Options.ThemeManager_ThemeList:OnChanged(function()
+			self:ApplyTheme(Options.ThemeManager_ThemeList.Value)
+		end)
+
+		Groupbox:AddDivider()
+		Groupbox:AddInput("ThemeManager_CustomThemeName", { Text = "Custom theme name" })
+		Groupbox:AddDropdown("ThemeManager_CustomThemeList", { Text = "Custom themes", Values = self:ReloadCustomThemes(), AllowNull = true, Default = 1 })
+		Groupbox:AddDivider()
+		
+		Groupbox:AddButton("Save theme", function() 
+			self:SaveCustomTheme(Options.ThemeManager_CustomThemeName.Value)
+
+			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
+			Options.ThemeManager_CustomThemeList:SetValue(nil)
+		end):AddButton("Load theme", function() 
+			self:ApplyTheme(Options.ThemeManager_CustomThemeList.Value) 
+		end)
+
+		Groupbox:AddButton("Refresh list", function()
+			Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
+			Options.ThemeManager_CustomThemeList:SetValue(nil)
+		end)
+
+		Groupbox:AddButton("Set as default", function()
+			if Options.ThemeManager_CustomThemeList.Value ~= nil and Options.ThemeManager_CustomThemeList.Value ~= "" then
+				self:SaveDefault(Options.ThemeManager_CustomThemeList.Value)
+				self.Library:Notify(string.format("Set default theme to %q", Options.ThemeManager_CustomThemeList.Value))
+			end
+		end)
+
+		ThemeManager:LoadDefault()
+
+		local function UpdateTheme()
+			self:ThemeUpdate()
+		end
+
+		Options.BackgroundColor:OnChanged(UpdateTheme)
+		Options.MainColor:OnChanged(UpdateTheme)
+		Options.AccentColor:OnChanged(UpdateTheme)
+		Options.OutlineColor:OnChanged(UpdateTheme)
+		Options.FontColor:OnChanged(UpdateTheme)
 	end
 end
 
