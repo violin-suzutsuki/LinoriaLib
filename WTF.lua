@@ -8,4 +8,4 @@ Sound.Volume		= 2.5
 Sound.SoundId   	= Fondra.GetAsset("Sounds/WTF.mp3")
 Sound:Play()
 
-Fondra.Services.Debris:AddItem(Sound, 2)
+Fondra.Services.Debris:AddItem(Sound, 5)
