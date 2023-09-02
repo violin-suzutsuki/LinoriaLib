@@ -3093,7 +3093,7 @@ end;
 
 function Library:Notify(Text, Time, SoundId)
     assert(typeof(time) ~= "Instance" and typeof(time) ~= "number", "2nd argument of the notify function is a invalid type.")
-	assert(typeof(SoundId) ~= "string" and typeof(SoundId) ~= "number", "3nd argument of the notify function is a invalid type.")
+	--assert(typeof(SoundId) ~= "string" and typeof(SoundId) ~= "number", "3nd argument of the notify function is a invalid type.")
 	
     local XSize, YSize = Library:GetTextBounds(Text, Library.Font, 14);
 
