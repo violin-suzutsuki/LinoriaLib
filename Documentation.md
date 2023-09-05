@@ -215,9 +215,141 @@ LeftGroupBox:AddDropdown('MyMultiDropdown', {
     end
 })
 ```
+##### there are also Player Dropwdowns Which Value Changes Everytime A player Joins (the values are players' users)
+```lua
+LeftGroupBox:AddDropdown('MyPlayerDropdown', {
+    SpecialType = 'Player',
+    Text = 'A player dropdown',
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+
+    Callback = function(Value)
+        print('[cb] Player dropdown got changed:', Value)
+    end
+})
+```
+
+### Adding Color Pickers:
+##### Color Pickers Are A Staple of Customisable Scripts. The Color Pickers Can be Used For almost Anything~
+```lua
+LeftGroupBox:AddLabel('Color'):AddColorPicker('ColorPicker', {
+    Default = Color3.new(0, 1, 0), -- Bright green
+    Title = 'Some color', -- Optional. Allows you to have a custom color picker title (when you open it)
+    Transparency = 0, -- Optional. Enables transparency changing for this color picker (leave as nil to disable)
+
+    Callback = function(Value)
+        print('[cb] Color changed!', Value)
+    end
+})
+
+Options.ColorPicker:OnChanged(function()
+    print('Color changed!', Options.ColorPicker.Value)
+    print('Transparency changed!', Options.ColorPicker.Transparency)
+end)
+```
+
+### Adding Keybinds:
+##### Keybinds Are Extremely Cool Parts of Awesome GUIs, They Are Used For Fly (eg.) Or UI Toggles And More!
+```lua
+LeftGroupBox:AddLabel('Keybind'):AddKeyPicker('KeyPicker', {
+    -- SyncToggleState only works with toggles.
+    -- It allows you to make a keybind which has its state synced with its parent toggle
+
+    -- Example: Keybind which you use to toggle flyhack, etc.
+    -- Changing the toggle disables the keybind state and toggling the keybind switches the toggle state
+
+    Default = 'MB2', -- String as the name of the keybind (MB1, MB2 for mouse buttons)
+    SyncToggleState = false,
 
 
+    -- You can define custom Modes but I have never had a use for it.
+    Mode = 'Toggle', -- Modes: Always, Toggle, Hold
 
+    Text = 'Auto lockpick safes', -- Text to display in the keybind menu
+    NoUI = false, -- Set to true if you want to hide from the Keybind menu,
+
+    -- Occurs when the keybind is clicked, Value is `true`/`false`
+    Callback = function(Value)
+        print('[cb] Keybind clicked!', Value)
+    end,
+
+    -- Occurs when the keybind itself is changed, `New` is a KeyCode Enum OR a UserInputType Enum
+    ChangedCallback = function(New)
+        print('[cb] Keybind changed!', New)
+    end
+})
+```
+#### How To Make A keybind Toggle The UI (this will be shown later as well)
+##### use this for eg. Your Configs Tab.
+```lua
+LeftGroupBox:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
+
+Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybind for the menu
+```
+
+# Not All Components Are here, These Are Just What I Feel Nessecary And Cool.
+
+___________________________________________________________________________________________________________________________________________________________________________
+
+# Page 4: Coding The UI Settings And Finishing Your Code
+
+### Creating A Groupbox For The Settings tab:
+##### It's Reccomended To Call This Box Different (eg. MenuGroup)
+```lua
+local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+--[[ You can add a credits tab too eg.
+local CreditsBox = Tabs['UI Settings']:AddRightGroupbox('Credits')
+take note i wont be putting how to make credits here, u can use labels or buttons.]]
+```
+
+### Adding A Close GUI Button As Well As A UI Toggling Keybind
+```lua
+MenuGroup:AddButton('Unload', function() Library:Unload() end)
+MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
+
+Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybind for the menu
+```
+
+## And That's It Basically For The essentials! The next page Will Show The Addons And How You Can Apply them ()
+
+____________________________________________________________________________________________________________________________________________________________________________
+
+# Page 5: Addons
+
+### What Addons? The Addons For LinoriaUI are the Thememanager And The SaveManager. Apply the Code To The bottom of your Code
+```lua
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- ThemeManager (Allows you to have a menu theme system)
+
+-- Hand the library over to our managers
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+
+-- Ignore keys that are used by ThemeManager.
+-- (we dont want configs to save themes, do we?)
+SaveManager:IgnoreThemeSettings()
+
+-- Adds our MenuKeybind to the ignore list
+-- (do you want each config to have a different menu key? probably not.)
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
+
+-- use case for doing it this way:
+-- a script hub could have themes in a global folder
+-- and game configs in a separate folder per game
+ThemeManager:SetFolder('MyScriptHub')
+SaveManager:SetFolder('MyScriptHub/specific-game')
+
+-- Builds our config menu on the right side of our tab
+SaveManager:BuildConfigSection(Tabs['UI Settings'])
+
+-- Builds our theme menu (with plenty of built in themes) on the left side
+-- NOTE: you can also call ThemeManager:ApplyToGroupbox to add it to a specific groupbox
+ThemeManager:ApplyToTab(Tabs['UI Settings'])
+
+-- You can use the SaveManager:LoadAutoloadConfig() to load a config
+-- which has been marked to be one that auto loads!
+SaveManager:LoadAutoloadConfig()
+```
 
 
 
