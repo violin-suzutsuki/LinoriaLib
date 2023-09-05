@@ -6,7 +6,7 @@ ________________________________________________________________________________
 # Page 1: Setting Up
 
 ### Booting The Library:
-##### Like Any Other UI, To Make A Script, u need To Put The Library Up! So Let's Do that!
+##### Like Any Other UI, To Make A Script, u need To Boot The Library Up! So Let's Do that!
 ```lua
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 
