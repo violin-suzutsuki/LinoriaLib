@@ -1,6 +1,6 @@
 # This Is A Documentation Of LinoriaUI For beginers On how To make Your Own GUI With This UserInterface.
-### Made By mrkillinghunter_/MrKillingHunter. Let's get Started!
-
+### Made By mrkillinghunter_/MrKillingHunter. Let's get Started! I'll try to make this Beginner/user-friendly
+#### I Also Won't be Putting Updating In This Documentation.md So Yea
 _____________________________________________________________________________________________________________________________________________________
 
 # Page 1: Setting Up
@@ -56,7 +56,7 @@ local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Groupbox')
 ```
 #### Other Options Are Below
 ```lua
--- you can add tabboxes which basically are groupboxes with tabs. you can do the same things.
+-- you can add tabboxes which basically are groupboxes with tabs. you can do the same things. they are abit tricky for beginners tho
 -- the word after local is the nickname
 -- the '.Main' part, the 'Main' is your tabs (tab, not tabbox) nickname
 local TabBox = Tabs.Main:AddLeftTabbox() -- Add Tabbox on left side
@@ -66,6 +66,73 @@ local TabBox = Tabs.Main:AddLeftTabbox() -- Add Tabbox on left side
 local Tab1 = TabBox:AddTab('Tab 1')
 local Tab2 = TabBox:AddTab('Tab 2')
 ```
+#### Destroying Interface:
+##### This Is Completely Optional, Its The Code/Function you can add to a button to close the interface completely
+```lua
+Library.Unload
+```
+____________________________________________________________________________________________________________________________________________________________
+
+# Page 3: Adding Elements
+
+### Adding Toggles:
+##### Toggles Are A Element Of GUIs, Allowing You to toggle Features Instead Of Just Being On Permenantly Like A button.
+##### They Look Like Checkboxes Without The Ticks.
+```lua
+-- the 'LeftGroupBox' part is the nickname of ur groupbox
+-- Text is the name of the toggle on the UI
+LeftGroupBox:AddToggle('MyToggle', {
+    Text = 'This is a toggle',
+    Default = true, -- Default value (true / false)
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the toggle
+
+    Callback = function(Value)
+        print('[cb] MyToggle changed to:', Value)
+    end
+})
+```
+
+### Adding Buttons:
+##### Buttons Are Pretty Much The One Thing Every Single UI Will have, And They Are Simple. Just A Click And The Function Activates!
+##### On Linoria, You Can Add Sub-buttons And Even Enable A Function That Makes The Button only Activate When it's Double-Clicked!
+```lua
+-- MyButton is basically the nickname of the button in the code.
+-- LeftGroupBox Will be the nickname of your Groupbox/Tabbox
+local MyButton = LeftGroupBox:AddButton({
+    Text = 'Button', -- the name of your button on screen
+    Func = function()
+        print('You clicked a button!') -- the feature your button will do when its clicked
+    end,
+    DoubleClick = false, -- set to true if u want the button to only activate when it's Double clicked
+    Tooltip = 'This is the main button' - Infomation When curosr hoveres over the button
+})
+```
+#### Additional Options
+###### Sub-Buttons
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
