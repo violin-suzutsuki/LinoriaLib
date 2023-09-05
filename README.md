@@ -4,7 +4,7 @@ A Roblox UI library inspired by Splix, BBot and many others.
 Used in the Linoria script hub: https://kyaru.cloud
 
 ###### Example Script: 
-* [Example](Example.lua)
+* [Example](Example.lua)&nbsp;&nbsp;|&nbsp;&nbsp;[Documentation](Documentation.md)
 
 ###### Interface Addons:
 * [Theme Manager](addons/ThemeManager.lua)&nbsp;&nbsp;|&nbsp;&nbsp;[Save Manager](addons/SaveManager.lua) 
@@ -15,6 +15,11 @@ Used in the Linoria script hub: https://kyaru.cloud
 - Interface automatically becomes scrollable whenever there are too many UI elements
 - Dependency boxes, allowing you to easily hide/show UI elements depending on the state of other UI elements
 
+## Why Choose Us?
+- Reliable and Stable
+- Amazing perfomance while having under 2.5k lines of code!
+- And More!
+
 ## Interface Preview
 <img src="https://i.imgur.com/qs0Hqc6.png" />
 
@@ -23,3 +28,4 @@ Used in the Linoria script hub: https://kyaru.cloud
 - Wally: Cleaning up verbose code, extending library functionality.
 - Stefanuk: Extending library functionality.
 - matas3535: Creator of Splix.
+- mrkillinghunter_: Documentation
