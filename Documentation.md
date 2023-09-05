@@ -108,7 +108,31 @@ local MyButton = LeftGroupBox:AddButton({
 })
 ```
 #### Additional Options
-###### Sub-Buttons
+##### Sub-Buttons:
+##### Sub Buttons Are Basically Secondary Butttons You Can Add (ive never found a use for these)
+```lua
+-- MyButton2 is the nickname
+-- MyButton is the nickname of ur main button
+local MyButton2 = MyButton:AddButton({
+    Text = 'Sub button',
+    Func = function()
+        print('You clicked a sub button!')
+    end,
+    DoubleClick = true, 
+    Tooltip = 'This is the sub button (double click me!)'
+})
+```
+
+### Adding labels:
+##### Another Essential Element, Adding text To your GUI. I wont be putting instructions since its EXTREMELY simple (call me lazy iyw)
+```lua
+LeftGroupBox:AddLabel('This is a label')
+```
+##### You Can Add Labels That Wrap the text Too!
+```lua
+LeftGroupBox:AddLabel('This is a label\n\nwhich wraps its text!', true)
+```
+
 
 
 
