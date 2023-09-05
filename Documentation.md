@@ -133,6 +133,89 @@ LeftGroupBox:AddLabel('This is a label')
 LeftGroupBox:AddLabel('This is a label\n\nwhich wraps its text!', true)
 ```
 
+### Adding Dividers:
+##### Sometimes, Stuff In A groupbox need To be Categorized More By Being Seperated.
+##### And that's Where Dividers come in!
+```lua
+-- LeftGroupBox will be the nickname of your groupbox/tabbox
+LeftGroupBox:AddDivider()
+```
+
+### Adding Sliders:
+##### A Simple Slider That Can be Used For Walkspeeed Changers! Or Even More!
+```lua
+LeftGroupBox:AddSlider('MySlider', {
+    Text = 'This is my slider!',
+    Default = 0, -- the default value when u load in the GUI
+    Min = 0, -- the Minimum Value the Slider Can go/reach
+    Max = 5, -- The maximum value the slider can go/reach
+    Rounding = 1, -- The Rounding of The Value
+    Compact = false, -- Hides the Max value (visiblilty)
+
+    Callback = function(Value)
+        print('[cb] MySlider was changed! New value:', Value)
+    end
+})
+```
+
+### Adding Interactive Textboxes:
+##### Sometimes You Want To Add textboxes for the user to use? (idk why ) well using the Textbox is simple!
+```lua
+LeftGroupBox:AddInput('MyTextbox', {
+    Default = 'My textbox!',
+    Numeric = false, -- true / false, only allows numbers
+    Finished = true, -- true / false, only calls callback when you press enter
+
+    Text = 'This is a textbox', - default text
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
+
+    Placeholder = 'Placeholder text', -- placeholder text when the box is empty
+    -- MaxLength is also an option which is the max length of the text
+
+    Callback = function(Value)
+        print('[cb] Text updated. New text:', Value)
+    end
+})
+```
+
+### Adding Dropdowns:
+##### Have You Seen Those Cool ESPs That Uses Dropdowns to allow u to select the ESPs you want enabled? Here's How To Make One!
+```lua
+LeftGroupBox:AddDropdown('MyDropdown', {
+    Values = { 'This', 'is', 'a', 'dropdown' },
+    Default = 1, -- number index of the value / string
+    Multi = false, -- true / false, allows multiple choices to be selected
+
+    Text = 'A dropdown',
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+
+    Callback = function(Value)
+        print('[cb] Dropdown got changed. New value:', Value)
+    end
+})
+```
+#### Other options
+##### Want To Make One that allows you to select multiple values? say no more
+```lua
+LeftGroupBox:AddDropdown('MyMultiDropdown', {
+    -- Default is the numeric index (e.g. "This" would be 1 since it if first in the values list)
+    -- Default also accepts a string as well
+
+    -- Currently you can not set multiple values with a dropdown
+
+    Values = { 'This', 'is', 'a', 'dropdown' },
+    Default = 1,
+    Multi = true, -- true / false, allows multiple choices to be selected
+
+    Text = 'A dropdown',
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+
+    Callback = function(Value)
+        print('[cb] Multi dropdown got changed:', Value)
+    end
+})
+```
+
 
 
 
