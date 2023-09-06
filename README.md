@@ -4,7 +4,7 @@ A Roblox UI library inspired by Splix, BBot and many others.
 Used in the Linoria script hub: https://kyaru.cloud
 
 ###### Example Script: 
-* [Example](Example.lua)&nbsp;&nbsp;|&nbsp;&nbsp;[Documentation](Documentation.md)
+* [Example](Example.lua)&nbsp;&nbsp;|&nbsp;&nbsp;[Guide/Documentation](Documentation.md)
 
 ###### Interface Addons:
 * [Theme Manager](addons/ThemeManager.lua)&nbsp;&nbsp;|&nbsp;&nbsp;[Save Manager](addons/SaveManager.lua) 
