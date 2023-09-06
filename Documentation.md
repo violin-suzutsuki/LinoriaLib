@@ -30,7 +30,8 @@ local Window = Library:CreateWindow({
     TabPadding = 8,  -- Position and Size are also valid options here 
     MenuFadeTime = 0.2 -- but you do not need to define them unless you are changing them :)
 })
-```![Screenshot 2023-09-06 105023](https://github.com/MrKillingHunter/LinoriaLib/assets/129658204/1568bf52-d54b-4b3f-a02d-8685a89e6af6)
+```
+![Screenshot 2023-09-06 105023](https://github.com/MrKillingHunter/LinoriaLib/assets/129658204/1568bf52-d54b-4b3f-a02d-8685a89e6af6)
 
 ##### This Basically Creates A Window With Properties that You Set (Default Is The Reccomended)
 
