@@ -1,6 +1,6 @@
-# This Is A Documentation Of LinoriaUI For beginers On how To make Your Own GUI With This UserInterface.
+# This Is A Guide Of LinoriaUI For beginers On how To make Your Own GUI With This UserInterface.
 ### Made By mrkillinghunter_/MrKillingHunter. Let's get Started! I'll try to make this Beginner/user-friendly
-#### I Also Won't be Putting Updating In This Documentation.md So Yea
+#### I Also Won't be Putting Updating In This Guide So Yea
 _____________________________________________________________________________________________________________________________________________________
 
 # Page 1: Setting Up
@@ -30,7 +30,8 @@ local Window = Library:CreateWindow({
     TabPadding = 8,  -- Position and Size are also valid options here 
     MenuFadeTime = 0.2 -- but you do not need to define them unless you are changing them :)
 })
-```
+```![Screenshot 2023-09-06 105023](https://github.com/MrKillingHunter/LinoriaLib/assets/129658204/1568bf52-d54b-4b3f-a02d-8685a89e6af6)
+
 ##### This Basically Creates A Window With Properties that You Set (Default Is The Reccomended)
 
 ### Creating Tabs:
@@ -67,7 +68,7 @@ local Tab1 = TabBox:AddTab('Tab 1')
 local Tab2 = TabBox:AddTab('Tab 2')
 ```
 #### Destroying Interface:
-##### This Is Completely Optional, Its The Code/Function you can add to a button to close the interface completely
+##### This Is Completely Optional, Its The Code/Function you can add to a button to close the interface completely (this is shown later as well)
 ```lua
 Library.Unload
 ```
@@ -104,7 +105,7 @@ local MyButton = LeftGroupBox:AddButton({
         print('You clicked a button!') -- the feature your button will do when its clicked
     end,
     DoubleClick = false, -- set to true if u want the button to only activate when it's Double clicked
-    Tooltip = 'This is the main button' - Infomation When curosr hoveres over the button
+    Tooltip = 'This is the main button' -- Infomation When curosr hoveres over the button
 })
 ```
 #### Additional Options
@@ -350,7 +351,7 @@ ThemeManager:ApplyToTab(Tabs['UI Settings'])
 -- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
 ```
-
+#### You Can Get Creative And Make Your Own Themes As Well!
 
 
 
