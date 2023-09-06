@@ -46,6 +46,7 @@ local Tabs = {
     ['UI Settings'] = Window:AddTab('UI Settings'),
 }
 ```
+![Screenshot 2023-09-06 105107](https://github.com/MrKillingHunter/LinoriaLib/assets/129658204/81567cd4-9456-49f2-ab8d-d1accf07eb5b)
 
 ### Creating Groupboxes:
 ##### In Other UIs, there Are Things Called Sections That Seperate Stuff Into Subcategories In Your GUI. Here, They Are Called Groupboxes.
@@ -68,6 +69,8 @@ local TabBox = Tabs.Main:AddLeftTabbox() -- Add Tabbox on left side
 local Tab1 = TabBox:AddTab('Tab 1')
 local Tab2 = TabBox:AddTab('Tab 2')
 ```
+![Screenshot 2023-09-06 105156](https://github.com/MrKillingHunter/LinoriaLib/assets/129658204/e58993b1-f288-41d4-83b9-5aa97ff27337)
+
 #### Destroying Interface:
 ##### This Is Completely Optional, Its The Code/Function you can add to a button to close the interface completely (this is shown later as well)
 ```lua
