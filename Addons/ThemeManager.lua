@@ -65,8 +65,8 @@ local ThemeManager = {} do
 		end
 	end
 
-	function ThemeManager:SaveDefault(theme)
-		writefile(string.format("%s/Default.txt", self.Folder), theme)
+	function ThemeManager:SaveDefault(Theme)
+		writefile(string.format("%s/Default.txt", self.Folder), Theme)
 	end
 
 	function ThemeManager:GetCustomTheme(Name)
