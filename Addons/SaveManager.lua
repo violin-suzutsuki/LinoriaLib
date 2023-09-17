@@ -246,7 +246,7 @@ local SaveManager = {} do
 		Section:AddButton("Set as autoload", function()
 			local Name 					= Options.SaveManager_ConfigList.Value
 
-			writefile(string.format("%s/AutoLoad.txt"), Name)
+			writefile(string.format("%s/AutoLoad.txt", self.Folder), Name)
 			SaveManager.AutoloadLabel:SetText(string.format("Current autoload config: %s", Name))
 			self.Library:Notify(string.format("Set %q to auto load", Name))
 		end)
