@@ -126,19 +126,18 @@ local ThemeManager = {} do
 	end
 
 	function ThemeManager:BuildFolderTree()
-		local Substrings 				= {}
-		local PartialString 			= ""
+		local Directorys 				= {}
 
-		for Substring in self.Folder:gmatch("([^/]+)") do
-			PartialString 				= string.format("%s/%s", PartialString, Substring)
+		self.Folder:gsub("([^/]+)", function(Directory)
+			table.insert(Directorys, Directory)
+		end)
 
-			table.insert(Substrings, PartialString:sub(2))
-		end
+		for _, Directory in next, Directorys do
+			local Directory             = table.concat(Directorys, "/", 1, _)
 
-		for _, Substring in next, Substrings do
-			if isfolder(Substring) then continue end
+			if isfolder(Directory) then continue end
 
-			makefolder(Substring)
+			makefolder(Directory)
 		end
 	end
 
