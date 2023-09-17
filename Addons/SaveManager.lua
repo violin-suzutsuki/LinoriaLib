@@ -16,7 +16,7 @@ local SaveManager = {} do
 
 		Slider = {
 			Save = function(Index, Object)
-				return { type = "Slider", Index = Index, Value = tostring(Object.Value) }
+				return { Type = "Slider", Index = Index, Value = tostring(Object.Value) }
 			end,
 
 			Load = function(Index, Data)
@@ -28,7 +28,7 @@ local SaveManager = {} do
 
 		Dropdown = {
 			Save = function(Index, Object)
-				return { type = "Dropdown", Index = Index, Value = Object.Value, mutli = Object.Multi }
+				return { Type = "Dropdown", Index = Index, Value = Object.Value, Multi = Object.Multi }
 			end,
 
 			Load = function(Index, Data)
@@ -40,11 +40,11 @@ local SaveManager = {} do
 
 		ColorPicker = {
 			Save = function(Index, Object)
-				return { type = "ColorPicker", Index = Index, Value = Object.Value:ToHex(), Transparency = Object.Transparency }
+				return { Type = "ColorPicker", Index = Index, Value = Object.Value:ToHex(), Transparency = Object.Transparency }
 			end,
 
 			Load = function(Index, Data)
-				if Options[Index] then 
+				if Options[Index] then
 					Options[Index]:SetValueRGB(Color3.fromHex(Data.Value), Data.Transparency)
 				end
 			end
@@ -52,24 +52,24 @@ local SaveManager = {} do
 
 		KeyPicker = {
 			Save = function(Index, Object)
-				return { type = "KeyPicker", Index = Index, mode = Object.Mode, key = Object.Value }
+				return { Type = "KeyPicker", Index = Index, Mode = Object.Mode, Key = Object.Value }
 			end,
 
 			Load = function(Index, Data)
 				if Options[Index] then 
-					Options[Index]:SetValue({ Data.key, Data.mode })
+					Options[Index]:SetValue({ Data.Key, Data.Mode })
 				end
 			end
 		},
 
 		Input = {
 			Save = function(Index, Object)
-				return { type = "Input", Index = Index, text = Object.Value }
+				return { Type = "Input", Index = Index, Text = Object.Value }
 			end,
 
 			Load = function(Index, Data)
-				if Options[Index] and type(Data.text) == "string" then
-					Options[Index]:SetValue(Data.text)
+				if Options[Index] and type(Data.Text) == "string" then
+					Options[Index]:SetValue(Data.Text)
 				end
 			end,
 		}
