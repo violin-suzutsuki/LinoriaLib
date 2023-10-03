@@ -8,10 +8,6 @@ local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/violi
 ## Creating a new window
 ```lua
 local Window = Library:CreateWindow({
-    
-    
-    
-
     Title = 'Example menu',
     Center = true, -- Set Center to true if you want the menu to appear in the center
     AutoShow = true, -- Set AutoShow to true if you want the menu to appear when it is created
@@ -20,5 +16,19 @@ local Window = Library:CreateWindow({
     --Position = float (optional)
     --Size = float (optional)
 })
+```
 
+## Creating tabs
+```lua
+local mainTab = Window:AddTab('Main')
+```
+
+## Creating GroupBoxes
+```lua
+local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Groupbox')
+```
+
+## Creating TabBoxes
+```lua
+local TabBox = Main:AddLeftTabbox()
 ```
