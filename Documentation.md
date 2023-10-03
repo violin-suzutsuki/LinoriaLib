@@ -25,8 +25,8 @@ local mainTab = Window:AddTab('Main')
 
 ## Creating GroupBoxes
 ```lua
-local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Left Groupbox')
-local RightGroupbox = Tabs.Main:AddRightGroupbox('Right Groupbox');
+local LeftGroupBox = Main:AddLeftGroupbox('Left Groupbox')
+local RightGroupbox = Main:AddRightGroupbox('Right Groupbox');
 ```
 
 ## Creating TabBoxes
