@@ -342,7 +342,7 @@ task.spawn(function()
     end
 end)
 
-Options.KeyPicker:SetValue({ 'MB2', 'Toggle' }) -- Sets keybind to MB2, mode to Hold
+Options.KeyPicker:SetValue({ 'MB2', 'Hold' }) -- Sets keybind to MB2, mode to Hold
 
 -- Long text label to demonstrate UI scrolling behaviour.
 local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Groupbox #2');
